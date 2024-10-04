@@ -1,0 +1,6 @@
+@Sempi5_HostAddress = http://localhost:5012
+
+GET {{Sempi5_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
