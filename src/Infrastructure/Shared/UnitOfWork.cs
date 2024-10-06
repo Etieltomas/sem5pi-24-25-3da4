@@ -1,15 +1,15 @@
 using System.Threading.Tasks;
 using Sempi5.Domain;
 using Sempi5.Domain.Shared;
-using Sempi5.Domain.TodoItem;
+using Sempi5.Infrastructure.Databases;
 
 namespace Sempi5.Infrastructure.Shared
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly TodoContext _context;
+        private readonly DataBaseContext _context;
 
-        public UnitOfWork(TodoContext context)
+        public UnitOfWork(DataBaseContext context)
         {
             this._context = context;
         }

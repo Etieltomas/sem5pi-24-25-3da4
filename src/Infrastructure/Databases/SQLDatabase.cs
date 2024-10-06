@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Sempi5.Domain;
-using Sempi5.Domain.TodoItem;
 
 
 namespace Sempi5.Infrastructure.Databases;
@@ -17,7 +16,7 @@ public class SQLDatabase : IDatabase
                                   ";Password="+builder.Configuration["DataBase:Password"]+";";
 
 
-        builder.Services.AddDbContext<TodoContext>(opt =>
+        builder.Services.AddDbContext<DataBaseContext>(opt =>
             opt.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
     }
      

@@ -1,9 +1,14 @@
 using Sempi5.Domain.Shared;
 using Sempi5.Infrastructure.Shared;
-using Sempi5.Infrastructure.TodoItemRepository;
 using IDatabase = Sempi5.Infrastructure.Databases.IDatabase;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Sempi5.Infrastructure.UserRepository;
+using Sempi5.Infrastructure.StaffRepository;
+using Sempi5.Domain.Staff;
+using Sempi5.Infrastructure.PatientRepository;
+using Sempi5.Domain.Patient;
+
 
 namespace Sempi5
 {
@@ -39,6 +44,7 @@ namespace Sempi5
 
             CreateDataBase(builder);
             
+            ConfigureMyServices(builder.Services);
 
             builder.Services.AddEndpointsApiExplorer();
 
@@ -88,12 +94,17 @@ namespace Sempi5
                 
         }
 
-        public void ConfigureMyServices(IServiceCollection services)
+        public static void ConfigureMyServices(IServiceCollection services)
         {
             services.AddTransient<IUnitOfWork,UnitOfWork>();
+            
+            services.AddTransient<IUserRepository, UserRepository>();
 
-            services.AddTransient<ITodoItemRepository,TodoItemRepository>();
-            //services.AddTransient<CategoryService>();
+            services.AddTransient<IStaffRepository,StaffRepository>();
+            services.AddTransient<StaffService>();
+        
+            services.AddTransient<IPatientRepository,PatientRepository>();
+            services.AddTransient<PatientService>();
         }
     }
 }

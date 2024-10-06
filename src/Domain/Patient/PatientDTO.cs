@@ -1,0 +1,15 @@
+using Sempi5;
+
+namespace Sempi5.Domain.Patient
+{
+    public class PatientDTO
+    {        
+        public long MedicalRecordNumber { get; set; }
+        public string DateOfBirth { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string Phone { get; set; }  
+        public List<string> Conditions { get; set; }  
+        public string EmergencyContact { get; set; }
+    }
+}

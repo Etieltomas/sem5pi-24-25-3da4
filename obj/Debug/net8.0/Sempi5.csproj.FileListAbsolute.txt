@@ -1,3 +1,11 @@
+/home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/obj/Debug/net8.0/Sempi5.csproj.AssemblyReference.cache
+/home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/obj/Debug/net8.0/Sempi5.GeneratedMSBuildEditorConfig.editorconfig
+/home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/obj/Debug/net8.0/Sempi5.AssemblyInfoInputs.cache
+/home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/obj/Debug/net8.0/Sempi5.AssemblyInfo.cs
+/home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/obj/Debug/net8.0/Sempi5.csproj.CoreCompileInputs.cache
+/home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/obj/Debug/net8.0/Sempi5.MvcApplicationPartsAssemblyInfo.cs
+/home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/obj/Debug/net8.0/Sempi5.MvcApplicationPartsAssemblyInfo.cache
+/home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/obj/Debug/net8.0/Sempi5.sourcelink.json
 /home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/bin/Debug/net8.0/appsettings.Development.json
 /home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/bin/Debug/net8.0/appsettings.json
 /home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/bin/Debug/net8.0/Sempi5
@@ -8,6 +16,7 @@
 /home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/bin/Debug/net8.0/Azure.Core.dll
 /home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/bin/Debug/net8.0/Azure.Identity.dll
 /home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/bin/Debug/net8.0/Humanizer.dll
+/home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/bin/Debug/net8.0/Microsoft.AspNetCore.Authentication.Google.dll
 /home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/bin/Debug/net8.0/Microsoft.AspNetCore.Razor.Language.dll
 /home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/bin/Debug/net8.0/Microsoft.Bcl.AsyncInterfaces.dll
 /home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/bin/Debug/net8.0/Microsoft.Build.dll
@@ -52,6 +61,7 @@
 /home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/bin/Debug/net8.0/Microsoft.VisualStudio.Web.CodeGenerators.Mvc.dll
 /home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/bin/Debug/net8.0/Microsoft.Win32.SystemEvents.dll
 /home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/bin/Debug/net8.0/Mono.TextTemplating.dll
+/home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/bin/Debug/net8.0/MySqlConnector.dll
 /home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/bin/Debug/net8.0/Newtonsoft.Json.dll
 /home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/bin/Debug/net8.0/NuGet.Common.dll
 /home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/bin/Debug/net8.0/NuGet.Configuration.dll
@@ -62,6 +72,7 @@
 /home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/bin/Debug/net8.0/NuGet.ProjectModel.dll
 /home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/bin/Debug/net8.0/NuGet.Protocol.dll
 /home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/bin/Debug/net8.0/NuGet.Versioning.dll
+/home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/bin/Debug/net8.0/Pomelo.EntityFrameworkCore.MySql.dll
 /home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/bin/Debug/net8.0/Swashbuckle.AspNetCore.Swagger.dll
 /home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerGen.dll
 /home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerUI.dll
@@ -230,14 +241,6 @@
 /home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/bin/Debug/net8.0/runtimes/win/lib/net6.0/System.Runtime.Caching.dll
 /home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/bin/Debug/net8.0/runtimes/win/lib/net7.0/System.Security.Cryptography.ProtectedData.dll
 /home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/bin/Debug/net8.0/runtimes/win/lib/net7.0/System.Windows.Extensions.dll
-/home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/obj/Debug/net8.0/Sempi5.csproj.AssemblyReference.cache
-/home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/obj/Debug/net8.0/Sempi5.GeneratedMSBuildEditorConfig.editorconfig
-/home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/obj/Debug/net8.0/Sempi5.AssemblyInfoInputs.cache
-/home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/obj/Debug/net8.0/Sempi5.AssemblyInfo.cs
-/home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/obj/Debug/net8.0/Sempi5.csproj.CoreCompileInputs.cache
-/home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/obj/Debug/net8.0/Sempi5.MvcApplicationPartsAssemblyInfo.cs
-/home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/obj/Debug/net8.0/Sempi5.MvcApplicationPartsAssemblyInfo.cache
-/home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/obj/Debug/net8.0/Sempi5.sourcelink.json
 /home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/obj/Debug/net8.0/staticwebassets.build.json
 /home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/obj/Debug/net8.0/staticwebassets.development.json
 /home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/obj/Debug/net8.0/staticwebassets/msbuild.Sempi5.Microsoft.AspNetCore.StaticWebAssets.props
@@ -252,6 +255,3 @@
 /home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/obj/Debug/net8.0/Sempi5.pdb
 /home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/obj/Debug/net8.0/Sempi5.genruntimeconfig.cache
 /home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/obj/Debug/net8.0/ref/Sempi5.dll
-/home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/bin/Debug/net8.0/MySqlConnector.dll
-/home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/bin/Debug/net8.0/Pomelo.EntityFrameworkCore.MySql.dll
-/home/tomas/Documents/isep/3ano/sempi5/sem5pi-24-25-3da4/bin/Debug/net8.0/Microsoft.AspNetCore.Authentication.Google.dll

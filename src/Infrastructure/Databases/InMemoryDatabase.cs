@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Sempi5.Domain.TodoItem;
 
 
 
@@ -9,7 +8,7 @@ namespace Sempi5.Infrastructure.Databases
     {
         public void connectDB(WebApplicationBuilder builder)
         {
-            builder.Services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList"));
+            builder.Services.AddDbContext<DataBaseContext>(opt => opt.UseInMemoryDatabase("InMemoryDatabase"));
         }
     }
 }
