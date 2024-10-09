@@ -51,7 +51,7 @@ namespace Sempi5.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     EmergencyContact = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    SystemUserId = table.Column<long>(type: "bigint", nullable: true)
+                    SystemUserId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -60,7 +60,8 @@ namespace Sempi5.Migrations
                         name: "FK_Patients_Users_SystemUserId",
                         column: x => x.SystemUserId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -80,7 +81,7 @@ namespace Sempi5.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Specialization = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    SystemUserId = table.Column<long>(type: "bigint", nullable: true)
+                    SystemUserId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -89,7 +90,8 @@ namespace Sempi5.Migrations
                         name: "FK_Staff_Users_SystemUserId",
                         column: x => x.SystemUserId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 

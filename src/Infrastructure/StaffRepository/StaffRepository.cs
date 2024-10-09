@@ -34,23 +34,34 @@ namespace Sempi5.Infrastructure.StaffRepository
             return new StaffDTO { LicenseNumber = staff.LicenseNumber, Name = staff.Name, Email = staff.Email, Phone = staff.Phone, AvailabilitySlots = staff.AvailabilitySlots, Specialization = staff.Specialization };
         }
 
-        public async Task<StaffDTO> GetStaffMember(long id)
+        public async Task<Staff> GetStaffMember(long id)
         { 
             var staff = await  _context.Staff.FindAsync(id);
 
             if(staff == null)
                 return null;
 
-            return new StaffDTO { LicenseNumber = staff.LicenseNumber, Name = staff.Name, Email = staff.Email, Phone = staff.Phone, AvailabilitySlots = staff.AvailabilitySlots, Specialization = staff.Specialization };
+            return staff;
         }
 
-        public async Task<ActionResult<IEnumerable<StaffDTO>>> GetAllStaffMembers()
+        public async Task<Staff> GetStaffMemberByEmail(string email)
+        {
+            var staff = await  _context.Staff.FirstOrDefaultAsync(x => x.Email == email);
+
+            if(staff == null){
+                return null;
+            }
+
+            return staff;
+        }
+
+        public async Task<ActionResult<IEnumerable<Staff>>> GetAllStaffMembers()
         {
             var list = await  _context.Staff.ToListAsync();
             
-            List<StaffDTO> listDto = list.ConvertAll<StaffDTO>(staff => new StaffDTO { LicenseNumber = staff.LicenseNumber, Name = staff.Name, Email = staff.Email, Phone = staff.Phone, AvailabilitySlots = staff.AvailabilitySlots, Specialization = staff.Specialization });
-            return listDto;
+            return list;
         }
 
+        
     }
 }

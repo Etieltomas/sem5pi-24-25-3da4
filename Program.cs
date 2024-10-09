@@ -8,7 +8,9 @@ using Sempi5.Infrastructure.StaffRepository;
 using Sempi5.Domain.Staff;
 using Sempi5.Infrastructure.PatientRepository;
 using Sempi5.Domain.Patient;
-
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Sempi5.Domain.User;
 
 namespace Sempi5
 {
@@ -21,34 +23,96 @@ namespace Sempi5
  
             /////////////////////////////////////////
             // IAM
-            builder.Services.AddAuthentication(options => 
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Staff",
+                policy => policy.RequireRole("Doctor", "Nurse", "Admin", "Technician"));
+
+                options.AddPolicy("Patient",
+                policy => policy.RequireRole("Patient"));
+                
+            }).AddAuthentication(options => 
             {
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
             }).AddCookie(options =>
             {
-                options.LoginPath = "/Login/login";
                 options.Cookie.SameSite = SameSiteMode.None;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always; 
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;                
             }
             ).AddGoogle(options => 
             {
                 options.ClientId = builder.Configuration["GoogleKeys:ClientId"];
                 options.ClientSecret = builder.Configuration["GoogleKeys:ClientSecret"];
+
+                options.Events.OnCreatingTicket = async context =>
+                {
+                    var claimsIdentity = (ClaimsIdentity) context.Principal.Identity;
+
+                    var services = context.HttpContext.RequestServices;
+
+                    try
+                    {
+                        IUserRepository userRepository = services.GetRequiredService<IUserRepository>();
+                        IPatientRepository patientRepository = services.GetRequiredService<IPatientRepository>();
+                        IStaffRepository staffRepository = services.GetRequiredService<IStaffRepository>();
+
+                        var allUsers = await userRepository.GetAllUsers(); 
+                        var allStaff = await staffRepository.GetAllStaffMembers();
+                        var allPacient = await patientRepository.GetAllPatients();
+
+                        var email = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
+                        var user = await userRepository.GetUserByEmail(email);
+
+                        if (user != null && user.Email.Equals(email))
+                        { 
+                            // User already exists
+                            claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, user.Role));                                                  
+                        }
+                        else
+                        {
+                            // New user so it will be a patient
+                            claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, "Patient"));
+                            
+                            await userRepository.AddUser(new SystemUserDTO { Username = email, Email = email, Role = "Patient" });
+                            await patientRepository.AddPatient(new PatientDTO { 
+                                Name = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value,
+                                Email = email,
+                                Phone = "12121212",
+                                Conditions = new List<string> { "None" },
+                                EmergencyContact = "1212121212",
+                                DateOfBirth = "12/12/1121"
+                            });
+                            
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // Handle exceptions
+                        Console.WriteLine($"An error occurred: {ex.Message}");
+                    }
+   
+                    var authProperties = new AuthenticationProperties
+                    {
+                        IsPersistent = false
+                    };
+
+                    await context.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+
+                }; 
+                
             });
             /////////////////////////////////////////
 
-
-            // Add services to the container.
+            // Add services to the container
             builder.Services.AddControllersWithViews();
-
-            CreateDataBase(builder);
-            
+            CreateDataBase(builder);            
             ConfigureMyServices(builder.Services);
-
             builder.Services.AddEndpointsApiExplorer();
 
             var app = builder.Build();
+
+            app.UseMiddleware<CatchRedirectMiddleware>();
 
             if (app.Environment.IsDevelopment())
             {
@@ -56,19 +120,13 @@ namespace Sempi5
             }
 
             app.UseHttpsRedirection();
-
             app.UseAuthentication();
-
             app.UseRouting();
-
             app.UseAuthorization();
-
             app.MapControllers();
-
-
             app.Run();
         }
-
+        
         // See what database is
         public static void CreateDataBase(WebApplicationBuilder builder){
           
@@ -99,6 +157,7 @@ namespace Sempi5
             services.AddTransient<IUnitOfWork,UnitOfWork>();
             
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<SystemUserService>();
 
             services.AddTransient<IStaffRepository,StaffRepository>();
             services.AddTransient<StaffService>();

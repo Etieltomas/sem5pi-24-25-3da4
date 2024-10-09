@@ -21,14 +21,45 @@ namespace Sempi5.Domain.Patient
             return await _repo.AddPatient(PatientDTO);
         }
 
-        public async Task<PatientDTO> GetPatient(long id)
+        public async Task<PatientDTO> GetPatientByMedicalRecordNumber(long id)
         {
-            return await _repo.GetPatientByMedicalRecordNumber(id);
+            var patient = await _repo.GetPatientByMedicalRecordNumber(id);
+
+            return new PatientDTO { MedicalRecordNumber = patient.MedicalRecordNumber, Name = patient.Name, Email = patient.Email, Phone = patient.Phone, Conditions = patient.Conditions, EmergencyContact = patient.EmergencyContact, DateOfBirth = patient.DateOfBirth };
         }
+
+        public async Task<PatientDTO> GetPatientByEmail(string email)
+        {
+            var patient = await _repo.GetPatientByEmail(email);
+
+            return new PatientDTO { MedicalRecordNumber = patient.MedicalRecordNumber, Name = patient.Name, Email = patient.Email, Phone = patient.Phone, Conditions = patient.Conditions, EmergencyContact = patient.EmergencyContact, DateOfBirth = patient.DateOfBirth };
+        }
+
 
         public async Task<ActionResult<IEnumerable<PatientDTO>>> GetAllPatients()
         {
-            return await _repo.GetAllPatients();
+            var result = await _repo.GetAllPatients();  
+
+            if (result == null)
+            {
+                return null;
+            }
+
+            var list = result.Value.ToList(); 
+            
+            List<PatientDTO> listDto = list.ConvertAll(cat => new PatientDTO 
+            { 
+                MedicalRecordNumber = cat.MedicalRecordNumber, 
+                Name = cat.Name, 
+                Email = cat.Email, 
+                Phone = cat.Phone, 
+                Conditions = cat.Conditions, 
+                EmergencyContact = cat.EmergencyContact, 
+                DateOfBirth = cat.DateOfBirth 
+            });
+
+            return listDto;  
         }
+
     }
 }

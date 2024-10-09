@@ -17,8 +17,15 @@ namespace Sempi5.Infrastructure.PatientRepository
 
         public async Task<PatientDTO> AddPatient(PatientDTO PatientDTO)
         {
+            //////////// TODO MAYBER REMOVE THIS PART ////////////
+           //////////////////////////////////////////////////////////
+            var users = await _context.Users.ToListAsync();
+            var neededUser = users.FirstOrDefault(x => x.Email == PatientDTO.Email);
+           //////////////////////////////////////////////////////////
+            //////////// TODO MAYBER REMOVE THIS PART ////////////
             var patient = new Patient
             {
+                SystemUser = neededUser,
                 MedicalRecordNumber = PatientDTO.MedicalRecordNumber,
                 Name = PatientDTO.Name,
                 Email = PatientDTO.Email,
@@ -35,7 +42,7 @@ namespace Sempi5.Infrastructure.PatientRepository
             return new PatientDTO { MedicalRecordNumber = patient.MedicalRecordNumber, Name = patient.Name, Email = patient.Email, Phone = patient.Phone, Conditions = patient.Conditions, EmergencyContact = patient.EmergencyContact, DateOfBirth = patient.DateOfBirth };
         }
 
-        public async Task<PatientDTO> GetPatientByMedicalRecordNumber(long id)
+        public async Task<Patient> GetPatientByMedicalRecordNumber(long id)
         {
             var patient = await  _context.Patients.FindAsync(id);
 
@@ -43,10 +50,10 @@ namespace Sempi5.Infrastructure.PatientRepository
                 return null;
             }
 
-            return new PatientDTO { MedicalRecordNumber = patient.MedicalRecordNumber, Name = patient.Name, Email = patient.Email, Phone = patient.Phone, Conditions = patient.Conditions, EmergencyContact = patient.EmergencyContact, DateOfBirth = patient.DateOfBirth };
+            return patient;
         }
 
-        public async Task<PatientDTO> GetPatientByEmail(string email)
+        public async Task<Patient> GetPatientByEmail(string email)
         {
             var patient = await  _context.Patients.FirstOrDefaultAsync(x => x.Email == email);
 
@@ -54,16 +61,14 @@ namespace Sempi5.Infrastructure.PatientRepository
                 return null;
             }
 
-            return new PatientDTO { MedicalRecordNumber = patient.MedicalRecordNumber, Name = patient.Name, Email = patient.Email, Phone = patient.Phone, Conditions = patient.Conditions, EmergencyContact = patient.EmergencyContact, DateOfBirth = patient.DateOfBirth };
+            return patient;
         }
 
-        public async Task<ActionResult<IEnumerable<PatientDTO>>> GetAllPatients()
+        public async Task<ActionResult<IEnumerable<Patient>>> GetAllPatients()
         {
             var list = await  _context.Patients.ToListAsync();
-            
-            List<PatientDTO> listDto = list.ConvertAll<PatientDTO>(cat => new PatientDTO { MedicalRecordNumber = cat.MedicalRecordNumber, Name = cat.Name, Email = cat.Email, Phone = cat.Phone, Conditions = cat.Conditions, EmergencyContact = cat.EmergencyContact, DateOfBirth = cat.DateOfBirth });
-
-            return listDto;
+        
+            return list;
         }
 
     }

@@ -15,6 +15,6 @@ namespace Sempi5.Domain.Staff
         public string Phone { get; set; }  
         public List<string> AvailabilitySlots { get; set; }  
         public string Specialization { get; set; }
-        public SystemUser? SystemUser { get; set; }
+        public SystemUser SystemUser { get; set; }
     }
 }

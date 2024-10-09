@@ -36,7 +36,7 @@ namespace Sempi5.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<PatientDTO>> GetPatient(long id)
         {
-            var patient = await _service.GetPatient(id);
+            var patient = await _service.GetPatientByMedicalRecordNumber(id);
 
             if (patient == null)
             {
@@ -46,5 +46,16 @@ namespace Sempi5.Controllers
             return Ok(patient);
         }
 
+        public async Task<ActionResult<PatientDTO>> GetPatientByEmail(string email)
+        {
+            var patient = await _service.GetPatientByEmail(email);
+
+            if (patient == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(patient);
+        }
     }
 }

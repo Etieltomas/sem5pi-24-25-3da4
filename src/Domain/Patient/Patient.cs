@@ -16,6 +16,6 @@ namespace Sempi5.Domain.Patient
         public string Phone { get; set; }  
         public List<string> Conditions { get; set; }  
         public string EmergencyContact { get; set; }
-        public SystemUser? SystemUser { get; set; }
+        public SystemUser SystemUser { get; set; }
     }
 }

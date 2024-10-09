@@ -16,16 +16,30 @@ namespace Sempi5.Domain.Staff
             this._repo = repo;
         }
 
-        public Task<StaffDTO> AddStaffMember(StaffDTO staffDTO){
-            return _repo.AddStaffMember(staffDTO);
+        public async Task<StaffDTO> AddStaffMember(StaffDTO staffDTO){
+            return await _repo.AddStaffMember(staffDTO);
         }
 
-        public Task<StaffDTO> GetStaffMember(long id){
-            return _repo.GetStaffMember(id);
+        public async Task<StaffDTO> GetStaffMember(long id){
+
+            var staff = await _repo.GetStaffMember(id);
+
+            return new StaffDTO { LicenseNumber = staff.LicenseNumber, Name = staff.Name, Email = staff.Email, Phone = staff.Phone, AvailabilitySlots = staff.AvailabilitySlots, Specialization = staff.Specialization };      
         }
-     
-        public Task<ActionResult<IEnumerable<StaffDTO>>> GetAllStaffMembers(){
-            return _repo.GetAllStaffMembers();
+    
+        public async Task<ActionResult<IEnumerable<StaffDTO>>> GetAllStaffMembers(){
+            var result = await _repo.GetAllStaffMembers();
+
+            if (result == null)
+            {
+                return null;
+            }
+
+            var list = result.Value.ToList();
+
+            List<StaffDTO> listDto = list.ConvertAll<StaffDTO>(staff => new StaffDTO { LicenseNumber = staff.LicenseNumber, Name = staff.Name, Email = staff.Email, Phone = staff.Phone, AvailabilitySlots = staff.AvailabilitySlots, Specialization = staff.Specialization });
+            
+            return listDto;
         }
     }
 }
