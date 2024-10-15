@@ -47,6 +47,7 @@ namespace Sempi5
 
                 options.Events.OnCreatingTicket = async context =>
                 {
+                    var notRegistered = false;
                     var claimsIdentity = (ClaimsIdentity) context.Principal.Identity;
 
                     var services = context.HttpContext.RequestServices;
@@ -54,35 +55,47 @@ namespace Sempi5
                     try
                     {
                         IUserRepository userRepository = services.GetRequiredService<IUserRepository>();
-                        IPatientRepository patientRepository = services.GetRequiredService<IPatientRepository>();
                         IStaffRepository staffRepository = services.GetRequiredService<IStaffRepository>();
+                        IPatientRepository patientRepository = services.GetRequiredService<IPatientRepository>();
 
-                        var allUsers = await userRepository.GetAllUsers(); 
-                        var allStaff = await staffRepository.GetAllStaffMembers();
-                        var allPacient = await patientRepository.GetAllPatients();
+                        IUnitOfWork unitOfWork = services.GetRequiredService<IUnitOfWork>();        
+
+                        var allStaff = await staffRepository.GetAllAsync(); 
+                        var allPacient = await patientRepository.GetAllAsync();
 
                         var email = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
+                        
+                        var staff = await staffRepository.GetStaffMemberByEmail(email);
+                        var patient = await patientRepository.GetPatientByEmail(email);
                         var user = await userRepository.GetUserByEmail(email);
 
                         if (user != null && user.Email.Equals(email))
                         { 
                             // User already exists
                             claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, user.Role));                                                  
-                        }
-                        else
-                        {
-                            // New user so it will be a patient
-                            claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, "Patient"));
-                            
-                            await userRepository.AddUser(new SystemUserDTO { Username = email, Email = email, Role = "Patient" });
-                            await patientRepository.AddPatient(new PatientDTO { 
-                                Name = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value,
-                                Email = email,
-                                Phone = "12121212",
-                                Conditions = new List<string> { "None" },
-                                EmergencyContact = "1212121212",
-                                DateOfBirth = "12/12/1121"
-                            });
+                        } else {
+                        
+                            SystemUser newUser = null;
+                            if (staff != null) {
+                                newUser = new SystemUser { Username = email, Email = email, Role = "Staff" };
+                                claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, newUser.Role));
+                                staff.SystemUser = newUser;
+
+
+                            } else if (patient != null) {
+                                newUser = new SystemUser { Username = email, Email = email, Role = "Patient" };
+                                claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, newUser.Role));
+                                patient.SystemUser = newUser;
+                            }
+
+                            if (newUser == null) {
+                                notRegistered = true;
+
+                            } else {
+                                await userRepository.AddAsync(newUser);
+
+                                await unitOfWork.CommitAsync();    
+                            }
                             
                         }
                     }
@@ -90,6 +103,7 @@ namespace Sempi5
                     {
                         // Handle exceptions
                         Console.WriteLine($"An error occurred: {ex.Message}");
+                        Console.WriteLine(ex.StackTrace);
                     }
    
                     var authProperties = new AuthenticationProperties
@@ -97,7 +111,9 @@ namespace Sempi5
                         IsPersistent = false
                     };
 
-                    await context.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+                    if (!notRegistered) {
+                        await context.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+                    }
 
                 }; 
                 

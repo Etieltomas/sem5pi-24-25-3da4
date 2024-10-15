@@ -20,11 +20,11 @@ namespace Sempi5.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Username = table.Column<string>(type: "longtext", nullable: false)
+                    Username = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Role = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Email = table.Column<string>(type: "longtext", nullable: false)
+                    Email = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -37,8 +37,10 @@ namespace Sempi5.Migrations
                 name: "Patients",
                 columns: table => new
                 {
-                    MedicalRecordNumber = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    MedicalRecordNumber = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     DateOfBirth = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Name = table.Column<string>(type: "longtext", nullable: false)
@@ -55,7 +57,7 @@ namespace Sempi5.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Patients", x => x.MedicalRecordNumber);
+                    table.PrimaryKey("PK_Patients", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Patients_Users_SystemUserId",
                         column: x => x.SystemUserId,
@@ -69,13 +71,15 @@ namespace Sempi5.Migrations
                 name: "Staff",
                 columns: table => new
                 {
-                    LicenseNumber = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    LicenseNumber = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     Name = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Email = table.Column<string>(type: "longtext", nullable: false)
+                    Email = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Phone = table.Column<string>(type: "longtext", nullable: false)
+                    Phone = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     AvailabilitySlots = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -85,7 +89,7 @@ namespace Sempi5.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Staff", x => x.LicenseNumber);
+                    table.PrimaryKey("PK_Staff", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Staff_Users_SystemUserId",
                         column: x => x.SystemUserId,
@@ -102,6 +106,12 @@ namespace Sempi5.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Patients_MedicalRecordNumber",
+                table: "Patients",
+                column: "MedicalRecordNumber",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Patients_Phone",
                 table: "Patients",
                 column: "Phone",
@@ -114,9 +124,39 @@ namespace Sempi5.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Staff_Email",
+                table: "Staff",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Staff_LicenseNumber",
+                table: "Staff",
+                column: "LicenseNumber",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Staff_Phone",
+                table: "Staff",
+                column: "Phone",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Staff_SystemUserId",
                 table: "Staff",
                 column: "SystemUserId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Email",
+                table: "Users",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Username",
+                table: "Users",
+                column: "Username",
                 unique: true);
         }
 

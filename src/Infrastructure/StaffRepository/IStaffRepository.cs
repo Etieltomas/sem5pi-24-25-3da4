@@ -7,12 +7,9 @@ using Sempi5.Domain.Staff;
 
 namespace Sempi5.Infrastructure.StaffRepository
 {
-    public interface IStaffRepository
+    public interface IStaffRepository : IRepository<Staff, StaffID>
     {
-        public Task<StaffDTO> AddStaffMember(StaffDTO staffDTO);
-        public Task<Staff> GetStaffMember(long id);
         public Task<Staff> GetStaffMemberByEmail(string email);
-        public Task<ActionResult<IEnumerable<Staff>>> GetAllStaffMembers();
-        
+        public Task<StaffDTO> AddStaffMember(StaffDTO staffDTO);
     }
 }

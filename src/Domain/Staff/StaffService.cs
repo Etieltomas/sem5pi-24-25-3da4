@@ -9,35 +9,46 @@ namespace Sempi5.Domain.Staff
 {
     public class StaffService
     {
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IStaffRepository _repo;
 
-        public StaffService(IStaffRepository repo)
+        public StaffService(IStaffRepository repo, IUnitOfWork unitOfWork)
         {
+            this._unitOfWork = unitOfWork;
             this._repo = repo;
         }
 
         public async Task<StaffDTO> AddStaffMember(StaffDTO staffDTO){
-            return await _repo.AddStaffMember(staffDTO);
+            var staff = new Staff 
+            {
+                Name = staffDTO.Name,
+                Email = staffDTO.Email,
+                Phone = staffDTO.Phone,
+                AvailabilitySlots = staffDTO.AvailabilitySlots,
+                Specialization = staffDTO.Specialization
+            };
+
+            await _repo.AddAsync(staff);
+
+            await _unitOfWork.CommitAsync();
+
+            return new StaffDTO { LicenseNumber = staff.Id.Value, Name = staff.Name, Email = staff.Email, Phone = staff.Phone, AvailabilitySlots = staff.AvailabilitySlots, Specialization = staff.Specialization };
         }
 
-        public async Task<StaffDTO> GetStaffMember(long id){
+        public async Task<StaffDTO> GetStaffMember(StaffID id){
 
-            var staff = await _repo.GetStaffMember(id);
+            var staff = await _repo.GetByIdAsync(id);
 
-            return new StaffDTO { LicenseNumber = staff.LicenseNumber, Name = staff.Name, Email = staff.Email, Phone = staff.Phone, AvailabilitySlots = staff.AvailabilitySlots, Specialization = staff.Specialization };      
+            if(staff == null)
+                return null;
+
+            return new StaffDTO { LicenseNumber = staff.Id.Value, Name = staff.Name, Email = staff.Email, Phone = staff.Phone, AvailabilitySlots = staff.AvailabilitySlots, Specialization = staff.Specialization };      
         }
     
-        public async Task<ActionResult<IEnumerable<StaffDTO>>> GetAllStaffMembers(){
-            var result = await _repo.GetAllStaffMembers();
+        public async Task<List<StaffDTO>> GetAllStaffMembers(){
+            var list = await _repo.GetAllAsync();
 
-            if (result == null)
-            {
-                return null;
-            }
-
-            var list = result.Value.ToList();
-
-            List<StaffDTO> listDto = list.ConvertAll<StaffDTO>(staff => new StaffDTO { LicenseNumber = staff.LicenseNumber, Name = staff.Name, Email = staff.Email, Phone = staff.Phone, AvailabilitySlots = staff.AvailabilitySlots, Specialization = staff.Specialization });
+            List<StaffDTO> listDto = list.ConvertAll<StaffDTO>(staff => new StaffDTO { LicenseNumber = staff.Id.Value, Name = staff.Name, Email = staff.Email, Phone = staff.Phone, AvailabilitySlots = staff.AvailabilitySlots, Specialization = staff.Specialization });
             
             return listDto;
         }

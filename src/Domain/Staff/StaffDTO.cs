@@ -4,7 +4,8 @@ namespace Sempi5.Domain.Staff
 {
     public class StaffDTO
     {
-        public long LicenseNumber { get; set; }
+        public long Id { get; set; }
+        public string LicenseNumber { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }  

@@ -30,13 +30,13 @@ namespace Sempi5.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PatientDTO>>> GetAllPatients()
         {
-            return await _service.GetAllPatients();
+            return Ok(await _service.GetAllPatients());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<PatientDTO>> GetPatient(long id)
+        public async Task<ActionResult<PatientDTO>> GetPatient(string id)
         {
-            var patient = await _service.GetPatientByMedicalRecordNumber(id);
+            var patient = await _service.GetPatientByMedicalRecordNumber(new PatientID(id));
 
             if (patient == null)
             {
@@ -46,6 +46,7 @@ namespace Sempi5.Controllers
             return Ok(patient);
         }
 
+        [HttpGet("email/{email}")]
         public async Task<ActionResult<PatientDTO>> GetPatientByEmail(string email)
         {
             var patient = await _service.GetPatientByEmail(email);

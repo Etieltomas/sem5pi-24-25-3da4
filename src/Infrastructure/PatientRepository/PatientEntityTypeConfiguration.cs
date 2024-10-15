@@ -9,34 +9,35 @@ namespace Sempi5.Infrastructure.PatientRepository
         public void Configure(EntityTypeBuilder<Patient> builder)
         {
             builder.ToTable("Patients");
-            builder.HasKey(t => t.MedicalRecordNumber);
 
-            builder.Property(t => t.Name)
-                .IsRequired();
+            builder.HasKey(p => p.Id);
 
-            builder.Property(t => t.Email)
-                .IsRequired();
-            builder.HasIndex(t => t.Email) 
-                .IsUnique();
-            
-            builder.Property(t => t.Phone)
-                .IsRequired();
-            builder.HasIndex(t => t.Phone)
-                .IsUnique();
+            builder.Property(p => p.Id)
+                .HasConversion(
+                    v => v.AsString(),        
+                    v => new PatientID(v)
+                )
+                .HasValueGenerator<PatientIDGenerator>()
+                .IsRequired()
+                .ValueGeneratedOnAdd();
 
-            builder.Property(t => t.Conditions)
-                .IsRequired();
-            
-            builder.Property(t => t.EmergencyContact)
-                .IsRequired();
+            builder.Property(t => t.MedicalRecordNumber).IsRequired();
+            builder.Property(t => t.Name).IsRequired();
+            builder.Property(t => t.Email).IsRequired();
+            builder.Property(t => t.Phone).IsRequired();
+            builder.Property(t => t.Conditions).IsRequired();
+            builder.Property(t => t.EmergencyContact).IsRequired();
+            builder.Property(t => t.DateOfBirth).IsRequired();
 
-            builder.Property(t => t.DateOfBirth)
-                .IsRequired();
-            
+            builder.HasIndex(t => t.Email).IsUnique();
+            builder.HasIndex(t => t.MedicalRecordNumber).IsUnique();
+            builder.HasIndex(t => t.Phone).IsUnique();
 
             builder.HasOne(t => t.SystemUser)
                 .WithOne()
                 .HasForeignKey<Patient>("SystemUserId");
         }
     }
+
+
 }

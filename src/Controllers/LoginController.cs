@@ -9,15 +9,31 @@ using Sempi5.Domain.Patient;
 namespace Sempi5.Controllers
 {
     [Route("[controller]")]
+    [ApiController]
     public class LoginController : ControllerBase
     {
+         private readonly PatientService _service;
+
+        public LoginController(PatientService service)
+        {
+            _service = service;
+        }
         
-        [HttpGet("login")]
+        [HttpGet("asPatient")]
         public IActionResult Login()
         {
             var redirectUrl = Url.Content("/");
             var properties = new AuthenticationProperties { RedirectUri = redirectUrl };
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+        }
+
+        [HttpGet("register")]
+        public IActionResult Register(PatientDTO patient)
+        {
+            // TODO: Implement registration logic
+            //       Call patient service
+        
+            return Ok(_service.AddPatient(patient));
         }
 
         [HttpGet("google-response")]
@@ -33,6 +49,7 @@ namespace Sempi5.Controllers
 
 
         [HttpGet("logout")]
+        [Authorize]
         public IActionResult Logout()
         {
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

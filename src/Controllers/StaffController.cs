@@ -26,7 +26,7 @@ namespace Sempi5.Controllers
         {
             var staff = await _service.AddStaffMember(staffDTO);
 
-            return CreatedAtAction(nameof(GetStaffMember), new { id = staff.LicenseNumber }, staff);
+            return CreatedAtAction(nameof(GetStaffMember), new { id = staff.Id }, staff);
         }
 
         [HttpGet]
@@ -36,9 +36,9 @@ namespace Sempi5.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<StaffDTO>> GetStaffMember(long id)
+        public async Task<ActionResult<StaffDTO>> GetStaffMember(string id)
         {
-            var staff = await _service.GetStaffMember(id);
+            var staff = await _service.GetStaffMember(new StaffID(id));
 
             if (staff == null)
             {

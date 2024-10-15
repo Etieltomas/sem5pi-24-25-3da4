@@ -5,11 +5,12 @@ using Sempi5.Domain.User;
 
 namespace Sempi5.Domain.Staff
 {
-    public class Staff : IAggregateRoot
+    public class Staff : Entity<StaffID>, IAggregateRoot
     {
         // TODO: Change some of this variable to the
         //              real class instead of string
-        public long LicenseNumber { get; set; }
+        public StaffID Id { get; set; }
+        public string LicenseNumber { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }  

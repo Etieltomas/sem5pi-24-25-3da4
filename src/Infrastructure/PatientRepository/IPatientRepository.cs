@@ -7,12 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Sempi5.Infrastructure.PatientRepository
 {
-    public interface IPatientRepository
+    public interface IPatientRepository : IRepository<Patient,PatientID>
     {
-        public Task<PatientDTO> AddPatient(PatientDTO PatientDTO);
-        public Task<Patient> GetPatientByMedicalRecordNumber(long id);
         public Task<Patient> GetPatientByEmail(string email);
-        public Task<ActionResult<IEnumerable<Patient>>> GetAllPatients();
-
+        public Task<PatientDTO> AddPatient(PatientDTO PatientDTO);
     }
 }

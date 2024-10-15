@@ -23,11 +23,9 @@ namespace Sempi5.Migrations
 
             modelBuilder.Entity("Sempi5.Domain.Patient.Patient", b =>
                 {
-                    b.Property<long>("MedicalRecordNumber")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("MedicalRecordNumber"));
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Conditions")
                         .IsRequired()
@@ -45,6 +43,10 @@ namespace Sempi5.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("MedicalRecordNumber")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -56,9 +58,12 @@ namespace Sempi5.Migrations
                     b.Property<long>("SystemUserId")
                         .HasColumnType("bigint");
 
-                    b.HasKey("MedicalRecordNumber");
+                    b.HasKey("Id");
 
                     b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("MedicalRecordNumber")
                         .IsUnique();
 
                     b.HasIndex("Phone")
@@ -72,11 +77,9 @@ namespace Sempi5.Migrations
 
             modelBuilder.Entity("Sempi5.Domain.Staff.Staff", b =>
                 {
-                    b.Property<long>("LicenseNumber")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("LicenseNumber"));
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("AvailabilitySlots")
                         .IsRequired()
@@ -84,7 +87,11 @@ namespace Sempi5.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("LicenseNumber")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -92,7 +99,7 @@ namespace Sempi5.Migrations
 
                     b.Property<string>("Phone")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Specialization")
                         .IsRequired()
@@ -101,7 +108,16 @@ namespace Sempi5.Migrations
                     b.Property<long>("SystemUserId")
                         .HasColumnType("bigint");
 
-                    b.HasKey("LicenseNumber");
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("LicenseNumber")
+                        .IsUnique();
+
+                    b.HasIndex("Phone")
+                        .IsUnique();
 
                     b.HasIndex("SystemUserId")
                         .IsUnique();
@@ -113,13 +129,14 @@ namespace Sempi5.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("Id");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Role")
                         .IsRequired()
@@ -127,9 +144,15 @@ namespace Sempi5.Migrations
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Username")
+                        .IsUnique();
 
                     b.ToTable("Users", (string)null);
                 });

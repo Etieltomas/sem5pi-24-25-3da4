@@ -7,50 +7,36 @@ using Sempi5.Infrastructure.Shared;
 
 namespace Sempi5.Infrastructure.PatientRepository
 {
-    public class PatientRepository : IPatientRepository
+    public class PatientRepository : BaseRepository<Patient,PatientID>, IPatientRepository
     {
         private readonly DataBaseContext _context;
-        public PatientRepository(DataBaseContext context)
+        public PatientRepository(DataBaseContext context) : base(context.Patients)
         {
             _context = context;
         }
-
-        public async Task<PatientDTO> AddPatient(PatientDTO PatientDTO)
+        
+        public async Task<PatientDTO> AddPatient(PatientDTO patientDTO)
         {
-            //////////// TODO MAYBER REMOVE THIS PART ////////////
-           //////////////////////////////////////////////////////////
+        
             var users = await _context.Users.ToListAsync();
-            var neededUser = users.FirstOrDefault(x => x.Email == PatientDTO.Email);
-           //////////////////////////////////////////////////////////
-            //////////// TODO MAYBER REMOVE THIS PART ////////////
+            var neededUser = users.FirstOrDefault(x => x.Email == patientDTO.Email);
+           
             var patient = new Patient
             {
+                MedicalRecordNumber = patientDTO.MedicalRecordNumber,
                 SystemUser = neededUser,
-                MedicalRecordNumber = PatientDTO.MedicalRecordNumber,
-                Name = PatientDTO.Name,
-                Email = PatientDTO.Email,
-                Phone = PatientDTO.Phone,
-                Conditions = PatientDTO.Conditions,
-                EmergencyContact = PatientDTO.EmergencyContact,
-                DateOfBirth = PatientDTO.DateOfBirth
+                Name = patientDTO.Name,
+                Email = patientDTO.Email,
+                Phone = patientDTO.Phone,
+                Conditions = patientDTO.Conditions,
+                EmergencyContact = patientDTO.EmergencyContact,
+                DateOfBirth = patientDTO.DateOfBirth
             };
 
             _context.Patients.Add(patient);
-            await _context.SaveChangesAsync();
-
-
-            return new PatientDTO { MedicalRecordNumber = patient.MedicalRecordNumber, Name = patient.Name, Email = patient.Email, Phone = patient.Phone, Conditions = patient.Conditions, EmergencyContact = patient.EmergencyContact, DateOfBirth = patient.DateOfBirth };
-        }
-
-        public async Task<Patient> GetPatientByMedicalRecordNumber(long id)
-        {
-            var patient = await  _context.Patients.FindAsync(id);
-
-            if(patient == null){
-                return null;
-            }
-
-            return patient;
+            await _context.SaveChangesAsync();       
+            
+            return new PatientDTO { Id = patient.Id.Value, MedicalRecordNumber = patient.MedicalRecordNumber, Name = patient.Name, Email = patient.Email, Phone = patient.Phone, Conditions = patient.Conditions, EmergencyContact = patient.EmergencyContact, DateOfBirth = patient.DateOfBirth };
         }
 
         public async Task<Patient> GetPatientByEmail(string email)
@@ -62,13 +48,6 @@ namespace Sempi5.Infrastructure.PatientRepository
             }
 
             return patient;
-        }
-
-        public async Task<ActionResult<IEnumerable<Patient>>> GetAllPatients()
-        {
-            var list = await  _context.Patients.ToListAsync();
-        
-            return list;
         }
 
     }

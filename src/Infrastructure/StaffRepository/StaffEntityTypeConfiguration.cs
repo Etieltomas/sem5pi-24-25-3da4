@@ -9,7 +9,19 @@ namespace Sempi5.Infrastructure.StaffRepository
         public void Configure(EntityTypeBuilder<Staff> builder)
         {
             builder.ToTable("Staff");
-            builder.HasKey(t => t.LicenseNumber);
+            builder.HasKey(t => t.Id);
+
+            builder.Property(p => p.Id)
+                .HasConversion(
+                    v => v.AsString(),        
+                    v => new StaffID(v)
+                )
+                .HasValueGenerator<StaffIDGenerator>()
+                .IsRequired()
+                .ValueGeneratedOnAdd();
+                    
+            builder.Property(t => t.LicenseNumber)
+                .IsRequired();
 
             builder.Property(t => t.Name)
                 .IsRequired();
@@ -29,6 +41,10 @@ namespace Sempi5.Infrastructure.StaffRepository
             builder.HasOne(t => t.SystemUser)
                 .WithOne()
                 .HasForeignKey<Staff>("SystemUserId");
+
+            builder.HasIndex(t => t.Email).IsUnique();
+            builder.HasIndex(t => t.LicenseNumber).IsUnique();
+            builder.HasIndex(t => t.Phone).IsUnique();
         }
     }
 }
