@@ -12,14 +12,8 @@ namespace Sempi5.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
-         private readonly PatientService _service;
-
-        public LoginController(PatientService service)
-        {
-            _service = service;
-        }
         
-        [HttpGet("asPatient")]
+        [HttpGet("login")]
         public IActionResult Login()
         {
             var redirectUrl = Url.Content("/");
@@ -27,18 +21,10 @@ namespace Sempi5.Controllers
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
         }
 
-        [HttpGet("register")]
-        public IActionResult Register(PatientDTO patient)
-        {
-            // TODO: Implement registration logic
-            //       Call patient service
-        
-            return Ok(_service.AddPatient(patient));
-        }
 
         [HttpGet("google-response")]
         [Authorize]
-        public async Task<IActionResult> GoogleResponse()
+        public IActionResult GoogleResponse()
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
 

@@ -1,11 +1,7 @@
 
-using Sempi5;
-using Sempi5.Domain;
 using Sempi5.Domain.Shared;
-using Sempi5.Domain.Patient;
-using Microsoft.AspNetCore.Mvc;
 
-namespace Sempi5.Infrastructure.PatientRepository
+namespace Sempi5.Domain.Patient
 {
     public interface IPatientRepository : IRepository<Patient,PatientID>
     {

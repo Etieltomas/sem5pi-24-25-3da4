@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Sempi5.Domain;
+using Sempi5.Domain.Shared;
 
 
 namespace Sempi5.Infrastructure.Databases;

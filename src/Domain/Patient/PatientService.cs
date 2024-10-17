@@ -18,29 +18,32 @@ namespace Sempi5.Domain.Patient
             this._unitOfWork = unitOfWork;
         }
 
-        public async Task<PatientDTO> AddPatient(PatientDTO PatientDTO)
+        public async Task<PatientDTO> AddPatient(PatientDTO patientDTO)
         {
             var patient = new Patient {
-                Name = PatientDTO.Name,
-                Email = PatientDTO.Email,
-                Phone = PatientDTO.Phone,
-                Conditions = PatientDTO.Conditions,
-                EmergencyContact = PatientDTO.EmergencyContact,
-                DateOfBirth = PatientDTO.DateOfBirth
+                Name = patientDTO.Name,
+                Email = patientDTO.Email,
+                Phone = patientDTO.Phone,
+                Conditions = patientDTO.Conditions,
+                EmergencyContact = patientDTO.EmergencyContact,
+                DateOfBirth = patientDTO.DateOfBirth,
+                SystemUser = null
             };
             
             await this._repo.AddAsync(patient);
 
             await this._unitOfWork.CommitAsync();
 
-            return new PatientDTO { MedicalRecordNumber = patient.Id.Value, Name = patient.Name, Email = patient.Email, Phone = patient.Phone, Conditions = patient.Conditions, EmergencyContact = patient.EmergencyContact, DateOfBirth = patient.DateOfBirth };
+            var pat = await _repo.GetPatientByEmail(patientDTO.Email);
+
+            return new PatientDTO { MedicalRecordNumber = pat.Id.Value, Name = pat.Name, Email = pat.Email, Phone = pat.Phone, Conditions = pat.Conditions, EmergencyContact = pat.EmergencyContact, DateOfBirth = pat.DateOfBirth };
         }
 
         public async Task<PatientDTO> GetPatientByMedicalRecordNumber(PatientID id)
         {
             var patient = await _repo.GetByIdAsync(id);
 
-            return new PatientDTO { Id = patient.Id.Value, Name = patient.Name, Email = patient.Email, Phone = patient.Phone, Conditions = patient.Conditions, EmergencyContact = patient.EmergencyContact, DateOfBirth = patient.DateOfBirth };
+            return new PatientDTO { MedicalRecordNumber = patient.Id.Value, Name = patient.Name, Email = patient.Email, Phone = patient.Phone, Conditions = patient.Conditions, EmergencyContact = patient.EmergencyContact, DateOfBirth = patient.DateOfBirth };
         }
 
         public async Task<PatientDTO> GetPatientByEmail(string email)
@@ -52,7 +55,7 @@ namespace Sempi5.Domain.Patient
                 return null;
             }
             
-            return new PatientDTO { Id = patient.Id.Value, Name = patient.Name, Email = patient.Email, Phone = patient.Phone, Conditions = patient.Conditions, EmergencyContact = patient.EmergencyContact, DateOfBirth = patient.DateOfBirth };
+            return new PatientDTO { MedicalRecordNumber = patient.Id.Value, Name = patient.Name, Email = patient.Email, Phone = patient.Phone, Conditions = patient.Conditions, EmergencyContact = patient.EmergencyContact, DateOfBirth = patient.DateOfBirth };
         }
 
 
@@ -68,8 +71,7 @@ namespace Sempi5.Domain.Patient
             
             List<PatientDTO> listDto = list.ConvertAll(cat => new PatientDTO 
             { 
-                Id = cat.Id.Value, 
-                MedicalRecordNumber = cat.MedicalRecordNumber,
+                MedicalRecordNumber = cat.Id.Value,
                 Name = cat.Name, 
                 Email = cat.Email, 
                 Phone = cat.Phone, 

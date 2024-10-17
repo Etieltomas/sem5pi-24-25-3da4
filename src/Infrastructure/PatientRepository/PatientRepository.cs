@@ -23,7 +23,7 @@ namespace Sempi5.Infrastructure.PatientRepository
            
             var patient = new Patient
             {
-                MedicalRecordNumber = patientDTO.MedicalRecordNumber,
+                Id = new PatientID(patientDTO.MedicalRecordNumber),
                 SystemUser = neededUser,
                 Name = patientDTO.Name,
                 Email = patientDTO.Email,
@@ -36,7 +36,7 @@ namespace Sempi5.Infrastructure.PatientRepository
             _context.Patients.Add(patient);
             await _context.SaveChangesAsync();       
             
-            return new PatientDTO { Id = patient.Id.Value, MedicalRecordNumber = patient.MedicalRecordNumber, Name = patient.Name, Email = patient.Email, Phone = patient.Phone, Conditions = patient.Conditions, EmergencyContact = patient.EmergencyContact, DateOfBirth = patient.DateOfBirth };
+            return new PatientDTO {MedicalRecordNumber = patient.Id.Value, Name = patient.Name, Email = patient.Email, Phone = patient.Phone, Conditions = patient.Conditions, EmergencyContact = patient.EmergencyContact, DateOfBirth = patient.DateOfBirth };
         }
 
         public async Task<Patient> GetPatientByEmail(string email)

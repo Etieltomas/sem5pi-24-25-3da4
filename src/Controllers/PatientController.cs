@@ -6,7 +6,7 @@ using Sempi5.Infrastructure.Databases;
 
 namespace Sempi5.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class PatientController : ControllerBase
     {
@@ -19,8 +19,8 @@ namespace Sempi5.Controllers
         }
 
         // Function to create patient
-        [HttpPost]
-        public async Task<ActionResult<PatientDTO>> CreatePatient(PatientDTO PatientDTO)
+        [HttpPost("register")]
+        public async Task<ActionResult<PatientDTO>> RegisterPatient(PatientDTO PatientDTO)
         {
             var patient = await _service.AddPatient(PatientDTO);
 

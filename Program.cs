@@ -1,6 +1,6 @@
 using Sempi5.Domain.Shared;
 using Sempi5.Infrastructure.Shared;
-using IDatabase = Sempi5.Infrastructure.Databases.IDatabase;
+using IDatabase = Sempi5.Domain.Shared.IDatabase;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Sempi5.Infrastructure.UserRepository;
@@ -11,6 +11,7 @@ using Sempi5.Domain.Patient;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Sempi5.Domain.User;
+using System.Text.Json;
 
 namespace Sempi5
 {
@@ -65,8 +66,7 @@ namespace Sempi5
 
                         var email = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
                         
-                        var staff = await staffRepository.GetStaffMemberByEmail(email);
-                        var patient = await patientRepository.GetPatientByEmail(email);
+                        
                         var user = await userRepository.GetUserByEmail(email);
 
                         if (user != null && user.Email.Equals(email))
@@ -74,8 +74,10 @@ namespace Sempi5
                             // User already exists
                             claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, user.Role));                                                  
                         } else {
-                        
-                            SystemUser newUser = null;
+                            var staff = await staffRepository.GetStaffMemberByEmail(email);
+                            var patient = await patientRepository.GetPatientByEmail(email);
+
+                            SystemUser? newUser = null;
                             if (staff != null) {
                                 newUser = new SystemUser { Username = email, Email = email, Role = "Staff" };
                                 claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, newUser.Role));
@@ -106,24 +108,36 @@ namespace Sempi5
                         Console.WriteLine(ex.StackTrace);
                     }
    
-                    var authProperties = new AuthenticationProperties
+                    if (notRegistered) 
                     {
-                        IsPersistent = false
-                    };
+                        context.HttpContext.Response.ContentType = "application/json";
+                        context.HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
 
-                    if (!notRegistered) {
+
+                        await context.HttpContext.Response.WriteAsync(JsonSerializer.Serialize(new { error = "User is not registered in the system" }));
+                        
+                        return;
+                    }
+                    else 
+                    {
+                        var authProperties = new AuthenticationProperties
+                        {
+                            IsPersistent = false
+                        };
+
                         await context.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
                     }
-
                 }; 
-                
             });
             /////////////////////////////////////////
 
             // Add services to the container
             builder.Services.AddControllersWithViews();
+
             CreateDataBase(builder);            
+
             ConfigureMyServices(builder.Services);
+            
             builder.Services.AddEndpointsApiExplorer();
 
             var app = builder.Build();

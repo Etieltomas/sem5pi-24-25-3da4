@@ -8,7 +8,7 @@ using Sempi5.Infrastructure.Databases;
 
 namespace Sempi5.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class StaffController : ControllerBase
     {
@@ -21,8 +21,8 @@ namespace Sempi5.Controllers
         }
 
         // Function to create staff
-        [HttpPost]
-        public async Task<ActionResult<StaffDTO>> CreateStaff(StaffDTO staffDTO)
+        [HttpPost("register")]
+        public async Task<ActionResult<StaffDTO>> RegisterStaff(StaffDTO staffDTO)
         {
             var staff = await _service.AddStaffMember(staffDTO);
 
