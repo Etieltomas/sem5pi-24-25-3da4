@@ -22,12 +22,14 @@ namespace Sempi5.Infrastructure.StaffRepository
             var users = await _context.Users.ToListAsync();
             var neededUser = users.FirstOrDefault(x => x.Email == staffDTO.Email);
 
+            var availabilitySlots = staffDTO.AvailabilitySlots.Select(slot => new AvailabilitySlot(slot)).ToList();
+
             var staff = new Staff
             {
-                Name = staffDTO.Name,
-                Email = staffDTO.Email,
-                Phone = staffDTO.Phone,
-                AvailabilitySlots = staffDTO.AvailabilitySlots,
+                Name = new Name(staffDTO.Name),
+                Email = new Email(staffDTO.Email),
+                Phone = new Phone(staffDTO.Phone),
+                AvailabilitySlots = availabilitySlots, 
                 Specialization = staffDTO.Specialization,
                 SystemUser = neededUser
             };
@@ -35,19 +37,31 @@ namespace Sempi5.Infrastructure.StaffRepository
             _context.Staff.Add(staff);
             await _context.SaveChangesAsync();
 
-            return new StaffDTO { LicenseNumber = staff.Id.Value, Name = staff.Name, Email = staff.Email, Phone = staff.Phone, AvailabilitySlots = staff.AvailabilitySlots, Specialization = staff.Specialization };
+            return new StaffDTO 
+            { 
+                Id = staff.Id.Value,
+                LicenseNumber = staff.LicenseNumber.ToString(), 
+                Name = staff.Name.ToString(), 
+                Email = staff.Email.ToString(), 
+                Phone = staff.Phone.ToString(), 
+                AvailabilitySlots = staff.AvailabilitySlots.Select(slot => slot.ToString()).ToList(), // Convert to List<string>
+                Specialization = staff.Specialization 
+            };
         }
+
 
         public async Task<Staff> GetStaffMemberByEmail(string email)
         {
-            var staff = await  _context.Staff.FirstOrDefaultAsync(x => x.Email == email);
+            var staff = await _context.Staff.FirstOrDefaultAsync(x => x.Email.ToString() == email); // Adjust to access Email.Value
 
-            if(staff == null){
+            if (staff == null)
+            {
                 return null;
             }
 
             return staff;
         }
+
 
         
     }

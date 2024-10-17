@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Sempi5.Domain.Shared;
@@ -14,43 +17,60 @@ namespace Sempi5.Domain.Staff
 
         public StaffService(IStaffRepository repo, IUnitOfWork unitOfWork)
         {
-            this._unitOfWork = unitOfWork;
-            this._repo = repo;
+            _unitOfWork = unitOfWork;
+            _repo = repo;
         }
 
-        public async Task<StaffDTO> AddStaffMember(StaffDTO staffDTO){
-            var staff = new Staff 
+        public async Task<StaffDTO> AddStaffMember(StaffDTO staffDTO)
+        {
+            var availabilitySlots = staffDTO.AvailabilitySlots
+                .Select(slot => new AvailabilitySlot(slot))
+                .ToList();
+
+            var staff = new Staff
             {
-                Name = staffDTO.Name,
-                Email = staffDTO.Email,
-                Phone = staffDTO.Phone,
-                AvailabilitySlots = staffDTO.AvailabilitySlots,
+                LicenseNumber = new LicenseNumber(staffDTO.LicenseNumber),
+                Name = new Name(staffDTO.Name),
+                Email = new Email(staffDTO.Email),
+                Phone = new Phone(staffDTO.Phone),
+                AvailabilitySlots = availabilitySlots,
                 Specialization = staffDTO.Specialization
             };
 
             await _repo.AddAsync(staff);
-
             await _unitOfWork.CommitAsync();
 
-            return new StaffDTO { LicenseNumber = staff.Id.Value, Name = staff.Name, Email = staff.Email, Phone = staff.Phone, AvailabilitySlots = staff.AvailabilitySlots, Specialization = staff.Specialization };
+            return ConvertToDTO(staff);
         }
 
-        public async Task<StaffDTO> GetStaffMember(StaffID id){
-
+        public async Task<StaffDTO> GetStaffMember(StaffID id)
+        {
             var staff = await _repo.GetByIdAsync(id);
-
-            if(staff == null)
-                return null;
-
-            return new StaffDTO { LicenseNumber = staff.Id.Value, Name = staff.Name, Email = staff.Email, Phone = staff.Phone, AvailabilitySlots = staff.AvailabilitySlots, Specialization = staff.Specialization };      
+            return staff == null ? null : ConvertToDTO(staff);
         }
-    
-        public async Task<List<StaffDTO>> GetAllStaffMembers(){
-            var list = await _repo.GetAllAsync();
 
-            List<StaffDTO> listDto = list.ConvertAll<StaffDTO>(staff => new StaffDTO { LicenseNumber = staff.Id.Value, Name = staff.Name, Email = staff.Email, Phone = staff.Phone, AvailabilitySlots = staff.AvailabilitySlots, Specialization = staff.Specialization });
-            
-            return listDto;
+        public async Task<List<StaffDTO>> GetAllStaffMembers()
+        {
+            var staffList = await _repo.GetAllAsync();
+            return staffList.Select(ConvertToDTO).ToList();
+        }
+
+        private StaffDTO ConvertToDTO(Staff staff)
+        {
+            var availabilitySlotsDTO = staff.AvailabilitySlots
+                .Select(slot => slot.ToString())
+                .ToList();
+
+            return new StaffDTO
+            {
+                Id = staff.Id.Value,
+                LicenseNumber = staff.LicenseNumber.ToString(),
+                Name = staff.Name.ToString(),
+                Email = staff.Email.ToString(),
+                Phone = staff.Phone.ToString(),
+                AvailabilitySlots = availabilitySlotsDTO,
+                Specialization = staff.Specialization
+            };
         }
     }
 }

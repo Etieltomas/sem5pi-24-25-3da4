@@ -22,12 +22,52 @@ namespace Sempi5.Infrastructure.PatientRepository
                 .IsRequired()
                 .ValueGeneratedOnAdd();
 
-            builder.Property(t => t.Name).IsRequired();
-            builder.Property(t => t.Email).IsRequired();
-            builder.Property(t => t.Phone).IsRequired();
-            builder.Property(t => t.Conditions).IsRequired();
-            builder.Property(t => t.EmergencyContact).IsRequired();
-            builder.Property(t => t.DateOfBirth).IsRequired();
+            builder.Property(t => t.Name)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => new Name(v)
+                )
+                .IsRequired();
+
+            builder.Property(t => t.Email)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => new Email(v)
+                )
+                .IsRequired();
+
+            builder.Property(t => t.Phone)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => new Phone(v)
+                )
+                .IsRequired();
+
+            builder.Property(t => t.Conditions)
+                .HasConversion(new ConditionListConverter())
+                .IsRequired();
+
+            builder.Property(t => t.EmergencyContact)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => new Phone(v)
+                )
+                .IsRequired();
+
+            
+            builder.Property(t => t.DateOfBirth)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => DateTime.Parse(v)
+                )
+                .IsRequired();
+
+            builder.Property(t => t.Gender)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => GenderExtensions.FromString(v)
+                )
+                .IsRequired();
 
             builder.HasIndex(t => t.Email).IsUnique();
             builder.HasIndex(t => t.Phone).IsUnique();

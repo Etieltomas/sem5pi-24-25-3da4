@@ -8,12 +8,13 @@ namespace Sempi5.Domain.Patient
         // TODO: Change some of this variable to the
         //              real class instead of string
         public PatientID Id { get; set; }
-        public string DateOfBirth { get; set; }
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public string Phone { get; set; }  
-        public List<string> Conditions { get; set; }  
-        public string EmergencyContact { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public Name Name { get; set; }
+        public Gender Gender { get; set; }
+        public Email Email { get; set; }
+        public Phone Phone { get; set; }  
+        public List<Condition> Conditions { get; set; }  
+        public Phone EmergencyContact { get; set; }
         public SystemUser? SystemUser { get; set; }
     }
 }

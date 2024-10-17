@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Sempi5.Domain.Staff;
+using System.Text.Json;
+
 
 namespace Sempi5.Infrastructure.StaffRepository
 {
@@ -21,25 +23,45 @@ namespace Sempi5.Infrastructure.StaffRepository
                 .ValueGeneratedOnAdd();
                     
             builder.Property(t => t.LicenseNumber)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => new LicenseNumber(v)
+                )
                 .IsRequired();
 
             builder.Property(t => t.Name)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => new Name(v)
+                )
                 .IsRequired();
 
             builder.Property(t => t.Email)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => new Email(v)
+                )
                 .IsRequired();
             
             builder.Property(t => t.Phone)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => new Phone(v)
+                )
                 .IsRequired();
 
+            
             builder.Property(t => t.AvailabilitySlots)
+                .HasConversion(new AvailabilitySlotListConverter())
                 .IsRequired();
+
             
             builder.Property(t => t.Specialization)
                 .IsRequired();
             
             builder.HasOne(t => t.SystemUser)
                 .WithOne()
+                .IsRequired(false)
                 .HasForeignKey<Staff>("SystemUserId");
 
             builder.HasIndex(t => t.Email).IsUnique();
@@ -47,4 +69,6 @@ namespace Sempi5.Infrastructure.StaffRepository
             builder.HasIndex(t => t.Phone).IsUnique();
         }
     }
+
+
 }
