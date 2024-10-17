@@ -3,7 +3,7 @@ using Sempi5.Domain.Shared;
 using Sempi5.Domain.User;
 using Sempi5.Infrastructure.UserRepository;
 
-namespace Sempi5.Domain.Staff
+namespace Sempi5.Domain.User
 {
     public class SystemUserService
     {
@@ -28,27 +28,39 @@ namespace Sempi5.Domain.Staff
             
             await _unitOfWork.CommitAsync();
 
-            return new SystemUserDTO { Email = user.Email, Username = user.Username, Role = user.Role };
+            return ConvertToDTO(user);
         }
 
         public async Task<SystemUserDTO> GetSystemUser(SystemUserId id){
 
-            var staff = await _repo.GetByIdAsync(id);
+            var user = await _repo.GetByIdAsync(id);
 
-            return new SystemUserDTO { Email = staff.Email, Username = staff.Username, Role = staff.Role };
+            return ConvertToDTO(user);
         }
     
         public async Task<List<SystemUserDTO>> GetAllSystemUsers(){
             var result = await _repo.GetAllAsync();
 
-            List<SystemUserDTO> listDto = result.ConvertAll(cat => new SystemUserDTO
-            {
-                Email = cat.Email,
-                Username = cat.Username,
-                Role = cat.Role
-            });
+            List<SystemUserDTO> listDto = result.ConvertAll(cat => ConvertToDTO(cat));
 
             return listDto;
+        }
+
+        public async Task<SystemUserDTO> GetUserByEmail(string email)
+        {
+            var patient = await _repo.GetUserByEmail(email);
+            return patient == null ? null : ConvertToDTO(patient);
+        }
+
+        private SystemUserDTO ConvertToDTO(SystemUser user)
+        {
+            return new SystemUserDTO
+            {
+                Id = user.Id.AsString(),
+                Email = user.Email,
+                Username = user.Username,
+                Role = user.Role
+            };
         }
     }
 }

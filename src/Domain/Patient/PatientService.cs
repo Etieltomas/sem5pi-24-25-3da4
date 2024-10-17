@@ -24,6 +24,7 @@ namespace Sempi5.Domain.Patient
         {
             var patient = new Patient
             {
+                Gender = GenderExtensions.FromString(patientDTO.Gender.ToLower()),
                 Name = new Name(patientDTO.Name),
                 Email = new Email(patientDTO.Email),
                 Phone = new Phone(patientDTO.Phone),

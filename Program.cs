@@ -105,13 +105,11 @@ namespace Sempi5
                     if (staff != null)
                     {
                         newUser = new SystemUser { Username = email, Email = email, Role = "Staff" };
-                        claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, newUser.Role));
                         staff.SystemUser = newUser;
                     } 
                     else if (patient != null)
                     {
                         newUser = new SystemUser { Username = email, Email = email, Role = "Patient" };
-                        claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, newUser.Role));
                         patient.SystemUser = newUser;
                     }
 
@@ -121,6 +119,7 @@ namespace Sempi5
                     }
                     else
                     {
+                        claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, newUser.Role));
                         await userRepository.AddAsync(newUser);
                         await unitOfWork.CommitAsync();    
                     }
