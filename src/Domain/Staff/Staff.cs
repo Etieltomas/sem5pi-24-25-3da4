@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Sempi5;
 using Sempi5.Domain.Shared;
+using Sempi5.Domain.SpecializationEntity;
 using Sempi5.Domain.User;
 
 namespace Sempi5.Domain.Staff
@@ -14,7 +15,7 @@ namespace Sempi5.Domain.Staff
         public Email Email { get; set; }
         public Phone Phone { get; set; }  
         public List<AvailabilitySlot> AvailabilitySlots { get; set; }  
-        public string Specialization { get; set; }
+        public Specialization Specialization { get; set; }
         public SystemUser SystemUser { get; set; }
     }
 }

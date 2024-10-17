@@ -22,7 +22,7 @@ namespace Sempi5.Infrastructure.UserRepository
                 return null;
             }
 
-            return new SystemUser { Email = user.Email, Username = user.Username, Role = user.Role} ;
+            return user;
         }
 
     }

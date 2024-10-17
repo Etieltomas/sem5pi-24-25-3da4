@@ -6,7 +6,7 @@ namespace Sempi5.Domain.Patient
     {
         Male,
         Female,
-        Other,
+        Other 
     }
 
     public static class GenderExtensions

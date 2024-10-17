@@ -55,9 +55,10 @@ namespace Sempi5.Infrastructure.StaffRepository
                 .HasConversion(new AvailabilitySlotListConverter())
                 .IsRequired();
 
-            
-            builder.Property(t => t.Specialization)
-                .IsRequired();
+            builder.HasOne(t => t.Specialization)
+                .WithMany() 
+                .HasForeignKey("SpecializationId")
+                .IsRequired();    
             
             builder.HasOne(t => t.SystemUser)
                 .WithOne()

@@ -1,12 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Sempi5.Domain.Shared;
-using Sempi5.Infrastructure.Databases;
-using Sempi5.Infrastructure.StaffRepository;
+using Sempi5.Domain.SpecializationEntity;
+
 
 namespace Sempi5.Domain.Staff
 {
@@ -14,9 +8,11 @@ namespace Sempi5.Domain.Staff
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IStaffRepository _repo;
+        private readonly ISpecializationRepository _specRepo;
 
-        public StaffService(IStaffRepository repo, IUnitOfWork unitOfWork)
+        public StaffService(ISpecializationRepository specRepo, IStaffRepository repo, IUnitOfWork unitOfWork)
         {
+            _specRepo = specRepo;
             _unitOfWork = unitOfWork;
             _repo = repo;
         }
@@ -27,6 +23,9 @@ namespace Sempi5.Domain.Staff
                 .Select(slot => new AvailabilitySlot(slot))
                 .ToList();
 
+            // TODO: Verify this
+            var specialization = await _specRepo.GetByIdAsync(new SpecializationID(staffDTO.Specialization.ToLower()));
+
             var staff = new Staff
             {
                 LicenseNumber = new LicenseNumber(staffDTO.LicenseNumber),
@@ -34,7 +33,7 @@ namespace Sempi5.Domain.Staff
                 Email = new Email(staffDTO.Email),
                 Phone = new Phone(staffDTO.Phone),
                 AvailabilitySlots = availabilitySlots,
-                Specialization = staffDTO.Specialization
+                Specialization = specialization
             };
 
             await _repo.AddAsync(staff);
@@ -69,7 +68,7 @@ namespace Sempi5.Domain.Staff
                 Email = staff.Email.ToString(),
                 Phone = staff.Phone.ToString(),
                 AvailabilitySlots = availabilitySlotsDTO,
-                Specialization = staff.Specialization
+                Specialization = staff.Specialization.Id.AsString()
             };
         }
     }

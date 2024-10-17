@@ -5,6 +5,8 @@ using Sempi5.Domain.Patient;
 using Sempi5.Infrastructure.UserRepository;
 using Sempi5.Infrastructure.StaffRepository;
 using Sempi5.Infrastructure.PatientRepository;
+using Sempi5.Infrastructure.SpecializationRepository;
+using Sempi5.Domain.SpecializationEntity;
 
 namespace Sempi5.Infrastructure.Databases
 {
@@ -13,6 +15,7 @@ namespace Sempi5.Infrastructure.Databases
         public DbSet<SystemUser> Users { get; set; }
         public DbSet<Staff> Staff { get; set; }
         public DbSet<Patient> Patients { get; set; }
+        public DbSet<Specialization> Specializations { get; internal set; }
 
         public DataBaseContext(DbContextOptions<DataBaseContext> options)
             : base(options)
@@ -26,6 +29,7 @@ namespace Sempi5.Infrastructure.Databases
             modelBuilder.ApplyConfiguration(new UserEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new StaffEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new PatientEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new SpecializationEntityTypeConfiguration());
         }
         
     }
