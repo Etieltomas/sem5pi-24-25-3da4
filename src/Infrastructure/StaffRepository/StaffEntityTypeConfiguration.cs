@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Sempi5.Domain.SpecializationEntity;
 using Sempi5.Domain.Staff;
 using System.Text.Json;
 
@@ -50,11 +51,21 @@ namespace Sempi5.Infrastructure.StaffRepository
                 )
                 .IsRequired();
 
+            builder.Property(t => t.Address)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => AddressConversions(v)
+                )
+                .IsRequired();
+
             
             builder.Property(t => t.AvailabilitySlots)
                 .HasConversion(new AvailabilitySlotListConverter())
                 .IsRequired();
 
+            /*
+                TODO: See either Specialization and SystemUser, how to retrieve
+            */
             builder.HasOne(t => t.Specialization)
                 .WithMany() 
                 .HasForeignKey("SpecializationId")
@@ -68,6 +79,13 @@ namespace Sempi5.Infrastructure.StaffRepository
             builder.HasIndex(t => t.Email).IsUnique();
             builder.HasIndex(t => t.LicenseNumber).IsUnique();
             builder.HasIndex(t => t.Phone).IsUnique();
+        }
+
+        private Address AddressConversions(string v)
+        {
+
+            var parts = v.Split(", ");
+            return new Address(parts[0], parts[1], parts[2]);        
         }
     }
 

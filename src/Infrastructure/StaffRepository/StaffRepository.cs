@@ -7,7 +7,7 @@ using Sempi5.Infrastructure.Shared;
 
 namespace Sempi5.Infrastructure.StaffRepository
 {
-    public class StaffRepository : BaseRepository<Staff,StaffID>, IStaffRepository
+    public class StaffRepository : BaseRepository<Staff, StaffID>, IStaffRepository
     {
         private readonly DataBaseContext _context;
 
@@ -18,17 +18,41 @@ namespace Sempi5.Infrastructure.StaffRepository
 
         public async Task<Staff> GetStaffMemberByEmail(string email)
         {
-            var staff = await _context.Staff.FirstOrDefaultAsync(x => x.Email.ToString() == email);
-
-            if (staff == null)
+            if (string.IsNullOrEmpty(email))
             {
                 return null;
             }
 
+            var staff = await _context.Staff
+                .Include(s => s.SystemUser)
+                .Include(s => s.Specialization)
+                .FirstOrDefaultAsync(s => s.Email.Equals(new Email(email)));
+                    
             return staff;
         }
 
+        public async Task<List<Staff>> GetAllStaffMembers()
+        {
+            return await _context.Staff
+                .Include(s => s.SystemUser)
+                .Include(s => s.Specialization)
+                .ToListAsync();
+        }
 
-        
+        public async Task<Staff> GetStaffMemberById(StaffID id)
+        {
+            if (id == null)
+            {
+                return null;
+            }
+
+            var staff = await _context.Staff
+                .Include(s => s.SystemUser)
+                .Include(s => s.Specialization)
+                .FirstOrDefaultAsync(s => s.Id.Equals(id)); 
+            
+            return staff;
+        }
     }
+
 }

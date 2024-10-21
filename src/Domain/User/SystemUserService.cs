@@ -16,12 +16,27 @@ namespace Sempi5.Domain.User
             this._repo = repo;
         }
 
+        public async Task<SystemUserDTO> UpdateActive(long id, bool active)
+        {
+            var user = await this._repo.GetByIdAsync(new SystemUserId(id));
+
+            if (user == null)
+                return null;
+
+            user.Active = active;
+
+            await this._unitOfWork.CommitAsync();
+
+            return ConvertToDTO(user);
+        }
+
         public async Task<SystemUserDTO> AddUser(SystemUserDTO systemUserDTO){
 
             var user = new SystemUser{
                 Username = systemUserDTO.Username,
-                Email = systemUserDTO.Email,
-                Role = systemUserDTO.Role   
+                Email = new Email(systemUserDTO.Email),
+                Role = systemUserDTO.Role,
+                Active = systemUserDTO.Active
             };
 
             await _repo.AddAsync(user);
@@ -57,9 +72,10 @@ namespace Sempi5.Domain.User
             return new SystemUserDTO
             {
                 Id = user.Id.AsString(),
-                Email = user.Email,
+                Email = user.Email.ToString(),
                 Username = user.Username,
-                Role = user.Role
+                Role = user.Role,
+                Active = user.Active   
             };
         }
     }

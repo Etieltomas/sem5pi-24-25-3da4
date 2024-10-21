@@ -17,8 +17,38 @@ namespace Sempi5.Infrastructure.PatientRepository
 
         public async Task<Patient> GetPatientByEmail(string email)
         {
-            var patient = await _context.Patients.FirstOrDefaultAsync(x => x.Email.ToString() == email);
-            return patient;
+            if (string.IsNullOrEmpty(email))
+            {
+                return null;
+            }
+
+            var patient = await _context.Patients
+                .Include(p => p.SystemUser)
+                .FirstOrDefaultAsync(p => p.SystemUser.Email.Equals(new Email(email)));
+                    
+            return patient; 
+        }
+
+        public async Task<List<Patient>> GetAllPatients()
+        {
+            return await _context.Patients
+                .Include(p => p.SystemUser)
+                .ToListAsync();
+        }
+
+        public async Task<Patient> GetPatientById(PatientID id)
+        {
+            if (id == null)
+            {
+                return null;
+            }
+
+            var pat = await _context.Patients
+                .Include(p => p.SystemUser)
+                .FirstOrDefaultAsync(p => p.Id.AsString().Equals(id.ToString()));
+
+            return pat; 
         }
     }
+
 }

@@ -18,6 +18,22 @@ namespace Sempi5.Controllers
             _service = service;
         }
 
+
+        [HttpPut("confirm/{id}/{active}")]
+        public async Task<IActionResult> UpdateActive(long id, bool active)
+        {
+            var user = await _service.UpdateActive(id, active);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(new { active = user.Active });
+        }
+
+
+
         // Function to create SystemUser
         [HttpPost("register")]
         public async Task<ActionResult<SystemUserDTO>> RegisterUser(SystemUserDTO SystemUserDTO)

@@ -23,7 +23,14 @@ namespace Sempi5.Infrastructure.UserRepository
 
             builder.HasIndex(t => t.Email).IsUnique();
 
+            builder.Property(t => t.Active)
+                .IsRequired();
+
             builder.Property(t => t.Email)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => new Email(v)
+                )
                 .IsRequired();
 
             builder.Property(t => t.Username)

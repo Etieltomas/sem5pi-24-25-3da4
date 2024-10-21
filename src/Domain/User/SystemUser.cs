@@ -7,6 +7,8 @@ namespace Sempi5.Domain.User
         public SystemUserId Id { get; set; }
         public string Username { get; set; }
         public string Role { get; set; }
-        public string Email { get; set; }     
+        //public Email IAMEmail { get; set; }  
+        public Email Email { get; set; }    
+        public bool Active { get; set; }  
     }
 }

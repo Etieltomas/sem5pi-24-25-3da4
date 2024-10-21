@@ -40,7 +40,7 @@ namespace Sempi5
             ConfigureMiddleware(app);
 
             // TODO: Check if I can do this?
-            SeedDataAsync(app);
+            Bootstrap(app);
 
             app.Run();
         }
@@ -50,7 +50,7 @@ namespace Sempi5
             builder.Services.AddAuthorization(options =>
             {
                 options.AddPolicy("Staff", policy => 
-                    policy.RequireRole("Doctor", "Nurse", "Admin", "Technician"));
+                    policy.RequireRole("Doctor", "Nurse", "Admin", "Other"));
                 options.AddPolicy("Patient", policy => 
                     policy.RequireRole("Patient"));
             })
@@ -78,7 +78,7 @@ namespace Sempi5
         private static async Task HandleGoogleLoginAsync(OAuthCreatingTicketContext context)
         {
             var notRegistered = false;
-            var claimsIdentity = (ClaimsIdentity)context.Principal.Identity;
+            var cookie = (ClaimsIdentity)context.Principal.Identity;
             var services = context.HttpContext.RequestServices;
 
             try
@@ -88,13 +88,13 @@ namespace Sempi5
                 var patientRepository = services.GetRequiredService<IPatientRepository>();
                 var unitOfWork = services.GetRequiredService<IUnitOfWork>();
 
-                var email = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
+                var email = cookie?.FindFirst(ClaimTypes.Email)?.Value;
                 var user = await userRepository.GetUserByEmail(email);
 
-                if (user != null && user.Email.Equals(email))
+                if (user != null && user.Email.Equals(new Email(email)))
                 {
                     // User already exists
-                    claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, user.Role));                                                  
+                    cookie.AddClaim(new Claim(ClaimTypes.Role, user.Role));                                               
                 } 
                 else
                 {
@@ -104,12 +104,27 @@ namespace Sempi5
 
                     if (staff != null)
                     {
-                        newUser = new SystemUser { Username = email, Email = email, Role = "Staff" };
+                        var username = email.Split("@").First();
+
+                        string userRole;
+                        switch (username[0].ToString().ToUpper())
+                        {
+                            case "D":
+                                userRole = "Doctor";
+                                break;
+                            case "N":
+                                userRole = "Nurse";
+                                break;
+                            default:
+                                userRole = "Other";
+                                break;
+                        }
+                        newUser = new SystemUser { Username = username, Email = new Email(email), Role = userRole, Active = false };
                         staff.SystemUser = newUser;
                     } 
                     else if (patient != null)
                     {
-                        newUser = new SystemUser { Username = email, Email = email, Role = "Patient" };
+                        newUser = new SystemUser { Username = email, Email = new Email(email), Role = "Patient", Active = false };
                         patient.SystemUser = newUser;
                     }
 
@@ -119,9 +134,18 @@ namespace Sempi5
                     }
                     else
                     {
-                        claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, newUser.Role));
+                        var _emailService = services.GetRequiredService<EmailService>();
+
                         await userRepository.AddAsync(newUser);
                         await unitOfWork.CommitAsync();    
+
+                        var message = "<b>Hello,</b><br>" +
+                        "Thank you for signing up! Please confirm your account by clicking the link below:<br><br>" +
+                        "<a href='http://localhost:5012/SystemUser/confirm/" + newUser.Id.AsLong() + "/true'>Click here to confirm your account</a><br><br>" +
+                        "If you didn't sign up, please ignore this email.";
+
+                        var subject = "Confirmation of Account";
+                        _emailService.sendEmail(newUser.Username, newUser.Email.ToString(), subject, message);
                     }
                 }
             }
@@ -145,7 +169,7 @@ namespace Sempi5
                 {
                     IsPersistent = false
                 };
-                await context.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+                await context.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(cookie), authProperties);
             }
         }
 
@@ -189,7 +213,7 @@ namespace Sempi5
             }
         }
 
-        private static async void SeedDataAsync(WebApplication app)
+        private static async void Bootstrap(WebApplication app)
         {
             using var scope = app.Services.CreateScope();
             var services = scope.ServiceProvider;
@@ -202,11 +226,11 @@ namespace Sempi5
             try
             {           
                 var unitOfWork = services.GetRequiredService<IUnitOfWork>();
-          
+
+                // TODO: Create more specializations 
                 var specialization = new Specialization { Id = new SpecializationID("Cardiology") };
                 await specRep.AddAsync(specialization);
 
-                // Commit the changes
                 await unitOfWork.CommitAsync();
             }
             catch (Exception ex)
@@ -230,6 +254,8 @@ namespace Sempi5
             services.AddTransient<PatientService>();
 
             services.AddTransient<ISpecializationRepository, SpecializationRepository>();
+
+            services.AddTransient<EmailService>();
         }
     }
 }

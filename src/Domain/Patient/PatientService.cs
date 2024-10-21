@@ -22,6 +22,7 @@ namespace Sempi5.Domain.Patient
 
         public async Task<PatientDTO> AddPatient(PatientDTO patientDTO)
         {
+            var address = patientDTO.Address.Split(", ");
             var patient = new Patient
             {
                 Gender = GenderExtensions.FromString(patientDTO.Gender.ToLower()),
@@ -30,6 +31,7 @@ namespace Sempi5.Domain.Patient
                 Phone = new Phone(patientDTO.Phone),
                 Conditions = patientDTO.Conditions.Select(condition => new Condition(condition)).ToList(), 
                 EmergencyContact = new Phone(patientDTO.EmergencyContact),
+                Address = new Address(address[0], address[1], address[2]),
                 DateOfBirth = DateTime.Parse(patientDTO.DateOfBirth),
             };
 
@@ -41,7 +43,7 @@ namespace Sempi5.Domain.Patient
 
         public async Task<PatientDTO> GetPatientByMedicalRecordNumber(PatientID id)
         {
-            var patient = await _repo.GetByIdAsync(id);
+            var patient = await _repo.GetPatientById(id);
             return patient == null ? null : ConvertToDTO(patient);
         }
 
@@ -53,7 +55,7 @@ namespace Sempi5.Domain.Patient
 
         public async Task<List<PatientDTO>> GetAllPatients()
         {
-            var list = await _repo.GetAllAsync();  
+            var list = await _repo.GetAllPatients();  
 
             if (list == null)
             {
@@ -76,6 +78,7 @@ namespace Sempi5.Domain.Patient
                 Phone = patient.Phone.ToString(), 
                 Conditions = patient.Conditions.Select(condition => condition.ToString()).ToList(), 
                 EmergencyContact = patient.EmergencyContact.ToString(),
+                Address = patient.Address.ToString(),
                 DateOfBirth = patient.DateOfBirth.ToString("dd-MM-yyyy")
             };
         }

@@ -19,6 +19,8 @@ namespace Sempi5.Domain.Staff
 
         public async Task<StaffDTO> AddStaffMember(StaffDTO staffDTO)
         {
+            var address = staffDTO.Address.Split(", ");
+
             var availabilitySlots = staffDTO.AvailabilitySlots
                 .Select(slot => new AvailabilitySlot(slot))
                 .ToList();
@@ -33,6 +35,7 @@ namespace Sempi5.Domain.Staff
                 Email = new Email(staffDTO.Email),
                 Phone = new Phone(staffDTO.Phone),
                 AvailabilitySlots = availabilitySlots,
+                Address = new Address(address[0], address[1], address[2]),
                 Specialization = specialization
             };
 
@@ -44,13 +47,13 @@ namespace Sempi5.Domain.Staff
 
         public async Task<StaffDTO> GetStaffMember(StaffID id)
         {
-            var staff = await _repo.GetByIdAsync(id);
+            var staff = await _repo.GetStaffMemberById(id);
             return staff == null ? null : ConvertToDTO(staff);
         }
 
         public async Task<List<StaffDTO>> GetAllStaffMembers()
         {
-            var staffList = await _repo.GetAllAsync();
+            var staffList = await _repo.GetAllStaffMembers();
             return staffList.Select(ConvertToDTO).ToList();
         }
 
@@ -67,6 +70,7 @@ namespace Sempi5.Domain.Staff
                 Name = staff.Name.ToString(),
                 Email = staff.Email.ToString(),
                 Phone = staff.Phone.ToString(),
+                Address = staff.Address.ToString(),
                 AvailabilitySlots = availabilitySlotsDTO,
                 Specialization = staff.Specialization.Id.AsString()
             };

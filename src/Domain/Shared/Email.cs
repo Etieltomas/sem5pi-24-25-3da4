@@ -15,6 +15,11 @@ public class Email : IValueObject
         _value = value;
     }
 
+    public bool Equals(Email obj)
+    {
+        return obj._value == _value;
+    }
+
     public override string ToString()
     {
         return _value;

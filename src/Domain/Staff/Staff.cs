@@ -14,6 +14,7 @@ namespace Sempi5.Domain.Staff
         public Name Name { get; set; }
         public Email Email { get; set; }
         public Phone Phone { get; set; }  
+        public Address Address { get; set; }
         public List<AvailabilitySlot> AvailabilitySlots { get; set; }  
         public Specialization Specialization { get; set; }
         public SystemUser SystemUser { get; set; }

@@ -13,6 +13,7 @@ namespace Sempi5.Domain.Patient
         public Gender Gender { get; set; }
         public Email Email { get; set; }
         public Phone Phone { get; set; }  
+        public Address Address { get; set; }
         public List<Condition> Conditions { get; set; }  
         public Phone EmergencyContact { get; set; }
         public SystemUser? SystemUser { get; set; }

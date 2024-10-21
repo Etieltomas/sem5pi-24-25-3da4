@@ -69,6 +69,13 @@ namespace Sempi5.Infrastructure.PatientRepository
                 )
                 .IsRequired();
 
+            builder.Property(t => t.Address)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => AddressConversions(v)
+                )
+                .IsRequired();
+
             builder.HasIndex(t => t.Email).IsUnique();
             builder.HasIndex(t => t.Phone).IsUnique();
 
@@ -76,6 +83,13 @@ namespace Sempi5.Infrastructure.PatientRepository
                 .WithOne()
                 .IsRequired(false)
                 .HasForeignKey<Patient>("SystemUserId");
+        }
+
+        private Address AddressConversions(string v)
+        {
+
+            var parts = v.Split(", ");
+            return new Address(parts[0], parts[1], parts[2]);        
         }
     }
 
