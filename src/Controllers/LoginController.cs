@@ -8,7 +8,7 @@ using Sempi5.Domain.Patient;
 
 namespace Sempi5.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class LoginController : ControllerBase
     {

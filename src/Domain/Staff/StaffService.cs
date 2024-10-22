@@ -25,7 +25,7 @@ namespace Sempi5.Domain.Staff
                 .Select(slot => new AvailabilitySlot(slot))
                 .ToList();
 
-            // TODO: Verify this
+   
             var specialization = await _specRepo.GetByIdAsync(new SpecializationID(staffDTO.Specialization.ToLower()));
 
             var staff = new Staff

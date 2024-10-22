@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Sempi5.Domain.Patient;
@@ -6,7 +8,7 @@ using Sempi5.Infrastructure.Databases;
 
 namespace Sempi5.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class PatientController : ControllerBase
     {
@@ -16,6 +18,23 @@ namespace Sempi5.Controllers
         public PatientController(PatientService service)
         {
             _service = service;
+        }
+
+        [HttpPut("associate/{email}")]
+        [Authorize]
+        public async Task<IActionResult> AssociateAccount(string email)
+        {
+            var cookie = User.Identity as ClaimsIdentity;
+            var emailCookie = cookie?.FindFirst(ClaimTypes.Email)?.Value;
+
+            var patient = await _service.AssociateAccount(email, emailCookie);
+            
+            if (patient == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(new { sucess = true });
         }
 
         // Function to create patient

@@ -6,7 +6,7 @@ using Sempi5.Infrastructure.Databases;
 
 namespace Sempi5.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class SystemUserController : ControllerBase
     {
@@ -19,10 +19,10 @@ namespace Sempi5.Controllers
         }
 
 
-        [HttpPut("confirm/{id}/{active}")]
-        public async Task<IActionResult> UpdateActive(long id, bool active)
+        [HttpGet("confirm/{token}/{active}")]
+        public async Task<IActionResult> UpdateActive(string token, bool active)
         {
-            var user = await _service.UpdateActive(id, active);
+            var user = await _service.UpdateActive(token, active);
 
             if (user == null)
             {

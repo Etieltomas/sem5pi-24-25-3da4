@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System.Globalization;
+using System.Security.Claims;
 using Sempi5.Domain.Shared;
-using Sempi5.Infrastructure.PatientRepository;
+using Sempi5.Domain.User;
 
 namespace Sempi5.Domain.Patient
 {
@@ -13,12 +9,62 @@ namespace Sempi5.Domain.Patient
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPatientRepository _repo;
+        private readonly IUserRepository _repoUser;
+        private readonly EmailService _emailService;
 
-        public PatientService(IPatientRepository repo, IUnitOfWork unitOfWork)
+        public PatientService(IPatientRepository repo, IUserRepository userRepo ,IUnitOfWork unitOfWork, EmailService emailService)
         {
+            _repoUser = userRepo;
+            _emailService = emailService;
             _repo = repo;
             _unitOfWork = unitOfWork;
         }
+
+        public async Task<PatientDTO> AssociateAccount(string email, string cookieEmail)
+        {
+
+            if (string.IsNullOrEmpty(cookieEmail))
+            {
+                return null;
+            }
+
+            var user = await _repoUser.GetUserByEmail(email);
+            var pat = await _repo.GetPatientByEmail(email);
+
+            if (pat == null || user != null)
+            {
+                return null;
+            }
+
+            var newUser = new SystemUser
+            {
+                Username = cookieEmail,
+                Email = new Email(cookieEmail),
+                Active = false,
+                Role = "Patient"
+            };
+
+            pat.SystemUser = newUser;
+
+            await _repoUser.AddAsync(newUser);
+            
+            await _unitOfWork.CommitAsync();
+
+
+            user = await _repoUser.GetUserByEmail(email);
+            //  email logic
+            var message = "<b>Hello,</b><br>" +
+                        "Thank you for signing up! Please confirm your account by clicking the link below:<br><br>" +
+                        "<a href='http://localhost:5012/api/SystemUser/confirm/" + user.Id.AsLong() + "/true'>Click here to confirm your account</a><br><br>" +
+                        "If you didn't sign up, please ignore this email.";
+
+            var subject = "Confirmation of Account";
+
+            _emailService.sendEmail(user.Username, pat.Email.ToString(), subject, message);
+
+            return ConvertToDTO(pat);
+        }
+
 
         public async Task<PatientDTO> AddPatient(PatientDTO patientDTO)
         {
@@ -32,7 +78,7 @@ namespace Sempi5.Domain.Patient
                 Conditions = patientDTO.Conditions.Select(condition => new Condition(condition)).ToList(), 
                 EmergencyContact = new Phone(patientDTO.EmergencyContact),
                 Address = new Address(address[0], address[1], address[2]),
-                DateOfBirth = DateTime.Parse(patientDTO.DateOfBirth),
+                DateOfBirth = DateTime.ParseExact(patientDTO.DateOfBirth, "dd-MM-yyyy", CultureInfo.InvariantCulture)
             };
 
             await _repo.AddAsync(patient);
@@ -72,6 +118,7 @@ namespace Sempi5.Domain.Patient
         {
             return new PatientDTO
             {
+                Gender = patient.Gender.ToString(),
                 MedicalRecordNumber = patient.Id.Value,
                 Name = patient.Name.ToString(),
                 Email = patient.Email.ToString(),
@@ -82,5 +129,7 @@ namespace Sempi5.Domain.Patient
                 DateOfBirth = patient.DateOfBirth.ToString("dd-MM-yyyy")
             };
         }
+
+        
     }
 }

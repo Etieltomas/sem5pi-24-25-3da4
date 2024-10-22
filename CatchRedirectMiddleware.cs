@@ -18,7 +18,7 @@ public class CatchRedirectMiddleware
             context.Response.Body = newResponseBodyStream;
 
             if (context.Response.StatusCode == StatusCodes.Status302Found &&
-                !(  context.Request.Path.Equals("/Login/login") || 
+                !(  context.Request.Path.Equals("/api/Login/login") || 
                     context.Request.Path.Equals("/signin-google")))
             {
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;

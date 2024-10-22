@@ -33,8 +33,8 @@ namespace Sempi5.Infrastructure.TokenRepository
 
             builder.Property(t => t.ExpirationDate)
                 .HasConversion(
-                    v => v.ToString("dd-MM-yyyy"),
-                    v => DateTime.ParseExact(v, "dd-MM-yyyy", CultureInfo.InvariantCulture)
+                    v => v.ToString("dd-MM-yyyy HH:mm"),
+                    v => DateTime.ParseExact(v, "dd-MM-yyyy HH:mm", CultureInfo.InvariantCulture)
                 )
                 .IsRequired();
 

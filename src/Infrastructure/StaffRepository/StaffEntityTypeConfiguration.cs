@@ -63,9 +63,6 @@ namespace Sempi5.Infrastructure.StaffRepository
                 .HasConversion(new AvailabilitySlotListConverter())
                 .IsRequired();
 
-            /*
-                TODO: See either Specialization and SystemUser, how to retrieve
-            */
             builder.HasOne(t => t.Specialization)
                 .WithMany() 
                 .HasForeignKey("SpecializationId")
