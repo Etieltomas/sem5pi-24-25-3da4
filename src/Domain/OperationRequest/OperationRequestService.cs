@@ -80,5 +80,32 @@ public class OperationRequestService
         return operationRequest;
     }
 
+    //delete request
+    public void DeleteOperationRequest(int requestId, int staffId)
+    {
+        //get request by id
+        var operationRequest = _operationRequestRepository.GetOperationRequestById(new OperationRequestID(requestId.ToString()));
+        if (operationRequest == null)
+        {
+            throw new Exception("Operation request not found.");
+        }
+
+        //verification 
+        if (operationRequest.StaffId != new StaffID(staffId.ToString()))
+        {
+            throw new Exception("Only the creator of the request can delete it.");
+        }
+
+        //verify status
+        if (operationRequest.Status == Status.Pending)
+        {
+            throw new Exception("Already scheduled operation requests cannot be removed.");
+        }
+
+        //delete request
+        _operationRequestRepository.DeleteOperationRequest(new OperationRequestID(requestId.ToString()));
+    }
+
+
 
 }

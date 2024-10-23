@@ -41,6 +41,19 @@ public class OperationRequestCreateController : ControllerBase
         }
     }
 
-
-
+    [HttpDelete]
+    [Route("delete")]
+    public IActionResult DeleteOperationRequest([FromQuery] int operationRequestId, [FromQuery] int staffId)
+    {
+        try
+        {
+            _operationRequestService.DeleteOperationRequest(operationRequestId, staffId);
+            return Ok("Solicitação de operação removida com sucesso.");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+    
 }
