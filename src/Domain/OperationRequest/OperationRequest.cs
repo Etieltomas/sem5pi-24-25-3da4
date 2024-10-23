@@ -14,16 +14,6 @@ namespace Sempi5.Domain.OperationRequestEntity
         public Deadline Deadline { get; set; }
         public Status Status { get; set; }
 
-        public OperationRequest(PatientID patientId, StaffID staffId, OperationType operationType, Priority priority, Deadline deadline, Status status)
-        {
-            PatientId = patientId;
-            StaffId = staffId;
-            OperationType = operationType;
-            Priority = priority;
-            Deadline = deadline;
-            Status = status;
-        }
-
         public void UpdatePriority(Priority newPriority)
         {
             Priority = newPriority;

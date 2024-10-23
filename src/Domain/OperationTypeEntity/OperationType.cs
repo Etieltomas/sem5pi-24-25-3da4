@@ -9,12 +9,6 @@ namespace Sempi5.Domain.OperationRequestEntity
         public string Name { get; set; }
         public Specialization Specialization { get; set; }
 
-        public OperationType(string name, Specialization specialization)
-        {
-            Id = new OperationTypeID(Guid.NewGuid().ToString());
-            Name = name;
-            Specialization = specialization;
-        }
     }
 
 }

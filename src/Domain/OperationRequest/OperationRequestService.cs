@@ -40,14 +40,14 @@ public class OperationRequestService
             throw new Exception("The staff does not have the necessary specialization for this type of operation.");
         }
 
-        var operationRequest = new OperationRequest(
-            new PatientID(dto.PatientId.ToString()),
-            new StaffID(dto.StaffId.ToString()),
-            operationType,
-            Priority.FromString(dto.Priority),
-            new Deadline(dto.Deadline),
-            Status.Pending //initial status
-        );
+        var operationRequest = new OperationRequest{
+            PatientId = new PatientID(dto.PatientId.ToString()),
+            StaffId = new StaffID(dto.StaffId.ToString()),
+            OperationType = operationType,
+            Priority = Priority.FromString(dto.Priority),
+            Deadline = new Deadline(dto.Deadline),
+            Status = Status.Pending //initial status
+        };
 
         _operationRequestRepository.AddOperationRequest(operationRequest);
         
