@@ -5,3 +5,5 @@ Migrations/
 appsettings.json
 .vscode/
 .idea/
+
+updateDatabase.bat
