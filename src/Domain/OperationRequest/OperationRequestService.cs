@@ -106,6 +106,12 @@ public class OperationRequestService
         _operationRequestRepository.DeleteOperationRequest(new OperationRequestID(requestId.ToString()));
     }
 
+     //list request
+    public List<OperationRequest> SearchOperationRequests(string? patientName, string? operationType, string? priority, string? status)
+    {
+        return _operationRequestRepository.SearchOperationRequests(patientName, operationType, priority, status);
+    }
+
 
 
 }

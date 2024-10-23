@@ -56,4 +56,19 @@ public class OperationRequestCreateController : ControllerBase
         }
     }
     
+    [HttpGet]
+    [Route("list")]
+    public IActionResult SearchOperationRequests([FromQuery] string? patientName, [FromQuery] string? operationType, [FromQuery] string? priority, [FromQuery] string? status)
+    {
+        try
+        {
+            var result = _operationRequestService.SearchOperationRequests(patientName, operationType, priority, status);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
 }
