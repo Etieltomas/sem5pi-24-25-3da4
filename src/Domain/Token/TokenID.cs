@@ -27,5 +27,6 @@ namespace Sempi5.Domain.Token
         public Guid AsGuid(){
             return (Guid) base.ObjValue;
         }
+
     }
 }

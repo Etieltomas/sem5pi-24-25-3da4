@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Sempi5.Domain.Token;
 using Sempi5.Domain.User;
 using Sempi5.Infrastructure.Databases;
 
@@ -20,7 +21,7 @@ namespace Sempi5.Controllers
 
 
         [HttpGet("confirm/{token}/{active}")]
-        public async Task<IActionResult> UpdateActive(string token, bool active)
+        public async Task<IActionResult> UpdateActive(Guid token, bool active)
         {
             var user = await _service.UpdateActive(token, active);
 

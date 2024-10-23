@@ -19,9 +19,9 @@ namespace Sempi5.Domain.User
             this._repo = repo;
         }
 
-        public async Task<SystemUserDTO> UpdateActive(string token, bool active)
+        public async Task<SystemUserDTO> UpdateActive(Guid token, bool active)
         {
-            var tokenUsed = await _tokenRepository.GetTokenByValue(token);
+            var tokenUsed = await _tokenRepository.GetTokenByValue(new TokenID(token));
             if (token == null) {
                 return null;
             }

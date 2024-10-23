@@ -42,8 +42,6 @@ namespace Sempi5.Infrastructure.TokenRepository
             builder.Property(t => t.IsUsed)
                 .IsRequired();
 
-            builder.Property(t => t.TokenValue)
-                .IsRequired();
         }
     }
 

@@ -11,6 +11,6 @@ namespace Sempi5.Domain.Token
     {
         public Task<Token> GetTokenByEmail(string email);
         public Task<List<Token>> GetAllTokens();
-        public Task<Token> GetTokenByValue(string id);
+        public Task<Token> GetTokenByValue(TokenID id);
     }
 }

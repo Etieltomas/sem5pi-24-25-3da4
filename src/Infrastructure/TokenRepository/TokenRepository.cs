@@ -36,7 +36,7 @@ namespace Sempi5.Infrastructure.TokenRepository
                 .ToListAsync();
         }
 
-        public async Task<Token> GetTokenByValue(string value)
+        public async Task<Token> GetTokenByValue(TokenID value)
         {
             if (value == null)
             {
@@ -44,7 +44,7 @@ namespace Sempi5.Infrastructure.TokenRepository
             }
 
             var token = await _context.Tokens
-                .FirstOrDefaultAsync(s => s.TokenValue.Equals(value)); 
+                .FirstOrDefaultAsync(s => s.Id == value); 
             
             return token;
         }
