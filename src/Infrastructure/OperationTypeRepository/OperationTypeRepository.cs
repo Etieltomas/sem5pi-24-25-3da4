@@ -8,7 +8,7 @@ namespace Sempi5.Infrastructure
     {
         private readonly List<OperationType> _operationTypes = new List<OperationType>();
 
-        public OperationType GetOperationTypeById(OperationTypeID id)
+        public async Task<OperationType> GetOperationTypeById(OperationTypeID id)
         {
             return _operationTypes.FirstOrDefault(o => o.Id.Equals(id));
         }

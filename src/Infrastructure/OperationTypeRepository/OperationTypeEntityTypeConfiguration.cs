@@ -11,8 +11,11 @@ public class OperationTypeEntityTypeConfiguration : IEntityTypeConfiguration<Ope
 
 
         builder.Property(t => t.Id)
-            .HasColumnName("Id")
-            .ValueGeneratedNever();
+            .HasConversion(
+                v => v.AsString(),
+                v => new OperationTypeID(v)
+            )
+            .ValueGeneratedOnAdd();
 
         builder.Property(t => t.Name)
             .IsRequired()
@@ -24,7 +27,6 @@ public class OperationTypeEntityTypeConfiguration : IEntityTypeConfiguration<Ope
             .IsRequired();
 
         builder.HasIndex(t => t.Name)
-            .HasDatabaseName("IX_OperationType_Name")
             .IsUnique();
     }
 }

@@ -1,8 +1,8 @@
 public class OperationRequestCreateDTO
 {
-    public int StaffId { get; set; }
-    public int PatientId { get; set; }
-    public int OperationTypeId { get; set; }
+    public string StaffId { get; set; }
+    public string PatientId { get; set; }
+    public string OperationTypeId { get; set; }
     public string Priority { get; set; }
-    public DateTime Deadline { get; set; }
+    public string Deadline { get; set; }
 }

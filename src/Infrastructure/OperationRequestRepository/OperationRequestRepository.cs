@@ -1,51 +1,36 @@
+using Microsoft.EntityFrameworkCore;
 using Sempi5.Domain.OperationRequestEntity;
+using Sempi5.Infrastructure.Databases;
+using Sempi5.Infrastructure.Shared;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Sempi5.Infrastructure
 {
-    public class OperationRequestRepository : IOperationRequestRepository
+    public class OperationRequestRepository : BaseRepository<OperationRequest, OperationRequestID>, IOperationRequestRepository
     {
-        private readonly List<OperationRequest> _requests = new List<OperationRequest>();
 
-        public OperationRequest GetOperationRequestById(OperationRequestID id)
+        private readonly DataBaseContext _context;
+        
+        public OperationRequestRepository(DataBaseContext context) : base(context.OperationRequests)
         {
-            return _requests.FirstOrDefault(r => r.Id.Equals(id));
+            _context = context;
         }
 
-        public void AddOperationRequest(OperationRequest request)
+        public async Task<OperationRequest> GetOperationRequestById(OperationRequestID id)
         {
-            _requests.Add(request);
+            return _context.OperationRequests.FirstOrDefault(r => r.Id.Equals(id));
         }
 
-        public void UpdateOperationRequest(OperationRequest request)
-        {
-            var existingRequest = GetOperationRequestById(request.Id);
-            if (existingRequest != null)
-            {
-                existingRequest.Priority = request.Priority;
-                existingRequest.Deadline = request.Deadline;
-                existingRequest.Status = request.Status; 
-            }
-        }
 
-        public void DeleteOperationRequest(OperationRequestID id)
+        public async Task<List<OperationRequest>> SearchOperationRequests(string? patientName, string? operationType, string? priority, string? status)
         {
-            var request = GetOperationRequestById(id);
-            if (request != null)
-            {
-                _requests.Remove(request);
-            }
-        }
-
-        public List<OperationRequest> SearchOperationRequests(string? patientName, string? operationType, string? priority, string? status)
-        {
-            return _requests.Where(r =>
-                (string.IsNullOrEmpty(patientName) || r.PatientId.ToString().Contains(patientName)) &&
+            return await _context.OperationRequests.Where(r =>
+                (string.IsNullOrEmpty(patientName) || r.Patient.Id.ToString().Contains(patientName)) &&
                 (string.IsNullOrEmpty(operationType) || r.OperationType.Name.Contains(operationType)) &&
                 (string.IsNullOrEmpty(priority) || r.Priority.Value.Equals(priority, StringComparison.OrdinalIgnoreCase)) &&
                 (string.IsNullOrEmpty(status) || r.Status.Value.Equals(status, StringComparison.OrdinalIgnoreCase))
-            ).ToList();
+            ).ToListAsync();
         }
     }
 }

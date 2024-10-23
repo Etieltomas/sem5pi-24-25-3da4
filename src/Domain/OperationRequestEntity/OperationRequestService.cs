@@ -3,6 +3,7 @@ using Sempi5.Domain.PatientEntity;
 using Sempi5.Domain.StaffEntity;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 public class OperationRequestService
 {
@@ -24,48 +25,56 @@ public class OperationRequestService
     }
 
     //create operation request
-    public OperationRequest CreateOperationRequest(OperationRequestCreateDTO dto)
+    public async Task<OperationRequestCreateDTO> CreateOperationRequest(OperationRequestCreateDTO dto)
     {
         //operation type by id
-        var operationType = _operationTypeRepository.GetOperationTypeById(new OperationTypeID(dto.OperationTypeId.ToString()));
+        var operationType = await _operationTypeRepository.GetOperationTypeById(new OperationTypeID(dto.OperationTypeId.ToString()));
         if (operationType == null)
         {
             throw new Exception("Operation Type not found.");
         }
 
         //verify specialization
-        var staff = _staffRepository.GetStaffById(new StaffID(dto.StaffId.ToString()));
+        var staff = await _staffRepository.GetStaffMemberById(new StaffID(dto.StaffId.ToString()));
         if (staff.Specialization != operationType.Specialization)
         {
             throw new Exception("The staff does not have the necessary specialization for this type of operation.");
         }
 
+        var patient = await _patientRepository.GetPatientById(new PatientID(dto.PatientId.ToString()));
+        if (patient == null)
+        {   
+            // TODO
+            throw new Exception("The staff does not have the necessary specialization for this type of operation.");
+        }
+
         var operationRequest = new OperationRequest{
-            PatientId = new PatientID(dto.PatientId.ToString()),
-            StaffId = new StaffID(dto.StaffId.ToString()),
+            Patient = patient,
+            Staff = staff,
             OperationType = operationType,
             Priority = Priority.FromString(dto.Priority),
-            Deadline = new Deadline(dto.Deadline),
+            Deadline = new Deadline(DateTime.ParseExact(dto.Deadline, "dd-MM-yyyy", CultureInfo.InvariantCulture)),
             Status = Status.Pending //initial status
         };
 
-        _operationRequestRepository.AddOperationRequest(operationRequest);
+        var newOperationRequest = await _operationRequestRepository.AddAsync(operationRequest);
         
-        return operationRequest;
+        return ConvertToDTO(newOperationRequest);
     }
 
+
     //update
-    public OperationRequest UpdateOperationRequest(int operationRequestId, OperationRequestUpdateDTO dto)
+    public async Task<OperationRequestCreateDTO> UpdateOperationRequest(OperationRequestUpdateDTO dto)
     {
         //get request by id
-        var operationRequest = _operationRequestRepository.GetOperationRequestById(new OperationRequestID(dto.OperationRequestId.ToString()));
+        var operationRequest = await _operationRequestRepository.GetOperationRequestById(new OperationRequestID(dto.OperationRequestId.ToString()));
         if (operationRequest == null)
         {
             throw new Exception("Operation request not found.");
         }
 
         //verify staff
-        if (operationRequest.StaffId != new StaffID(dto.StaffId.ToString()))
+        if (operationRequest.Staff.Id != new StaffID(dto.StaffId.ToString()))
         {
             throw new Exception("Only the creator of the request can update it.");
         }
@@ -75,23 +84,23 @@ public class OperationRequestService
         operationRequest.UpdateDeadline(new Deadline(dto.NewDeadline));
 
         //add to repository
-        _operationRequestRepository.UpdateOperationRequest(operationRequest);
-        
-        return operationRequest;
+        var newOperationRequest = await _operationRequestRepository.AddAsync(operationRequest);
+
+        return ConvertToDTO(newOperationRequest);
     }
 
     //delete request
-    public void DeleteOperationRequest(int requestId, int staffId)
+    public async void DeleteOperationRequest(int requestId, int staffId)
     {
         //get request by id
-        var operationRequest = _operationRequestRepository.GetOperationRequestById(new OperationRequestID(requestId.ToString()));
+        var operationRequest = await _operationRequestRepository.GetOperationRequestById(new OperationRequestID(requestId.ToString()));
         if (operationRequest == null)
         {
             throw new Exception("Operation request not found.");
         }
 
         //verification 
-        if (operationRequest.StaffId != new StaffID(staffId.ToString()))
+        if (operationRequest.Staff.Id != new StaffID(staffId.ToString()))
         {
             throw new Exception("Only the creator of the request can delete it.");
         }
@@ -103,15 +112,28 @@ public class OperationRequestService
         }
 
         //delete request
-        _operationRequestRepository.DeleteOperationRequest(new OperationRequestID(requestId.ToString()));
+        _operationRequestRepository.Remove(operationRequest);
     }
 
      //list request
-    public List<OperationRequest> SearchOperationRequests(string? patientName, string? operationType, string? priority, string? status)
+    public async Task<List<OperationRequestCreateDTO>> SearchOperationRequests(string? patientName, string? operationType, string? priority, string? status)
     {
-        return _operationRequestRepository.SearchOperationRequests(patientName, operationType, priority, status);
+        var operationRequests = await _operationRequestRepository.SearchOperationRequests(patientName, operationType, priority, status);
+
+        return operationRequests.Select(ConvertToDTO).ToList();
     }
 
 
 
+    private OperationRequestCreateDTO ConvertToDTO(OperationRequest newOperationRequest)
+    {
+        return new OperationRequestCreateDTO
+        {
+            PatientId = newOperationRequest.Patient.Id.Value,
+            StaffId = newOperationRequest.Staff.Id.Value,
+            OperationTypeId = newOperationRequest.OperationType.Id.Value,
+            Priority = newOperationRequest.Priority.Value,
+            Deadline = newOperationRequest.Deadline.Value.ToString("dd-MM-yyyy")
+        };
+    }
 }

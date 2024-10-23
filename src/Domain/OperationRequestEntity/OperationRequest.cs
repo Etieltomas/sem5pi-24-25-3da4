@@ -7,8 +7,8 @@ namespace Sempi5.Domain.OperationRequestEntity
 {
     public class OperationRequest : Entity<OperationRequestID>, IAggregateRoot
     {
-        public PatientID PatientId { get; set; }
-        public StaffID StaffId { get; set; }
+        public Patient Patient { get; set; }
+        public Staff Staff { get; set; }
         public OperationType OperationType { get; set; }
         public Priority Priority { get; set; }
         public Deadline Deadline { get; set; }

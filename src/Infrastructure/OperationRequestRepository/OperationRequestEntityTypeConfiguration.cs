@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Sempi5.Domain.OperationRequestEntity;
@@ -13,47 +14,23 @@ public class OperationRequestEntityTypeConfiguration : IEntityTypeConfiguration<
 
         //id
         builder.Property(t => t.Id)
-            .HasColumnName("Id")
             .HasConversion(
                 v => v.AsString(),
                 v => new OperationRequestID(v)
             )
-            .ValueGeneratedNever();
+            .ValueGeneratedOnAdd();
 
         //patientId foreign key
-        builder.Property(t => t.PatientId)
-            .HasColumnName("PatientId")
-            .HasConversion(
-                v => v.AsString(),
-                v => new PatientID(v)
-            )
-            .IsRequired();
-
-        //patient 1-1
-        builder.HasOne<Patient>()
-            .WithMany()
-            .HasForeignKey(t => t.PatientId)
-            .IsRequired();
+        builder.HasOne(t => t.Patient)
+                .WithMany() 
+                .HasForeignKey("PatientId")
+                .IsRequired();  
 
         //staffID foreign key
-        builder.Property(t => t.StaffId)
-            .HasColumnName("StaffId")
-            .HasConversion(
-                v => v.AsString(),
-                v => new StaffID(v)
-            )
-            .IsRequired();
-
-        //staff 1-1
-        builder.HasOne<Staff>()
-            .WithMany()
-            .HasForeignKey(t => t.StaffId)
-            .IsRequired();
-
-        //operationType
-        builder.Property(t => t.OperationType)
-            .HasColumnName("OperationType")
-            .IsRequired();
+        builder.HasOne(t => t.Staff)
+                .WithMany() 
+                .HasForeignKey("StaffId")
+                .IsRequired();  
 
         //priority
         builder.Property(t => t.Priority)
@@ -68,8 +45,8 @@ public class OperationRequestEntityTypeConfiguration : IEntityTypeConfiguration<
         builder.Property(t => t.Deadline)
             .HasColumnName("Deadline")
             .HasConversion(
-                v => v.Value, 
-                v => new Deadline(v)
+                v => v.Value.ToString("dd-MM-yyyy"), 
+                v => new Deadline(DateTime.ParseExact(v, "dd-MM-yyyy", CultureInfo.InvariantCulture))
             )
             .IsRequired();
 

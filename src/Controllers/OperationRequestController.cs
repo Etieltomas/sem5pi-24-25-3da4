@@ -32,7 +32,7 @@ public class OperationRequestCreateController : ControllerBase
     {
         try
         {
-            var result = _operationRequestService.UpdateOperationRequest(dto.OperationRequestId, dto);
+            var result = _operationRequestService.UpdateOperationRequest(dto);
             return Ok(result);
         }
         catch (Exception ex)

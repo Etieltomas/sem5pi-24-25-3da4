@@ -1,10 +1,8 @@
 using Sempi5.Domain.OperationRequestEntity;
+using Sempi5.Domain.Shared;
 
-public interface IOperationRequestRepository
+public interface IOperationRequestRepository : IRepository<OperationRequest, OperationRequestID>
 {
-    OperationRequest GetOperationRequestById(OperationRequestID id);
-    void AddOperationRequest(OperationRequest request);
-    void UpdateOperationRequest(OperationRequest request);
-    void DeleteOperationRequest(OperationRequestID id);
-    List<OperationRequest> SearchOperationRequests(string? patientName, string? operationType, string? priority, string? status);
+    Task<OperationRequest> GetOperationRequestById(OperationRequestID id);
+    Task<List<OperationRequest>> SearchOperationRequests(string? patientName, string? operationType, string? priority, string? status);
 }
