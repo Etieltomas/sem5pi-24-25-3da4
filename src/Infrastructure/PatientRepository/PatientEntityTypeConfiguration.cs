@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Sempi5.Domain.Patient;
@@ -58,14 +59,14 @@ namespace Sempi5.Infrastructure.PatientRepository
             builder.Property(t => t.DateOfBirth)
                 .HasConversion(
                     v => v.ToString(),
-                    v => DateTime.Parse(v)
+                    v => DateTime.ParseExact(v, "dd-MM-yyyy", CultureInfo.InvariantCulture)
                 )
                 .IsRequired();
 
             builder.Property(t => t.Gender)
                 .HasConversion(
                     v => v.ToString(),
-                    v => GenderExtensions.FromString(v)
+                    v => GenderExtensions.FromString(v.ToLower())
                 )
                 .IsRequired();
 

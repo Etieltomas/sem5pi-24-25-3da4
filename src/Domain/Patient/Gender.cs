@@ -24,11 +24,8 @@ namespace Sempi5.Domain.Patient
                     return Gender.Male;
                 case "female":
                     return Gender.Female;
-                case "other":
-                    return Gender.Other;
                 default:
-                    throw new BusinessRuleValidationException("Gender must exits in the list.");
-
+                    return Gender.Other;
             }
         }
     }

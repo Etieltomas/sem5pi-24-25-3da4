@@ -1,21 +1,19 @@
 using System.Security.Claims;
-using System.Text.Json;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.OAuth;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Sempi5.Domain.Patient;
 using Sempi5.Domain.Shared;
 using Sempi5.Domain.SpecializationEntity;
 using Sempi5.Domain.Staff;
+using Sempi5.Domain.Token;
 using Sempi5.Domain.User;
 using Sempi5.Infrastructure.PatientRepository;
 using Sempi5.Infrastructure.Shared;
 using Sempi5.Infrastructure.SpecializationRepository;
 using Sempi5.Infrastructure.StaffRepository;
+using Sempi5.Infrastructure.TokenRepository;
 using Sempi5.Infrastructure.UserRepository;
 
 namespace Sempi5
@@ -134,14 +132,23 @@ namespace Sempi5
                     }
                     else
                     {
+                        var token = new Token {
+                            TokenValue = Guid.NewGuid().ToString(),
+                            Email = newUser.Email,
+                            ExpirationDate = DateTime.UtcNow.AddHours(24),
+                            IsUsed = false
+                        };
+                        var tokenRepo = services.GetRequiredService<ITokenRepository>();
+
                         var _emailService = services.GetRequiredService<EmailService>();
 
+                        await tokenRepo.AddAsync(token);
                         await userRepository.AddAsync(newUser);
                         await unitOfWork.CommitAsync();    
 
                         var message = "<b>Hello,</b><br>" +
                         "Thank you for signing up! Please confirm your account by clicking the link below:<br><br>" +
-                        "<a href='http://localhost:5012/SystemUser/confirm/" + newUser.Id.AsLong() + "/true'>Click here to confirm your account</a><br><br>" +
+                        "<a href='http://localhost:5012/api/SystemUser/confirm/" + token.TokenValue + "/true'>Click here to confirm your account</a><br><br>" +
                         "If you didn't sign up, please ignore this email.";
 
                         var subject = "Confirmation of Account";
@@ -151,26 +158,20 @@ namespace Sempi5
             }
             catch (Exception ex)
             {
-                // Handle exceptions
                 Console.WriteLine($"An error occurred: {ex.Message}");
                 Console.WriteLine(ex.StackTrace);
             }
 
             if (notRegistered) 
             {
-                context.HttpContext.Response.ContentType = "application/json";
                 context.HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
-                await context.HttpContext.Response.WriteAsync(JsonSerializer.Serialize(new { error = "User is not registered in the system" }));
-                return;
             }
-            else 
+ 
+            var authProperties = new AuthenticationProperties
             {
-                var authProperties = new AuthenticationProperties
-                {
-                    IsPersistent = false
-                };
-                await context.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(cookie), authProperties);
-            }
+                IsPersistent = false
+            };
+            await context.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(cookie), authProperties);
         }
 
         private static void ConfigureMiddleware(WebApplication app)
@@ -218,25 +219,56 @@ namespace Sempi5
             using var scope = app.Services.CreateScope();
             var services = scope.ServiceProvider;
 
-            var specRep = services.GetRequiredService<ISpecializationRepository>();
-            if (specRep.GetAllAsync().Result.Count > 0)
-            {
-                return;
-            }
             try
-            {           
-                var unitOfWork = services.GetRequiredService<IUnitOfWork>();
-
-                // TODO: Create more specializations 
-                var specialization = new Specialization { Id = new SpecializationID("Cardiology") };
-                await specRep.AddAsync(specialization);
-
-                await unitOfWork.CommitAsync();
+            {
+                await SeedSpecializationsAsync(services);
+                await SeedUsersAsync(services);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred while seeding the database: {ex.Message}");
             }
+        }
+
+        private static async Task SeedSpecializationsAsync(IServiceProvider services)
+        {
+            var specRep = services.GetRequiredService<ISpecializationRepository>();
+            var unitOfWork = services.GetRequiredService<IUnitOfWork>();
+
+            if ((await specRep.GetAllAsync()).Count > 0)
+            {
+                return;
+            }
+
+            // TODO: Add more specializations if needed
+            var specialization = new Specialization(new SpecializationID("Cardiology"));
+            
+            await specRep.AddAsync(specialization);
+
+            await unitOfWork.CommitAsync();
+        }
+
+        private static async Task SeedUsersAsync(IServiceProvider services)
+        {
+            var userRep = services.GetRequiredService<IUserRepository>();
+            var unitOfWork = services.GetRequiredService<IUnitOfWork>();
+
+            if ((await userRep.GetAllAsync()).Count > 0)
+            {
+                return;
+            }
+
+            // TODO: Add more users as needed
+            var user = new SystemUser{
+                Username = "admin",
+                Email = new Email("admin@gmail.com"),
+                Role = "Admin",
+                Active = true
+            };
+
+            await userRep.AddAsync(user);
+
+            await unitOfWork.CommitAsync();
         }
 
 
@@ -254,6 +286,8 @@ namespace Sempi5
             services.AddTransient<PatientService>();
 
             services.AddTransient<ISpecializationRepository, SpecializationRepository>();
+
+            services.AddTransient<ITokenRepository, TokenRepository>();
 
             services.AddTransient<EmailService>();
         }

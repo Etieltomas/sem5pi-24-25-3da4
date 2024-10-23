@@ -23,8 +23,8 @@ namespace Sempi5.Infrastructure.PatientRepository
             }
 
             var patient = await _context.Patients
-                .Include(p => p.SystemUser)
-                .FirstOrDefaultAsync(p => p.SystemUser.Email.Equals(new Email(email)));
+                .Include(p => p.SystemUser) 
+                .FirstOrDefaultAsync(p => p.SystemUser == null || p.SystemUser.Email.Equals(new Email(email)));
                     
             return patient; 
         }
@@ -45,7 +45,7 @@ namespace Sempi5.Infrastructure.PatientRepository
 
             var pat = await _context.Patients
                 .Include(p => p.SystemUser)
-                .FirstOrDefaultAsync(p => p.Id.AsString().Equals(id.ToString()));
+                .FirstOrDefaultAsync(p => p.SystemUser == null ||  p.Id.AsString().Equals(id.ToString()));
 
             return pat; 
         }
