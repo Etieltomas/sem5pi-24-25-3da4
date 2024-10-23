@@ -7,6 +7,8 @@ using Sempi5.Infrastructure.StaffRepository;
 using Sempi5.Infrastructure.PatientRepository;
 using Sempi5.Infrastructure.SpecializationRepository;
 using Sempi5.Domain.SpecializationEntity;
+using Sempi5.Domain.OperationRequestEntity;
+
 
 namespace Sempi5.Infrastructure.Databases
 {
@@ -16,6 +18,8 @@ namespace Sempi5.Infrastructure.Databases
         public DbSet<Staff> Staff { get; set; }
         public DbSet<Patient> Patients { get; set; }
         public DbSet<Specialization> Specializations { get; internal set; }
+        public DbSet<OperationRequest> OperationRequests {get; set;}
+        public DbSet<OperationType> OperationTypes {get; set;}
 
         public DataBaseContext(DbContextOptions<DataBaseContext> options)
             : base(options)
@@ -30,6 +34,8 @@ namespace Sempi5.Infrastructure.Databases
             modelBuilder.ApplyConfiguration(new StaffEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new PatientEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new SpecializationEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new OperationRequestEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new OperationTypeEntityTypeConfiguration());
         }
         
     }
