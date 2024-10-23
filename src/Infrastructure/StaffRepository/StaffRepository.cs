@@ -11,6 +11,8 @@ namespace Sempi5.Infrastructure.StaffRepository
     {
         private readonly DataBaseContext _context;
 
+        private readonly List<Staff> _staffMembers = new List<Staff>();
+
         public StaffRepository(DataBaseContext context) : base(context.Staff)
         {
             _context = context;
@@ -52,6 +54,11 @@ namespace Sempi5.Infrastructure.StaffRepository
                 .FirstOrDefaultAsync(s => s.Id.Equals(id)); 
             
             return staff;
+        }
+
+        public Staff GetStaffById(StaffID id)
+        {
+        return _staffMembers.FirstOrDefault(s => s.Id == id);
         }
     }
 

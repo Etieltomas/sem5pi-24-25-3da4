@@ -12,5 +12,6 @@ namespace Sempi5.Domain.Staff
         public Task<Staff> GetStaffMemberByEmail(string email);
         public Task<List<Staff>> GetAllStaffMembers();
         public Task<Staff> GetStaffMemberById(StaffID id);
+        Staff GetStaffById(StaffID id);
     }
 }
