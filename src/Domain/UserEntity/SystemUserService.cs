@@ -1,10 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
 using Sempi5.Domain.Shared;
-using Sempi5.Domain.Token;
-using Sempi5.Domain.User;
-using Sempi5.Infrastructure.UserRepository;
+using Sempi5.Domain.TokenEntity;
+using Sempi5.Domain.UserEntity;
 
-namespace Sempi5.Domain.User
+namespace Sempi5.Domain.UserEntity
 {
     public class SystemUserService
     {

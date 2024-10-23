@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
-using Sempi5.Domain.Staff;
+using Sempi5.Domain.StaffEntity;
 using Sempi5.Infrastructure.Databases;
 
 public class StaffIDGenerator : ValueGenerator<StaffID>

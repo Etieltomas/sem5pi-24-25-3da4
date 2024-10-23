@@ -1,15 +1,13 @@
 using Microsoft.EntityFrameworkCore;
-using Sempi5.Domain.User;
-using Sempi5.Domain.Staff;
-using Sempi5.Domain.Patient;
+using Sempi5.Domain.UserEntity;
+using Sempi5.Domain.StaffEntity;
+using Sempi5.Domain.PatientEntity;
 using Sempi5.Domain.SpecializationEntity;
-using Sempi5.Domain.Token;
+using Sempi5.Domain.TokenEntity;
 using Sempi5.Infrastructure.UserRepository;
 using Sempi5.Infrastructure.StaffRepository;
 using Sempi5.Infrastructure.PatientRepository;
 using Sempi5.Infrastructure.SpecializationRepository;
-using Sempi5.Domain.SpecializationEntity;
-using Sempi5.Domain.SpecializationEntity;
 using Sempi5.Domain.OperationRequestEntity;
 using Sempi5.Infrastructure.TokenRepository;
 

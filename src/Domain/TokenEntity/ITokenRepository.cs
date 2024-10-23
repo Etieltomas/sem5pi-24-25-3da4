@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Sempi5;
 using Sempi5.Domain;
 using Sempi5.Domain.Shared;
-using Sempi5.Domain.Staff;
+using Sempi5.Domain.StaffEntity;
 
-namespace Sempi5.Domain.Token
+namespace Sempi5.Domain.TokenEntity
 {
     public interface ITokenRepository : IRepository<Token, TokenID>
     {

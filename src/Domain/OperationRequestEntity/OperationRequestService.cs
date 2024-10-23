@@ -1,6 +1,6 @@
 using Sempi5.Domain.OperationRequestEntity;
-using Sempi5.Domain.Patient;
-using Sempi5.Domain.Staff;
+using Sempi5.Domain.PatientEntity;
+using Sempi5.Domain.StaffEntity;
 using System;
 using System.Collections.Generic;
 

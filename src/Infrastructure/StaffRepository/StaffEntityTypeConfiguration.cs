@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Sempi5.Domain.SpecializationEntity;
-using Sempi5.Domain.Staff;
+using Sempi5.Domain.StaffEntity;
 using System.Text.Json;
 
 

@@ -1,9 +1,9 @@
 using System.Globalization;
 using System.Security.Claims;
 using Sempi5.Domain.Shared;
-using Sempi5.Domain.User;
+using Sempi5.Domain.UserEntity;
 
-namespace Sempi5.Domain.Patient
+namespace Sempi5.Domain.PatientEntity
 {
     public class PatientService
     {

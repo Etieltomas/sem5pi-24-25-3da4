@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
-using Sempi5.Domain.Staff;
+using Sempi5.Domain.StaffEntity;
 using Sempi5.Infrastructure.Databases;
 
 

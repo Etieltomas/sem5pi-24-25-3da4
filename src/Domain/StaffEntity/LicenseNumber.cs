@@ -1,16 +1,16 @@
 using Sempi5.Domain.Shared;
 
-namespace Sempi5.Domain.Patient{
-    public class Condition : IValueObject
+namespace Sempi5.Domain.StaffEntity {
+    public class LicenseNumber : IValueObject
     {
         private string _value { get; }
 
         // TODO : Maybe some business rules should be added here
-        public Condition(string value)
+        public LicenseNumber(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
             {
-                throw new BusinessRuleValidationException("Condition cannot be null or empty.");
+                throw new BusinessRuleValidationException("License number cannot be null or empty.");
             }
 
             _value = value;

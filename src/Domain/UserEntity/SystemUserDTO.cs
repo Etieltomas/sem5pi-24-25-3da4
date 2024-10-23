@@ -1,6 +1,6 @@
 using Sempi5;
 
-namespace Sempi5.Domain.User
+namespace Sempi5.Domain.UserEntity
 {
     public class SystemUserDTO
     {

@@ -1,11 +1,6 @@
-
-using Microsoft.AspNetCore.Mvc;
-using Sempi5;
-using Sempi5.Domain;
 using Sempi5.Domain.Shared;
-using Sempi5.Domain.Staff;
 
-namespace Sempi5.Domain.Staff
+namespace Sempi5.Domain.StaffEntity
 {
     public interface IStaffRepository : IRepository<Staff, StaffID>
     {

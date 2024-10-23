@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Sempi5.Domain.Patient;
+using Sempi5.Domain.PatientEntity;
 
 public class ConditionListConverter : ValueConverter<List<Condition>, string>
 {

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Sempi5.Domain.SpecializationEntity;
-using Sempi5.Domain.User;
+using Sempi5.Domain.UserEntity;
 using Sempi5.Infrastructure.Databases;
 using Sempi5.Infrastructure.Shared;
 

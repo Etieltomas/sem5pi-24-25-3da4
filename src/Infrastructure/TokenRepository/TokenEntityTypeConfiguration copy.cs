@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Sempi5.Domain.SpecializationEntity;
-using Sempi5.Domain.Staff;
-using Sempi5.Domain.Token;
+using Sempi5.Domain.StaffEntity;
+using Sempi5.Domain.TokenEntity;
 using System.Globalization;
 using System.Text.Json;
 

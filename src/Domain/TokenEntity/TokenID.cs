@@ -1,6 +1,6 @@
 using Sempi5.Domain.Shared;
 
-namespace Sempi5.Domain.Token
+namespace Sempi5.Domain.TokenEntity
 {
     public class TokenID : EntityId
     {

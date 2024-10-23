@@ -1,6 +1,6 @@
 using Sempi5;
 
-namespace Sempi5.Domain.Patient
+namespace Sempi5.Domain.PatientEntity
 {
     public class PatientDTO
     {        

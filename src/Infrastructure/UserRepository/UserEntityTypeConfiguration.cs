@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Sempi5.Domain.User;
+using Sempi5.Domain.UserEntity;
 
 namespace Sempi5.Infrastructure.UserRepository
 {

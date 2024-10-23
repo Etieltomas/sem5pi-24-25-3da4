@@ -2,7 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Sempi5.Domain.Patient;
+using Sempi5.Domain.PatientEntity;
 using Sempi5.Infrastructure.Databases;
 
 

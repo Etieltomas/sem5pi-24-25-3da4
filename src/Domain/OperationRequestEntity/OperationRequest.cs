@@ -1,7 +1,7 @@
 using System;
-using Sempi5.Domain.Patient;
+using Sempi5.Domain.PatientEntity;
 using Sempi5.Domain.Shared;
-using Sempi5.Domain.Staff;
+using Sempi5.Domain.StaffEntity;
 
 namespace Sempi5.Domain.OperationRequestEntity
 {

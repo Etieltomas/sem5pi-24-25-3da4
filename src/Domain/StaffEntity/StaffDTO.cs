@@ -1,6 +1,6 @@
 using Sempi5;
 
-namespace Sempi5.Domain.Staff
+namespace Sempi5.Domain.StaffEntity
 {
     public class StaffDTO
     {

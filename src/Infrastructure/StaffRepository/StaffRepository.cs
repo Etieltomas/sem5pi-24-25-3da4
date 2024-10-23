@@ -1,7 +1,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Sempi5.Domain.Staff;
+using Sempi5.Domain.StaffEntity;
 using Sempi5.Infrastructure.Databases;
 using Sempi5.Infrastructure.Shared;
 

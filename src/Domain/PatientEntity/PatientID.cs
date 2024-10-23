@@ -2,7 +2,7 @@ using System;
 using Newtonsoft.Json;
 using Sempi5.Domain.Shared;
 
-namespace Sempi5.Domain.Patient
+namespace Sempi5.Domain.PatientEntity
 {
     public class PatientID : EntityId
     {
