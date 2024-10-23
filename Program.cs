@@ -133,7 +133,6 @@ namespace Sempi5
                     else
                     {
                         var token = new Token {
-                            TokenValue = Guid.NewGuid().ToString(),
                             Email = newUser.Email,
                             ExpirationDate = DateTime.UtcNow.AddHours(24),
                             IsUsed = false
@@ -146,9 +145,11 @@ namespace Sempi5
                         await userRepository.AddAsync(newUser);
                         await unitOfWork.CommitAsync();    
 
+                        var tokenValue = await tokenRepo.GetTokenByEmail(newUser.Email.ToString());
+
                         var message = "<b>Hello,</b><br>" +
                         "Thank you for signing up! Please confirm your account by clicking the link below:<br><br>" +
-                        "<a href='http://localhost:5012/api/SystemUser/confirm/" + token.TokenValue + "/true'>Click here to confirm your account</a><br><br>" +
+                        "<a href='http://localhost:5012/api/SystemUser/confirm/" + tokenValue.Id.AsString() + "/true'>Click here to confirm your account</a><br><br>" +
                         "If you didn't sign up, please ignore this email.";
 
                         var subject = "Confirmation of Account";
