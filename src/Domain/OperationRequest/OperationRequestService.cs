@@ -54,4 +54,31 @@ public class OperationRequestService
         return operationRequest;
     }
 
+    //update
+    public OperationRequest UpdateOperationRequest(int operationRequestId, OperationRequestUpdateDTO dto)
+    {
+        //get request by id
+        var operationRequest = _operationRequestRepository.GetOperationRequestById(new OperationRequestID(dto.OperationRequestId.ToString()));
+        if (operationRequest == null)
+        {
+            throw new Exception("Operation request not found.");
+        }
+
+        //verify staff
+        if (operationRequest.StaffId != new StaffID(dto.StaffId.ToString()))
+        {
+            throw new Exception("Only the creator of the request can update it.");
+        }
+
+        //update
+        operationRequest.UpdatePriority(Priority.FromString(dto.NewPriority));
+        operationRequest.UpdateDeadline(new Deadline(dto.NewDeadline));
+
+        //add to repository
+        _operationRequestRepository.UpdateOperationRequest(operationRequest);
+        
+        return operationRequest;
+    }
+
+
 }
