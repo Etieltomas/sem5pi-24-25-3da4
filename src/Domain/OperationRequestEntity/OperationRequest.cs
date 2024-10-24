@@ -23,7 +23,6 @@ namespace Sempi5.Domain.OperationRequestEntity
         {
             Deadline = newDeadline;
         }
-
     }
 }
 

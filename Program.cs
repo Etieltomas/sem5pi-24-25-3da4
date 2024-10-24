@@ -9,6 +9,7 @@ using Sempi5.Domain.SpecializationEntity;
 using Sempi5.Domain.StaffEntity;
 using Sempi5.Domain.TokenEntity;
 using Sempi5.Domain.UserEntity;
+using Sempi5.Domain.OperationRequestEntity;
 using Sempi5.Infrastructure.PatientRepository;
 using Sempi5.Infrastructure.Shared;
 using Sempi5.Infrastructure.SpecializationRepository;
@@ -224,6 +225,7 @@ namespace Sempi5
             {
                 await SeedSpecializationsAsync(services);
                 await SeedUsersAsync(services);
+                // await SeedOperationTypeAsync(services);
             }
             catch (Exception ex)
             {
@@ -271,6 +273,29 @@ namespace Sempi5
 
             await unitOfWork.CommitAsync();
         }
+
+/*
+        private static async Task SeedOperationTypeAsync(IServiceProvider services)
+        {
+        var operationTypeRep = services.GetRequiredService<IOperationTypeRepository>();
+        var unitOfWork = services.GetRequiredService<IUnitOfWork>();
+
+        var operationType1 = new OperationType(new OperationTypeID("Cardio"), "Cardiology Operation");
+        var operationType2 = new OperationType(new OperationTypeID("Neuro"), "Neurology Operation");
+
+        await operationTypeRep.AddAsync(operationType1);
+        await operationTypeRep.AddAsync(operationType2);
+
+        var operationTypes = await operationTypeRep.GetAllAsync();
+        if (operationTypes.Count > 0)
+        {
+            return;
+        }
+        await unitOfWork.CommitAsync();
+}
+
+      */
+
 
 
         public static void ConfigureMyServices(IServiceCollection services)

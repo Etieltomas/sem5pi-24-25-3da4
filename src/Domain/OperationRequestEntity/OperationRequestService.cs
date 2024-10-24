@@ -44,8 +44,8 @@ public class OperationRequestService
         var patient = await _patientRepository.GetPatientById(new PatientID(dto.PatientId.ToString()));
         if (patient == null)
         {   
-            // TODO
-            throw new Exception("The staff does not have the necessary specialization for this type of operation.");
+            // patient not found
+            throw new Exception("Patient not found.");
         }
 
         var operationRequest = new OperationRequest{
