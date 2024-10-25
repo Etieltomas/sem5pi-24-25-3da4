@@ -285,14 +285,28 @@ namespace Sempi5
             }
 
             // TODO: Add more users as needed
-            var user = new SystemUser{
-                Username = "admin",
-                Email = new Email("admin@gmail.com"),
+            var user1 = new SystemUser{
+                Username = "tomas",
+                Email = new Email("tomasandreleite@gmail.com"),
+                Role = "Admin",
+                Active = true
+            };
+            var user2 = new SystemUser{
+                Username = "simao",
+                Email = new Email("simooncat@gmail.com"),
+                Role = "Admin",
+                Active = true
+            };
+            var user3 = new SystemUser{
+                Username = "ricardo",
+                Email = new Email("ricardo.guimaraes400@gmail.com"),
                 Role = "Admin",
                 Active = true
             };
 
-            await userRep.AddAsync(user);
+            await userRep.AddAsync(user1);
+            await userRep.AddAsync(user2);
+            await userRep.AddAsync(user3);
 
             await unitOfWork.CommitAsync();
         }
