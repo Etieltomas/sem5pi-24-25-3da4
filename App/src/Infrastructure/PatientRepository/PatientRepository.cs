@@ -49,6 +49,44 @@ namespace Sempi5.Infrastructure.PatientRepository
 
             return pat; 
         }
+
+        public async Task<Patient> GetPatientByName(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return null;
+            }
+
+            var patient = await _context.Patients
+                .Include(p => p.SystemUser) 
+                .FirstOrDefaultAsync(p => p.SystemUser == null || p.Name.Equals(new Name(name)));
+                    
+            return patient; 
+        }
+        
+        public async Task<List<Patient>> GetPatientsFiltered(string? name, string? email, string? dateOfBirth, string? medicalRecordNumber, int page, int pageSize)
+        {
+            var query = _context.Patients
+                .Include(p => p.SystemUser)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(name)){
+                query = query.Where(p => p.Name.Equals(new Name(name)));
+            }	
+            if (!string.IsNullOrEmpty(email)){
+                query = query.Where(p => p.Email.Equals(new Email(email)));
+            }
+            if (!string.IsNullOrEmpty(dateOfBirth)){
+                query = query.Where(p => p.DateOfBirth.Equals(DateTime.Parse(dateOfBirth)));
+            }
+            if (!string.IsNullOrEmpty(medicalRecordNumber)){
+                query = query.Where(p => p.Id.Equals(new PatientID(medicalRecordNumber)));
+            }
+
+            query = query.Skip((page - 1) * pageSize).Take(pageSize);
+
+            return await query.ToListAsync();
+        }
     }
 
 }
