@@ -23,6 +23,11 @@ namespace Sempi5.Domain.OperationRequestEntity
         {
             Deadline = newDeadline;
         }
+
+        public void MarkAsDeleted()
+        {
+        Status = Status.Cancelled;
+        }
     }
 }
 

@@ -25,12 +25,22 @@ namespace Sempi5.Infrastructure
 
         public async Task<List<OperationRequest>> SearchOperationRequests(string? patientName, string? operationType, string? priority, string? status)
         {
-            return await _context.OperationRequests.Where(r =>
+            return await _context.OperationRequests
+            .Include(r => r.Patient)
+            .Include(r => r.OperationType)
+            .Where(r =>
                 (string.IsNullOrEmpty(patientName) || r.Patient.Id.ToString().Contains(patientName)) &&
                 (string.IsNullOrEmpty(operationType) || r.OperationType.Name.Contains(operationType)) &&
                 (string.IsNullOrEmpty(priority) || r.Priority.Value.Equals(priority, StringComparison.OrdinalIgnoreCase)) &&
                 (string.IsNullOrEmpty(status) || r.Status.Value.Equals(status, StringComparison.OrdinalIgnoreCase))
             ).ToListAsync();
+        }
+
+        public async Task RemoveAsync(OperationRequest operationRequest)
+        {
+            operationRequest.MarkAsDeleted();
+            _context.OperationRequests.Update(operationRequest);
+            await _context.SaveChangesAsync();
         }
     }
 }
