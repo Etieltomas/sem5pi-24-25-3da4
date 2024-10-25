@@ -92,6 +92,7 @@ namespace Sempi5.Controllers
         }
 
         [HttpGet("search")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<List<PatientDTO>>> SearchPatients(
             [FromQuery] string? name,
             [FromQuery] string? email,
