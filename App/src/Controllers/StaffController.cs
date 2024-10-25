@@ -120,7 +120,7 @@ namespace Sempi5.Controllers
                                         "&json=" +
                                         Uri.EscapeDataString(_cryptography.EncryptString(JsonSerializer.Serialize(editStaffDto)));
 
-                var message = CreateStaffUpdateEmail(newStaff.Name, editStaffDto, confirmationLink);
+                var message = CreateStaffUpdateEmail(staff.Name, editStaffDto, confirmationLink);
 
                 _emailService.sendEmail(newStaff.Name, originalEmail, "Contact Information Updated", message);
             } else {

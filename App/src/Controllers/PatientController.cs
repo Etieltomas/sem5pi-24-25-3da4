@@ -1,9 +1,9 @@
 using System.Security.Claims;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Sempi5.Domain.PatientEntity;
-using Sempi5.Infrastructure.Databases;
+using Sempi5.Domain.TokenEntity;
 
 
 namespace Sempi5.Controllers
@@ -14,10 +14,16 @@ namespace Sempi5.Controllers
     {
 
         private readonly PatientService _service;
+        private readonly EmailService _emailService;
+        private readonly Cryptography _cryptography;
+        private readonly Serilog.ILogger _logger;
 
-        public PatientController(PatientService service)
+        public PatientController(PatientService service, EmailService emailService, Serilog.ILogger logger, Cryptography cryptography)
         {
             _service = service;
+            _emailService = emailService;
+            _logger = logger;
+            _cryptography = cryptography;
         }
 
         [HttpPut("associate/{email}")]
@@ -39,6 +45,7 @@ namespace Sempi5.Controllers
 
         // Function to create patient
         [HttpPost("register")]
+        [Authorize (Roles = "Admin")]
         public async Task<ActionResult<PatientDTO>> RegisterPatient(PatientDTO PatientDTO)
         {
             var patient = await _service.AddPatient(PatientDTO);
@@ -110,6 +117,145 @@ namespace Sempi5.Controllers
             }
 
             return Ok(patients);
+        }
+
+        [HttpPut("update")]
+        [Authorize (Roles = "Patient")]
+        public async Task<ActionResult> UpdatePatient(PatientDTO editPatientDTO)
+        {
+            var cookie = User.Identity as ClaimsIdentity;
+            var emailCookie = cookie?.FindFirst(ClaimTypes.Email)?.Value;
+
+            var myProfile = await _service.GetPatientByEmail(emailCookie);
+
+            if (myProfile == null)
+            {
+                return NotFound();
+            }
+
+            var originalName = myProfile.Name;
+            var originalPhone = myProfile.Phone;
+            var originalEmail = myProfile.Email;
+            var originalAddress = myProfile.Address;
+            // Ver se é para adicionar preferências
+
+            var newPatientProfile = await _service.UpdatePatient(emailCookie, editPatientDTO, false);
+
+            if (newPatientProfile == null)
+            {
+                return NotFound();
+            }
+
+            if (!originalEmail.Equals(newPatientProfile.Email) ||
+                !originalPhone.Equals(newPatientProfile.Phone) ||
+                !originalAddress.Equals(newPatientProfile.Address))
+            {
+                var confirmationLink = "http://localhost:5012/api/Patient/update/confirm-changes?email=" +
+                        Uri.EscapeDataString(_cryptography.EncryptString(JsonSerializer.Serialize(emailCookie))) + 
+                        "&json=" +
+                        Uri.EscapeDataString(_cryptography.EncryptString(JsonSerializer.Serialize(editPatientDTO)));
+
+                var message = CreatePatientUpdateEmail(originalName, editPatientDTO, confirmationLink);
+
+                _emailService.sendEmail(newPatientProfile.Name, originalEmail, "Contact Information Updated", message);
+
+                return Ok(new { message = "Confirmation sent successfully." });
+
+            } else {
+                CreateLog(emailCookie, editPatientDTO);
+                
+                return Ok(new { message = "Update successful." });
+            }
+        }
+
+        public string CreatePatientUpdateEmail(string name, PatientDTO editPatientDto, string confirmationLink)
+        {
+            var message = "<html>";
+            message += "<body>";
+            message += "<b>Hello,</b><br>";
+            message += $"<p>{name} has been updated.</p>"; 
+
+            if (!string.IsNullOrEmpty(editPatientDto.Name))
+            {
+                message += $"<p>Name: {editPatientDto.Name}</p>";
+            }
+
+            if (!string.IsNullOrEmpty(editPatientDto.Email))
+            {
+                message += $"<p>Email: {editPatientDto.Email}</p>";
+            }
+
+            if (!string.IsNullOrEmpty(editPatientDto.Phone))
+            {
+                message += $"<p>Phone: {editPatientDto.Phone}</p>";
+            }
+
+            if (!string.IsNullOrEmpty(editPatientDto.Address))
+            {
+                message += $"<p>Address: {editPatientDto.Address}</p>";
+            }
+
+            message += $"<p>Please <a href='{confirmationLink}'>Click here</a> to confirm the changes.</p>";
+            message += "</body>";
+            message += "</html>";
+
+            return message;
+        }
+
+        [HttpGet("update/confirm-changes")]
+        public async Task<ActionResult> EditPatientProfile(
+            [FromQuery] string email,
+            [FromQuery] string json
+        )
+        {
+            try
+            {
+                var decryptedEmail = _cryptography.DecryptString(email);
+                var decryptedJson = _cryptography.DecryptString(json);
+
+                var editPatientDto = JsonSerializer.Deserialize<PatientDTO>(decryptedJson);
+                var formerEmail = JsonSerializer.Deserialize<string>(decryptedEmail);
+
+                if (editPatientDto == null || formerEmail == null)
+                {
+                    return BadRequest();
+                }
+
+                var newPatient = await _service.UpdatePatient(formerEmail.ToString(), editPatientDto, true);
+
+                CreateLog(formerEmail, editPatientDto);
+                
+                return Ok(new { message = "Changes confirmed." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("An error occurred while processing your request."+ex.Message);
+            }
+        }
+
+        private void CreateLog(string email, PatientDTO editPatientDTO)
+        {
+            var text = $"Patiente with email {email} has been updated with the following information:";
+
+            if (editPatientDTO.Name != null)
+            {
+                text += $" Name: {editPatientDTO.Name},";
+            }
+            if (editPatientDTO.Email != null)
+            {
+                text += $" Email: {editPatientDTO.Email},";
+            }
+            if (editPatientDTO.Phone != null)
+            {
+                text += $" Phone: {editPatientDTO.Phone},";
+            }
+            if (editPatientDTO.Address != null)
+            {
+                text += $" Address: {editPatientDTO.Address},";
+            }
+
+            _logger.ForContext("CustomLogLevel", "CustomLevel")
+                    .Information(text.Remove(text.Length - 1));
         }
     }
 }
