@@ -129,7 +129,6 @@ namespace Sempi5.Domain.PatientEntity
                 DateOfBirth = patient.DateOfBirth.ToString("dd-MM-yyyy")
             };
         }
-
-        
+    
     }
 }

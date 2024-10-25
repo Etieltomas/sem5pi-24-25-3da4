@@ -28,7 +28,7 @@ public class OperationRequestService
     public async Task<OperationRequestCreateDTO> CreateOperationRequest(OperationRequestCreateDTO dto)
     {
         //operation type by id
-        var operationType = await _operationTypeRepository.GetOperationTypeById(new OperationTypeID(dto.OperationTypeId.ToString()));
+        var operationType = await _operationTypeRepository.GetOperationTypeById(new OperationTypeID(long.Parse(dto.OperationTypeId.ToString())));
         if (operationType == null)
         {
             throw new Exception("Operation Type not found.");

@@ -12,7 +12,7 @@ public class OperationTypeEntityTypeConfiguration : IEntityTypeConfiguration<Ope
 
         builder.Property(t => t.Id)
             .HasConversion(
-                v => v.AsString(),
+                v => v.AsLong(),
                 v => new OperationTypeID(v)
             )
             .ValueGeneratedOnAdd();
