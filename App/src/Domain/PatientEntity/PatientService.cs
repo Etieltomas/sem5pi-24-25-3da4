@@ -114,6 +114,26 @@ namespace Sempi5.Domain.PatientEntity
             return listDto;  
         }
 
+        public async Task<PatientDTO> GetPatientByName(string name)
+        {
+            var patient = await _repo.GetPatientByName(name);
+            return patient == null ? null : ConvertToDTO(patient);
+        }
+
+        public async Task<List<PatientDTO>> SearchPatients(string name, string email, string dateOfBirth, string medicalRecordNumber, int page, int pageSize){
+            
+            var list = await _repo.GetPatientsFiltered(name, email, dateOfBirth, medicalRecordNumber, page, pageSize);  
+
+            if (list == null)
+            {
+                return null;
+            }
+
+            List<PatientDTO> listDto = list.ConvertAll(pat => ConvertToDTO(pat));
+
+            return listDto;
+        }
+
         private PatientDTO ConvertToDTO(Patient patient)
         {
             return new PatientDTO
