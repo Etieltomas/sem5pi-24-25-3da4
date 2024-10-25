@@ -16,14 +16,18 @@ using Sempi5.Infrastructure.SpecializationRepository;
 using Sempi5.Infrastructure.StaffRepository;
 using Sempi5.Infrastructure.TokenRepository;
 using Sempi5.Infrastructure.UserRepository;
+using Serilog;
+using Serilog.Events;
 
 namespace Sempi5
 {
     public class Program
     {
         public static void Main(string[] args)
-        {
+        {  
             var builder = WebApplication.CreateBuilder(args);
+        
+            CreateLogginsMechanism(builder);
             
             ConfigureIAM(builder);
 
@@ -43,7 +47,20 @@ namespace Sempi5
 
             app.Run();
         }
-        
+
+        private static void CreateLogginsMechanism(WebApplicationBuilder builder)
+        {
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                .Enrich.FromLogContext()
+                .WriteTo.Console()
+                .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
+
+            builder.Host.UseSerilog();
+        }
+
         private static void ConfigureIAM(WebApplicationBuilder builder)
         {
             builder.Services.AddAuthorization(options =>
@@ -316,6 +333,8 @@ namespace Sempi5
             services.AddTransient<ITokenRepository, TokenRepository>();
 
             services.AddTransient<EmailService>();
+
+            services.AddTransient<Cryptography>();
         }
     }
 }
