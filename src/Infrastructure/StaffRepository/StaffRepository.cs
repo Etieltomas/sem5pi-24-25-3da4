@@ -26,7 +26,7 @@ namespace Sempi5.Infrastructure.StaffRepository
             var staff = await _context.Staff
                 .Include(s => s.SystemUser)
                 .Include(s => s.Specialization)
-                .FirstOrDefaultAsync(s => s.Specialization == null || s.Email.Equals(new Email(email)));
+                .FirstOrDefaultAsync(s => s.Email.Equals(new Email(email)));
                     
             return staff;
         }
@@ -49,7 +49,7 @@ namespace Sempi5.Infrastructure.StaffRepository
             var staff = await _context.Staff
                 .Include(s => s.SystemUser)
                 .Include(s => s.Specialization)
-                .FirstOrDefaultAsync(s => s.SystemUser == null || s.Id.Equals(id)); 
+                .FirstOrDefaultAsync(s => s.Id.Equals(id)); 
             
             return staff;
         }
