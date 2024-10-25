@@ -1,9 +1,9 @@
 using Sempi5.Domain.OperationRequestEntity;
+using Sempi5.Domain.Shared;
 
-public interface IOperationTypeRepository
+public interface IOperationTypeRepository : IRepository<OperationType, OperationTypeID>
 {
     Task<OperationType> GetOperationTypeById(OperationTypeID id);
-     Task<IEnumerable<OperationType>> GetAllAsync();
-
-        Task AddAsync(OperationType operationType);
+    Task<OperationType> GetOperationTypeByName(string name);
+    Task<IEnumerable<OperationType>> GetAllAsync();
 }

@@ -1,5 +1,6 @@
 using Sempi5.Domain.OperationRequestEntity;
 using Sempi5.Domain.PatientEntity;
+using Sempi5.Domain.Shared;
 using Sempi5.Domain.StaffEntity;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,8 @@ using System.Globalization;
 
 public class OperationRequestService
 {
+    private readonly IUnitOfWork _unitOfWork;
+
     private readonly IOperationRequestRepository _operationRequestRepository;
     private readonly IOperationTypeRepository _operationTypeRepository;
     private readonly IStaffRepository _staffRepository;
@@ -16,19 +19,21 @@ public class OperationRequestService
         IOperationRequestRepository operationRequestRepository,
         IOperationTypeRepository operationTypeRepository,
         IStaffRepository staffRepository,
-        IPatientRepository patientRepository)
+        IPatientRepository patientRepository,
+        IUnitOfWork unitOfWork)
     {
         _operationRequestRepository = operationRequestRepository;
         _operationTypeRepository = operationTypeRepository;
         _staffRepository = staffRepository;
         _patientRepository = patientRepository;
+        _unitOfWork = unitOfWork;
     }
 
     //create operation request
     public async Task<OperationRequestCreateDTO> CreateOperationRequest(OperationRequestCreateDTO dto)
     {
         //operation type by id
-        var operationType = await _operationTypeRepository.GetOperationTypeById(new OperationTypeID(long.Parse(dto.OperationTypeId.ToString())));
+        var operationType = await _operationTypeRepository.GetOperationTypeByName(dto.OperationTypeId.ToString());
         if (operationType == null)
         {
             throw new Exception("Operation Type not found.");
@@ -59,6 +64,8 @@ public class OperationRequestService
 
         var newOperationRequest = await _operationRequestRepository.AddAsync(operationRequest);
         
+        _unitOfWork.CommitAsync();
+
         return ConvertToDTO(newOperationRequest);
     }
 

@@ -1,28 +1,43 @@
+using Microsoft.EntityFrameworkCore;
 using Sempi5.Domain.OperationRequestEntity;
+using Sempi5.Domain.SpecializationEntity;
+using Sempi5.Infrastructure.Databases;
+using Sempi5.Infrastructure.Shared;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Sempi5.Infrastructure
 {
-    public class OperationTypeRepository : IOperationTypeRepository
+    public class OperationTypeRepository : BaseRepository<OperationType, OperationTypeID> , IOperationTypeRepository
     {
-        private readonly List<OperationType> _operationTypes = new List<OperationType>();
+        private readonly DataBaseContext _context;
 
-        public Task AddAsync(OperationType operationType)
+        public OperationTypeRepository(DataBaseContext context) : base(context.OperationTypes)
         {
-            _operationTypes.Add(operationType);
-
-            return Task.CompletedTask;
+            _context = context;
         }
 
-        public Task<IEnumerable<OperationType>> GetAllAsync()
+        public async Task<IEnumerable<OperationType>> GetAllAsync()
         {
-             return Task.FromResult<IEnumerable<OperationType>>(_operationTypes);
+            return await _context.OperationTypes.Include(o => o.Specialization).ToListAsync();
         }
 
         public async Task<OperationType> GetOperationTypeById(OperationTypeID id)
         {
-            return _operationTypes.FirstOrDefault(o => o.Id.Equals(id));
+            return await _context.OperationTypes
+                .Include(o => o.Specialization)
+                .FirstOrDefaultAsync(o => o.Id.Equals(id));
+        }
+
+        public async Task<OperationType> GetOperationTypeByName(string name)
+        {
+            var test = new SpecializationID(name);
+
+            var pat = await _context.OperationTypes
+                .Include(p => p.Specialization)
+                .FirstOrDefaultAsync(p => p.Specialization.Id.Equals(test));
+
+            return pat;
         }
     }
 }

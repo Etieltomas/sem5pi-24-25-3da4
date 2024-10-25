@@ -21,5 +21,10 @@ namespace Sempi5.Domain.SpecializationEntity
         {
             return (string)ObjValue;
         }
+
+        public bool Equals(SpecializationID other)
+        {
+            return ObjValue.ToString().Equals(other.ObjValue.ToString());
+        }
     }
 }

@@ -2,22 +2,22 @@ using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("api/[controller]")]
-public class OperationRequestCreateController : ControllerBase
+public class OperationRequestController : ControllerBase
 {
     private readonly OperationRequestService _operationRequestService;
 
-    public OperationRequestCreateController(OperationRequestService operationRequestService)
+    public OperationRequestController(OperationRequestService operationRequestService)
     {
         _operationRequestService = operationRequestService;
     }
 
     [HttpPost]
     [Route("create")]
-    public IActionResult CreateOperationRequest([FromBody] OperationRequestCreateDTO dto)
+    public async Task<ActionResult<OperationRequestCreateDTO>> CreateOperationRequest([FromBody] OperationRequestCreateDTO dto)
     {
         try
         {
-              var result = _operationRequestService.CreateOperationRequest(dto);
+            var result = await _operationRequestService.CreateOperationRequest(dto);
             return Ok(result);
         }
         catch (Exception ex)
@@ -28,7 +28,7 @@ public class OperationRequestCreateController : ControllerBase
 
     [HttpPut]
     [Route("update")]
-    public IActionResult UpdateOperationRequest([FromBody] OperationRequestUpdateDTO dto)
+    public async Task<ActionResult<OperationRequestUpdateDTO>> UpdateOperationRequest([FromBody] OperationRequestUpdateDTO dto)
     {
         try
         {
@@ -43,7 +43,7 @@ public class OperationRequestCreateController : ControllerBase
 
     [HttpDelete]
     [Route("delete")]
-    public IActionResult DeleteOperationRequest([FromQuery] int operationRequestId, [FromQuery] int staffId)
+    public async Task<ActionResult> DeleteOperationRequest([FromQuery] int operationRequestId, [FromQuery] int staffId)
     {
         try
         {
@@ -58,7 +58,7 @@ public class OperationRequestCreateController : ControllerBase
     
     [HttpGet]
     [Route("list")]
-    public IActionResult SearchOperationRequests([FromQuery] string? patientName, [FromQuery] string? operationType, [FromQuery] string? priority, [FromQuery] string? status)
+    public async Task<ActionResult> SearchOperationRequests([FromQuery] string? patientName, [FromQuery] string? operationType, [FromQuery] string? priority, [FromQuery] string? status)
     {
         try
         {

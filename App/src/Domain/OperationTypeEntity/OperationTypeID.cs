@@ -13,7 +13,7 @@ namespace Sempi5.Domain.OperationRequestEntity
 
         public override string AsString()
         {
-            return (string)ObjValue;
+            return ObjValue.ToString();
         }
 
         public long AsLong()
