@@ -77,5 +77,38 @@ namespace Sempi5.Controllers
 
             return Ok(patient);
         }
+
+        [HttpGet("name/{name}")]
+        public async Task<ActionResult<PatientDTO>> GetPatientByName(string name)
+        {
+            var patient = await _service.GetPatientByName(name);
+
+            if (patient == null)
+            {
+                return NotFound();
+            }
+            
+            return Ok(patient);
+        }
+
+        [HttpGet("search")]
+        public async Task<ActionResult<List<PatientDTO>>> SearchPatients(
+            [FromQuery] string? name,
+            [FromQuery] string? email,
+            [FromQuery] string? dateOfBirth,
+            [FromQuery] string? medicalRecordNumber,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10
+        )
+        {
+            var patients = await _service.SearchPatients(name, email, dateOfBirth, medicalRecordNumber, page, pageSize);
+
+            if (patients == null || !patients.Any())
+            {
+                return NotFound("No patients found with the given criteria");
+            }
+
+            return Ok(patients);
+        }
     }
 }
