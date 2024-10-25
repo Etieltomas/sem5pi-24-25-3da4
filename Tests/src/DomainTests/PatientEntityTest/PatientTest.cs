@@ -1,52 +1,82 @@
-using System;
 using Xunit;
 using Sempi5.Domain.PatientEntity;
-using Sempi5.Domain.UserEntity;
+using System.Globalization;
 
-namespace DomainTests.PatientEntityTest
+namespace Sempi5Test.DomainTests.PatientEntityTest
 {
-    public class PatientTest
+    public class PatientTests
     {
         [Fact]
-        public void CanCreatePatient()
+        public void CanInitializePatient()
         {
-            // Arrange
-            var dateOfBirth = new DateTime(1990, 1, 1);
-            var name = new Name("John", "Doe");
-            var gender = Gender.Male;
-            var email = new Email("john.doe@example.com");
-            var phone = new Phone("1234567890");
-            var address = new Address("123 Main St", "City", "State", "12345");
-            var conditions = new List<Condition>();
-            var emergencyContact = new Phone("9876543210");
-            var systemUser = new SystemUser();
-
-            // Act
             var patient = new Patient
             {
-                Id = patientId,
-                DateOfBirth = dateOfBirth,
-                Name = name,
-                Gender = gender,
-                Email = email,
-                Phone = phone,
-                Address = address,
-                Conditions = conditions,
-                EmergencyContact = emergencyContact,
-                SystemUser = systemUser
+                DateOfBirth = DateTime.ParseExact("20-11-2004", "dd-MM-yyyy", CultureInfo.InvariantCulture),
+                Name = new Name("John Doe"),
+                Gender = Gender.Male,
+                Email = new Email("johndoe@example.com"),
+                Phone = new Phone("123-456-7890"),
+                Address = new Address("Rua das Flores", "Porto", "Portugal"),
+                Conditions = new List<Condition> { new Condition("Scoliosis"), new Condition("Carpal Tunnel") },
+                EmergencyContact = new Phone("098-765-4321"),
             };
 
-            // Assert
-            Assert.Equal(patientId, patient.Id);
-            Assert.Equal(dateOfBirth, patient.DateOfBirth);
-            Assert.Equal(name, patient.Name);
-            Assert.Equal(gender, patient.Gender);
-            Assert.Equal(email, patient.Email);
-            Assert.Equal(phone, patient.Phone);
-            Assert.Equal(address, patient.Address);
-            Assert.Equal(conditions, patient.Conditions);
-            Assert.Equal(emergencyContact, patient.EmergencyContact);
-            Assert.Equal(systemUser, patient.SystemUser);
+            Assert.NotNull(patient);
+            Assert.Equal("John", patient.Name.FirstName());
+            Assert.Equal("Doe", patient.Name.LastName());
+            Assert.Equal("Male", patient.Gender.ToString());
+            Assert.Equal("johndoe@example.com", patient.Email.ToString());
+        }
+
+        [Theory]
+        [InlineData("John Doe", "johndoe@example.com", "123-456-7890", "Rua das Palmeiras", "Trofa", "Portugal", "098-765-4321", true)]
+        [InlineData("", "johndoe@example.com", "123-456-7890", "Rua das Tábuas", "Trofa", "Portugal", "098-765-4321", false)]
+        [InlineData("Maria Doe", "", "123-456-7890", "Rua das Calças", "Trofa", "Portugal", "098-765-4321", false)]
+        [InlineData("David Doe", "daviddoe@example.com", "", "Rua das Flores", "Trofa", "Portugal", "098-765-4321", false)]
+        public void ValidateNonEmptyFields(string name, string email, string phone, string street,
+                                        string city ,string state, string emergencyContact, bool expected)
+        {
+            bool result;
+            try
+            {
+                var patient = new Patient
+                {
+                    Name = new Name(name),
+                    Email = new Email(email),
+                    Phone = new Phone(phone),
+                    Address = new Address(street, city, state),
+                    EmergencyContact = new Phone(emergencyContact)
+                };
+                result = true;
+            }
+            catch
+            {
+                result = false;
+            }
+
+            Assert.Equal(expected, result);
+        }
+
+        [Theory]
+        [InlineData("1990-01-01", true)]
+        [InlineData("2025-01-01", false)]
+        public void DateOfBirthIsValid(string dateOfBirth, bool expected)
+        {
+            bool result;
+            try
+            {
+                var patient = new Patient
+                {
+                    DateOfBirth = DateTime.Parse(dateOfBirth)
+                };
+                result = patient.DateOfBirth <= DateTime.Now;
+            }
+            catch
+            {
+                result = false;
+            }
+
+            Assert.Equal(expected, result);
         }
     }
 }

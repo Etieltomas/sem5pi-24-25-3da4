@@ -63,7 +63,8 @@ namespace Sempi5.Domain.UserEntity
                 Username = systemUserDTO.Username,
                 Email = new Email(systemUserDTO.Email),
                 Role = systemUserDTO.Role,
-                Active = systemUserDTO.Active
+                Active = systemUserDTO.Active,
+                MarktingConsent = systemUserDTO.MarktingConsent
             };
 
             await _repo.AddAsync(user);
@@ -102,7 +103,8 @@ namespace Sempi5.Domain.UserEntity
                 Email = user.Email.ToString(),
                 Username = user.Username,
                 Role = user.Role,
-                Active = user.Active   
+                Active = user.Active,
+                MarktingConsent = user.MarktingConsent
             };
         }
 
