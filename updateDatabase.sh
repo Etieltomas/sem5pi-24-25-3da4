@@ -1,5 +1,6 @@
 #!/bin/bash
 
+cd App
 # Remove the last migration
 echo "Removing the last migration..."
 rm -rf ./Migrations
@@ -17,3 +18,5 @@ echo "Updating the database..."
 dotnet ef database update
 
 echo "Migration update completed successfully!"
+
+cd ..
