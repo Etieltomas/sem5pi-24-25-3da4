@@ -55,7 +55,10 @@ namespace Sempi5
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                 .Enrich.FromLogContext()
                 .WriteTo.Console()
-                .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
+                .WriteTo.Logger(lc => lc
+                    .Filter.ByIncludingOnly(e =>
+                        e.Properties.ContainsKey("CustomLogLevel") && e.Properties["CustomLogLevel"].ToString() == "\"CustomLevel\"")
+                    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day))
                 .CreateLogger();
 
             builder.Host.UseSerilog();
@@ -110,7 +113,9 @@ namespace Sempi5
                 if (user != null && user.Email.Equals(new Email(email)))
                 {
                     // User already exists
-                    cookie.AddClaim(new Claim(ClaimTypes.Role, user.Role));                                               
+                    if (user.Active == true) {
+                        cookie.AddClaim(new Claim(ClaimTypes.Role, user.Role));                                               
+                    }
                 } 
                 else
                 {
@@ -262,8 +267,10 @@ namespace Sempi5
 
             // TODO: Add more specializations if needed
             var specialization = new Specialization(new SpecializationID("Cardiology"));
+            var specialization1 = new Specialization(new SpecializationID("Neurology"));
             
             await specRep.AddAsync(specialization);
+            await specRep.AddAsync(specialization1);
 
             await unitOfWork.CommitAsync();
         }
@@ -291,27 +298,32 @@ namespace Sempi5
             await unitOfWork.CommitAsync();
         }
 
-/*
         private static async Task SeedOperationTypeAsync(IServiceProvider services)
         {
-        var operationTypeRep = services.GetRequiredService<IOperationTypeRepository>();
-        var unitOfWork = services.GetRequiredService<IUnitOfWork>();
+            var operationTypeRep = services.GetRequiredService<IOperationTypeRepository>();
+            var specsRep = services.GetRequiredService<ISpecializationRepository>();
+            var unitOfWork = services.GetRequiredService<IUnitOfWork>();
+            var operationTypes = await operationTypeRep.GetAllAsync();
 
-        var operationType1 = new OperationType(new OperationTypeID("Cardio"), "Cardiology Operation");
-        var operationType2 = new OperationType(new OperationTypeID("Neuro"), "Neurology Operation");
+            if (operationTypes.Count() > 0)
+            {
+                return;
+            }
+                var operationType1 = new OperationType{
+                    Name = "Cardiology Operation",
+                    Specialization = await specsRep.GetByIdAsync(new SpecializationID("Cardiology"))
+                };
+                var operationType2 = new OperationType{
+                    Name = "Neurology Operation",
+                    Specialization = await specsRep.GetByIdAsync(new SpecializationID("Neurology"))
+                };
 
-        await operationTypeRep.AddAsync(operationType1);
-        await operationTypeRep.AddAsync(operationType2);
+            await operationTypeRep.AddAsync(operationType1);
+            await operationTypeRep.AddAsync(operationType2);
 
-        var operationTypes = await operationTypeRep.GetAllAsync();
-        if (operationTypes.Count > 0)
-        {
-            return;
+            
+            await unitOfWork.CommitAsync();
         }
-        await unitOfWork.CommitAsync();
-}
-
-      */
 
 
 
@@ -335,6 +347,8 @@ namespace Sempi5
             services.AddTransient<EmailService>();
 
             services.AddTransient<Cryptography>();
+
+            services.AddSingleton(Log.Logger);
         }
     }
 }

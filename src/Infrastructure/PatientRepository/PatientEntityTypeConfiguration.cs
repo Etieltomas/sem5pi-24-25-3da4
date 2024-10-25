@@ -58,7 +58,7 @@ namespace Sempi5.Infrastructure.PatientRepository
             
             builder.Property(t => t.DateOfBirth)
                 .HasConversion(
-                    v => v.ToString(),
+                    v => v.ToString("dd-MM-yyyy"),
                     v => DateTime.ParseExact(v, "dd-MM-yyyy", CultureInfo.InvariantCulture)
                 )
                 .IsRequired();

@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using Sempi5.Domain.Shared;
 
@@ -7,6 +8,7 @@ public class Email : IValueObject
 
         private static readonly Regex EmailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled);
 
+        [JsonConstructor]
         public Email(string value)
         {
             if (string.IsNullOrWhiteSpace(value))

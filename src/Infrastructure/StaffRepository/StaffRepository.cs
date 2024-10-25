@@ -53,6 +53,35 @@ namespace Sempi5.Infrastructure.StaffRepository
             
             return staff;
         }
+
+        public async Task<List<Staff>> SearchStaff(string? name, string? email, string? specialization,
+                             int page, int pageSize)
+        {
+            var query = _context.Staff
+                .Include(s => s.SystemUser)
+                .Include(s => s.Specialization)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                query = query.Where(s => s.Name.Equals(new Name(name)));
+            }
+
+            if (!string.IsNullOrEmpty(email))
+            {
+                query = query.Where(s => s.Email.Equals(new Email(email)));
+            }
+
+            if (!string.IsNullOrEmpty(specialization))
+            {
+                query = query.Where(s => s.Specialization.Id.AsString().Equals(specialization));
+            }
+
+            query = query.Skip((page - 1) * pageSize).Take(pageSize);
+
+
+            return await query.ToListAsync();
+        }
     }
 
 }

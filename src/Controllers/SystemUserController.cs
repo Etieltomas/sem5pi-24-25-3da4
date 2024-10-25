@@ -13,17 +13,19 @@ namespace Sempi5.Controllers
     {
 
         private readonly SystemUserService _service;
+        private readonly ILogger<SystemUserController> _logger;
 
-        public SystemUserController(SystemUserService service)
+        public SystemUserController(SystemUserService service, ILogger<SystemUserController> logger)
         {
             _service = service;
+            _logger = logger;
         }
 
 
         [HttpGet("confirm/{token}/{active}")]
-        public async Task<IActionResult> UpdateActive(Guid token, bool active)
+        public async Task<IActionResult> Update(Guid token, bool active)
         {
-            var user = await _service.UpdateActive(token, active);
+            var user = await _service.Update(token, active);
 
             if (user == null)
             {
@@ -33,6 +35,21 @@ namespace Sempi5.Controllers
             return Ok(new { active = user.Active });
         }
 
+
+        [HttpPut("active/{email}/{active}")]
+        public async Task<IActionResult> UpdateActive(string email, bool active)
+        {
+            var user = await _service.UpdateActive(email, active);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            _logger.LogInformation("User {email} is now {active}", email, active);
+
+            return Ok(new { active = user.Active });
+        }
 
 
         // Function to create SystemUser

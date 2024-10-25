@@ -51,12 +51,81 @@ namespace Sempi5.Domain.StaffEntity
             return staff == null ? null : ConvertToDTO(staff);
         }
 
+        public async Task<StaffDTO> GetStaffMemberByEmail(string email)
+        {
+            var staff = await _repo.GetStaffMemberByEmail(email);
+            return staff == null ? null : ConvertToDTO(staff);
+        }
+
         public async Task<List<StaffDTO>> GetAllStaffMembers()
         {
             var staffList = await _repo.GetAllStaffMembers();
             return staffList.Select(ConvertToDTO).ToList();
         }
 
+
+        public async Task<List<StaffDTO>> SearchStaff(string? name, string? email, string? specialization, int page, int pageSize)
+        {
+            var staff = await _repo.SearchStaff(name, email, specialization, page, pageSize);
+
+            return staff.Select(ConvertToDTO).ToList();
+        }
+
+
+        public async Task<StaffDTO> EditStaff(string email, StaffDTO staffDTO, bool isEmailComfirmed)
+        {
+            var staff = await _repo.GetStaffMemberByEmail(email);
+
+            var originalEmail = staff.Email;
+
+            if (staff == null)
+            {
+                return null;
+            }
+
+            var confirmationEmailNeeded = false;
+            if (staffDTO.AvailabilitySlots != null)
+            {
+                staff.AvailabilitySlots = staffDTO.AvailabilitySlots
+                    .Select(slot => new AvailabilitySlot(slot))
+                    .ToList();
+            }
+            
+            if (staffDTO.Specialization != null) {
+                var specialization = await _specRepo.GetByIdAsync(new SpecializationID(staffDTO.Specialization.ToLower()));
+                staff.Specialization = specialization;
+            }
+         
+            if (staffDTO.Email != null)
+            {
+                // Contact information has changed
+                staff.Email = new Email(staffDTO.Email);
+                confirmationEmailNeeded = true;
+            } 
+            
+            if (staffDTO.Phone != null)
+            {
+                // Contact information has changed
+                staff.Phone = new Phone(staffDTO.Phone);
+                confirmationEmailNeeded = true;
+            }
+
+            if (staffDTO.Address != null)
+            {
+                // Contact information has changed
+                var address = staffDTO.Address.Split(", ");
+                staff.Address = new Address(address[0], address[1], address[2]);
+                confirmationEmailNeeded = true;
+            }
+
+            if (!confirmationEmailNeeded || isEmailComfirmed)
+            {
+                await _unitOfWork.CommitAsync();
+            }
+
+            return ConvertToDTO(staff);
+        }
+        
         private StaffDTO ConvertToDTO(Staff staff)
         {
             var availabilitySlotsDTO = staff.AvailabilitySlots
@@ -75,5 +144,6 @@ namespace Sempi5.Domain.StaffEntity
                 Specialization = staff.Specialization.Id.AsString()
             };
         }
+
     }
 }

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Sempi5.Domain.Shared;
 using Sempi5.Domain.TokenEntity;
 using Sempi5.Domain.UserEntity;
@@ -17,7 +18,7 @@ namespace Sempi5.Domain.UserEntity
             this._repo = repo;
         }
 
-        public async Task<SystemUserDTO> UpdateActive(Guid token, bool active)
+        public async Task<SystemUserDTO> Update(Guid token, bool active)
         {
             var tokenUsed = await _tokenRepository.GetTokenByValue(new TokenID(token));
             if (token == null) {
@@ -42,6 +43,20 @@ namespace Sempi5.Domain.UserEntity
             return ConvertToDTO(user);
         }
 
+
+        public async Task<SystemUserDTO> UpdateActive(string email, bool activate)
+        {
+            var user = await _repo.GetUserByEmail(email);
+            if (user == null) {
+                return null;
+            }
+
+            user.Active = activate;
+
+            await _unitOfWork.CommitAsync();
+
+            return ConvertToDTO(user);
+        }
         public async Task<SystemUserDTO> AddUser(SystemUserDTO systemUserDTO){
 
             var user = new SystemUser{
@@ -90,5 +105,6 @@ namespace Sempi5.Domain.UserEntity
                 Active = user.Active   
             };
         }
+
     }
 }
