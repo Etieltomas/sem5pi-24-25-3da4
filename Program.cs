@@ -18,6 +18,7 @@ using Sempi5.Infrastructure.TokenRepository;
 using Sempi5.Infrastructure.UserRepository;
 using Serilog;
 using Serilog.Events;
+using Sempi5.Infrastructure;
 
 namespace Sempi5
 {
@@ -247,7 +248,7 @@ namespace Sempi5
             {
                 await SeedSpecializationsAsync(services);
                 await SeedUsersAsync(services);
-                // await SeedOperationTypeAsync(services);
+                await SeedOperationTypeAsync(services);
             }
             catch (Exception ex)
             {
@@ -321,7 +322,7 @@ namespace Sempi5
             await operationTypeRep.AddAsync(operationType1);
             await operationTypeRep.AddAsync(operationType2);
 
-            
+        
             await unitOfWork.CommitAsync();
         }
 
@@ -349,6 +350,12 @@ namespace Sempi5
             services.AddTransient<Cryptography>();
 
             services.AddSingleton(Log.Logger);
+
+            services.AddTransient<IOperationRequestRepository, OperationRequestRepository>();
+            services.AddTransient<OperationRequestService>();
+
+            services.AddTransient<IOperationTypeRepository, OperationTypeRepository>();
+            //services.AddTransient<OperationTypeService>();
         }
     }
 }
