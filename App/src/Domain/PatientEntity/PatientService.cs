@@ -134,6 +134,50 @@ namespace Sempi5.Domain.PatientEntity
             return listDto;
         }
 
+        public async Task<PatientDTO> UpdatePatient(string email, PatientDTO patientDTO, bool isEmailComfirmed)
+        {
+            var patient = await _repo.GetPatientByEmail(email);
+
+            var originalEmail = patient.Email;
+
+            if (patient == null)
+            {
+                return null;
+            }
+
+            bool confirmationEmailNeeded = false;
+            if (patientDTO.Name != null)
+            {
+                patient.Name = new Name(patientDTO.Name);
+            }
+
+            if(patientDTO.Phone != null)
+            {
+                patient.Phone = new Phone(patientDTO.Phone);
+                confirmationEmailNeeded = true;
+            }
+
+            if(patientDTO.Email != null)
+            {
+                patient.Email = new Email(patientDTO.Email);
+                confirmationEmailNeeded = true;
+            }
+
+            if(patientDTO.Address != null)
+            {
+                var address = patientDTO.Address.Split(", ");
+                patient.Address = new Address(address[0], address[1], address[2]);
+                confirmationEmailNeeded = true;
+            }
+
+            if (!confirmationEmailNeeded || isEmailComfirmed)
+            {
+                await _unitOfWork.CommitAsync();
+            }
+
+            return ConvertToDTO(patient);
+        }
+
         private PatientDTO ConvertToDTO(Patient patient)
         {
             return new PatientDTO
