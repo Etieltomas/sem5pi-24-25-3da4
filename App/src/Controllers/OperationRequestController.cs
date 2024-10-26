@@ -32,7 +32,7 @@ public class OperationRequestController : ControllerBase
     {
         try
         {
-            var result = _operationRequestService.UpdateOperationRequest(dto);
+            var result = await _operationRequestService.UpdateOperationRequest(dto);
             return Ok(result);
         }
         catch (Exception ex)
@@ -43,11 +43,11 @@ public class OperationRequestController : ControllerBase
 
     [HttpDelete]
     [Route("delete")]
-    public async Task<ActionResult> DeleteOperationRequest([FromQuery] int operationRequestId, [FromQuery] int staffId)
+    public async Task<ActionResult> DeleteOperationRequest([FromBody] OperationRequestUpdateDTO dto)
     {
         try
         {
-            _operationRequestService.DeleteOperationRequest(operationRequestId, staffId);
+            _operationRequestService.DeleteOperationRequest(dto.OperationRequestId, dto.StaffId);
             return Ok("Solicitação de operação removida com sucesso.");
         }
         catch (Exception ex)

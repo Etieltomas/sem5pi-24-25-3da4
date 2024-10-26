@@ -5,4 +5,7 @@ public interface IOperationRequestRepository : IRepository<OperationRequest, Ope
 {
     Task<OperationRequest> GetOperationRequestById(OperationRequestID id);
     Task<List<OperationRequest>> SearchOperationRequests(string? patientName, string? operationType, string? priority, string? status);
+    
+    //Task RemoveAsync(OperationRequest operationRequest);
+    //Task UpdateAsync(OperationRequest operationRequest);
 }

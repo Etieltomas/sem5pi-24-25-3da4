@@ -19,13 +19,20 @@ namespace Sempi5.Infrastructure
 
         public async Task<OperationRequest> GetOperationRequestById(OperationRequestID id)
         {
-            return _context.OperationRequests.FirstOrDefault(r => r.Id.Equals(id));
+            
+            return _context.OperationRequests
+            .Include(r => r.Staff)
+            .Include(r => r.Patient)
+            .Include(r => r.OperationType)
+            .FirstOrDefault(r => r.Id.Equals(id));
+
         }
 
 
         public async Task<List<OperationRequest>> SearchOperationRequests(string? patientName, string? operationType, string? priority, string? status)
         {
             return await _context.OperationRequests
+            .Include(r => r.Staff)
             .Include(r => r.Patient)
             .Include(r => r.OperationType)
             .Where(r =>
@@ -35,12 +42,21 @@ namespace Sempi5.Infrastructure
                 (string.IsNullOrEmpty(status) || r.Status.Value.Equals(status, StringComparison.OrdinalIgnoreCase))
             ).ToListAsync();
         }
-
+        
+        /*
         public async Task RemoveAsync(OperationRequest operationRequest)
         {
             operationRequest.MarkAsDeleted();
             _context.OperationRequests.Update(operationRequest);
             await _context.SaveChangesAsync();
         }
+
+        public async Task UpdateAsync(OperationRequest operationRequest)
+        {
+            _context.OperationRequests.Update(operationRequest); 
+            await _context.SaveChangesAsync(); 
+        }
+        */
+
     }
 }

@@ -64,7 +64,7 @@ public class OperationRequestService
 
         var newOperationRequest = await _operationRequestRepository.AddAsync(operationRequest);
         
-        _unitOfWork.CommitAsync();
+        await _unitOfWork.CommitAsync();
 
         return ConvertToDTO(newOperationRequest);
     }
@@ -88,22 +88,24 @@ public class OperationRequestService
 
         //update
         operationRequest.UpdatePriority(Priority.FromString(dto.NewPriority));
-        operationRequest.UpdateDeadline(new Deadline(dto.NewDeadline));
+        operationRequest.UpdateDeadline(new Deadline(DateTime.ParseExact(dto.NewDeadline, "dd-MM-yyyy", CultureInfo.InvariantCulture)));
 
         //add to repository
-        var newOperationRequest = await _operationRequestRepository.AddAsync(operationRequest);
+        //var newOperationRequest = await _operationRequestRepository.AddAsync(operationRequest);
 
-        return ConvertToDTO(newOperationRequest);
+        await _unitOfWork.CommitAsync();
+
+        return ConvertToDTO(operationRequest);
     }
 
     //delete request
-    public async void DeleteOperationRequest(int requestId, int staffId)
+    public async void DeleteOperationRequest(string requestId, string staffId)
     {
         //get request by id
-        var operationRequest = await _operationRequestRepository.GetOperationRequestById(new OperationRequestID(requestId.ToString()));
+        var operationRequest = await _operationRequestRepository.GetOperationRequestById(new OperationRequestID(requestId));
         if (operationRequest == null)
         {
-            throw new Exception("Operation request not found.");
+            throw new BusinessRuleValidationException("Operation request not found.");
         }
 
         //verification 
@@ -119,7 +121,9 @@ public class OperationRequestService
         }
 
         //delete request
-        _operationRequestRepository.Remove(operationRequest);
+         _operationRequestRepository.Remove(operationRequest);
+
+         await _unitOfWork.CommitAsync();
     }
 
      //list request
