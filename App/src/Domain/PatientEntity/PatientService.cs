@@ -1,7 +1,9 @@
 using System.Globalization;
 using System.Security.Claims;
+using Microsoft.DotNet.Scaffolding.Shared;
 using Sempi5.Domain.Shared;
 using Sempi5.Domain.UserEntity;
+
 
 namespace Sempi5.Domain.PatientEntity
 {
@@ -98,6 +100,66 @@ namespace Sempi5.Domain.PatientEntity
             var patient = await _repo.GetPatientByEmail(email);
             return patient == null ? null : ConvertToDTO(patient);
         }
+
+        public async Task<PatientDTO> UpdatePatientProfile(string patientId, PatientDTO updateDto)
+        {
+            //get patient by id
+            var patient = await _repo.GetPatientById(new PatientID(patientId));
+            if (patient == null)
+            {
+                throw new Exception("Patient not found.");
+            }
+
+            var originalEmail = patient.Email.ToString();
+            var originalPhone = patient.Phone.ToString();
+            var originalAddress = patient.Address.ToString();
+
+            //update patient information
+            if (!string.IsNullOrEmpty(updateDto.Name))
+                patient.Name = new Name(updateDto.Name);
+
+            if (!string.IsNullOrEmpty(updateDto.Email))
+                patient.Email = new Email(updateDto.Email);
+
+            if (!string.IsNullOrEmpty(updateDto.Phone))
+                patient.Phone = new Phone(updateDto.Phone);
+
+            if (!string.IsNullOrEmpty(updateDto.Address))
+            {
+                var addressParts = updateDto.Address.Split(", ");
+                patient.Address = new Address(addressParts[0], addressParts[1], addressParts[2]);
+            }
+
+            if (updateDto.Conditions != null && updateDto.Conditions.Any())
+            {
+                patient.Conditions = updateDto.Conditions.Select(c => new Condition(c)).ToList();
+            }
+
+            //sensitive data 
+            bool isSensitiveDataChanged = (originalEmail != patient.Email.ToString()) ||
+                                          (originalPhone != patient.Phone.ToString()) ||
+                                          (originalAddress != patient.Address.ToString());
+
+            if (isSensitiveDataChanged)
+            {
+                //email
+                var message = $"<p>Olá, {patient.Name}!</p>" +
+                              $"<p>Suas informações de contato foram atualizadas no sistema.</p>" +
+                              $"<p>Email: {patient.Email}</p>" +
+                              $"<p>Telefone: {patient.Phone}</p>" +
+                              $"<p>Endereço: {patient.Address}</p>" +
+                              "<p>Caso não tenha solicitado esta alteração, por favor entre em contato conosco.</p>";
+
+                _emailService.sendEmail(patient.Name.ToString(), originalEmail, "Atualização de Perfil", message);
+            }
+
+            await _unitOfWork.CommitAsync();
+
+
+            return ConvertToDTO(patient);
+        }
+
+        
 
         public async Task<List<PatientDTO>> GetAllPatients()
         {

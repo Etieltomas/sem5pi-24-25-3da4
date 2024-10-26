@@ -324,5 +324,37 @@ namespace Sempi5.Controllers
                 return BadRequest("An error occurred while processing your request."+ex.Message);
             }
         } 
+
+        [HttpPut("{patientId}")]
+        [Authorize(Roles = "Admin")]  
+        public async Task<IActionResult> UpdatePatientProfile(string patientId, [FromBody] PatientDTO updateDto)
+        {
+            if (updateDto == null || string.IsNullOrEmpty(patientId))
+            {
+                return BadRequest("Patient ID and update data are required.");
+            }
+
+            try
+            {
+                var updatedPatient = await _service.UpdatePatientProfile(patientId, updateDto);
+
+                return Ok(updatedPatient);
+            }
+            catch (Exception ex)
+            {
+                    return BadRequest("An error occurred while processing your request."+ex.Message);
+                }
+            }
+
+        private void LogChanges(string email, PatientDTO editPatientDTO)
+        {
+            var logMessage = $"Patient {email} profile updated: ";
+            if (!string.IsNullOrEmpty(editPatientDTO.Email)) logMessage += $"Email: {editPatientDTO.Email}, ";
+            if (!string.IsNullOrEmpty(editPatientDTO.Phone)) logMessage += $"Phone: {editPatientDTO.Phone}, ";
+            if (!string.IsNullOrEmpty(editPatientDTO.Address)) logMessage += $"Address: {editPatientDTO.Address}, ";
+            if (editPatientDTO.Conditions != null) logMessage += $"Conditions: {string.Join(", ", editPatientDTO.Conditions)}, ";
+            _logger.Information(logMessage.TrimEnd(','));
+        }
+    
     }
 }
