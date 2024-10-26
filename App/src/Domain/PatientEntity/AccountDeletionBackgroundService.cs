@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Sempi5.Domain.PatientEntity;
 
 public class AccountDeletionBackgroundService : BackgroundService
@@ -9,26 +10,26 @@ public class AccountDeletionBackgroundService : BackgroundService
         _serviceProvider = serviceProvider;
     }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-{
-    while (!stoppingToken.IsCancellationRequested)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken) 
     {
-        using (var scope = _serviceProvider.CreateScope())
+        while (!stoppingToken.IsCancellationRequested)
         {
-            var patientDeletionService = scope.ServiceProvider.GetRequiredService<PatientService>();
-            try
+            using (var scope = _serviceProvider.CreateScope())
             {
-                await patientDeletionService.ProcessScheduledDeletions();
+                var patientDeletionService = scope.ServiceProvider.GetRequiredService<PatientService>();
+                try
+                {
+                    await patientDeletionService.ProcessScheduledDeletions();
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("An error occurred while processing your request." + ex.Message);
+                }
             }
-            catch (Exception ex)
-            {
-                // Registar a exceção
-                Console.WriteLine($"Error in ProcessScheduledDeletions: {ex.Message}");
-            }
-        }
 
-        // Espera 1 segundo até a próxima execução
-        await Task.Delay(TimeSpan.FromSeconds(20), stoppingToken);
-    }
+            int refreshSeconds = 30;
+
+            await Task.Delay(TimeSpan.FromSeconds(refreshSeconds), stoppingToken);
+        }
     }
 }
