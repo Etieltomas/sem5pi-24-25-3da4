@@ -8,5 +8,6 @@ namespace Sempi5.Domain.UserEntity
     public interface IUserRepository : IRepository<SystemUser,SystemUserId>
     {
         public  Task<SystemUser> GetUserByEmail(string email);
+        public Task DeleteAsync(SystemUser user);
     }
 }
