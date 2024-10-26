@@ -48,7 +48,7 @@ public class OperationRequestController : ControllerBase
         try
         {
             _operationRequestService.DeleteOperationRequest(dto.OperationRequestId, dto.StaffId);
-            return Ok("Solicitação de operação removida com sucesso.");
+            return Ok("Operation request successfully removed.");
         }
         catch (Exception ex)
         {
