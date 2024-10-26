@@ -11,5 +11,7 @@ namespace Sempi5.Domain.PatientEntity
 
         public Task<List<Patient>> GetPatientsFiltered(string? name, string? email, string? dateOfBirth, string? medicalRecordNumber, int page, int pageSize);
         public Task<Patient> GetPatientByName(string name);
+
+        public Task<List<Patient>> GetPatientsForDeletion(DateTime actualTime);
     }
 }

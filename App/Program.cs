@@ -369,6 +369,8 @@ namespace Sempi5
 
             services.AddTransient<IOperationTypeRepository, OperationTypeRepository>();
             //services.AddTransient<OperationTypeService>();
+
+            services.AddHostedService<AccountDeletionBackgroundService>();
         }
     }
 }

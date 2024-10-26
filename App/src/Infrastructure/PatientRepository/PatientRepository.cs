@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Sempi5.Domain.PatientEntity;
 using Sempi5.Infrastructure.Databases;
@@ -86,6 +85,13 @@ namespace Sempi5.Infrastructure.PatientRepository
             query = query.Skip((page - 1) * pageSize).Take(pageSize);
 
             return await query.ToListAsync();
+        }
+
+        public async Task<List<Patient>> GetPatientsForDeletion(DateTime currentDateTime)
+        {
+            return await _context.Patients
+                .Where(p => p.DeletePatientDate.HasValue && p.DeletePatientDate.Value <= currentDateTime)
+                .ToListAsync();
         }
     }
 

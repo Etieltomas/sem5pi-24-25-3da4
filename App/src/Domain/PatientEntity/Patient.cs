@@ -24,6 +24,8 @@ namespace Sempi5.Domain.PatientEntity
         public Phone EmergencyContact { get; set; }
         public SystemUser? SystemUser { get; set; }
 
+        public DateTime? DeletePatientDate { get; set; }
+
         public void ChangeBirthDate(DateTime newDate)
         {
             if (newDate > DateTime.Now)
