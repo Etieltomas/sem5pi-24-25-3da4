@@ -257,5 +257,72 @@ namespace Sempi5.Controllers
             _logger.ForContext("CustomLogLevel", "CustomLevel")
                     .Information(text.Remove(text.Length - 1));
         }
+
+        [HttpPost("request-delete")]
+        [Authorize (Roles = "Patient")]
+        public async Task<IActionResult> RequestDeleteAccount(){
+
+            var cookie = User.Identity as ClaimsIdentity;
+            var emailCookie = cookie?.FindFirst(ClaimTypes.Email)?.Value;
+
+            var patient = await _service.GetPatientByEmail(emailCookie);
+
+            if (patient == null)
+            {
+                return NotFound();
+            }
+
+            var confirmationLink = "http://localhost:5012/api/Patient/request-delete/confirm-deletion?email=" +
+                        Uri.EscapeDataString(_cryptography.EncryptString(JsonSerializer.Serialize(emailCookie)));
+
+            var message = CreateDeleteAccountEmail(patient.Name, confirmationLink);
+
+            _emailService.sendEmail(patient.Name, emailCookie, "Account Deletion Request", message);
+
+            return Ok(new { message = "Confirmation sent successfully." });
+        }
+
+        public string CreateDeleteAccountEmail(string name, string confirmationLink)
+        {
+            var message = "<html>";
+            message += "<body>";
+            message += "<b>Hello,</b><br>";
+            message += $"<p>{name} has requested to delete their account.</p>"; 
+            message += $"<p>Please <a href='{confirmationLink}'>Click here</a> to confirm the deletion.</p>";
+            message += "</body>";
+            message += "</html>";
+
+            return message;
+        }
+
+        [HttpGet("request-delete/confirm-deletion")]
+        public async Task<ActionResult> DeleteAccount(
+            [FromQuery] string email
+        )
+        {
+            try
+            {
+                var decryptedEmail = _cryptography.DecryptString(email);
+
+                var formerEmail = JsonSerializer.Deserialize<string>(decryptedEmail);
+
+                var deleteScheduled = await _service.ScheduleDeletion(formerEmail.ToString());
+
+                if (!deleteScheduled)
+                {
+                    return BadRequest("Deletion could not be scheduled.");
+                }
+
+                //CreateLog(formerEmail, editPatientDto);
+
+                var numberOfDaysUntilDelete = 30;
+                
+                return Ok(new { message = "Deletion scheduled. Data will be erased in " +  numberOfDaysUntilDelete + "days." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("An error occurred while processing your request."+ex.Message);
+            }
+        } 
     }
 }
