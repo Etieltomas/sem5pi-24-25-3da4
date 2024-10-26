@@ -179,16 +179,17 @@ namespace Sempi5.Domain.PatientEntity
         }
 
         public async Task<bool> ScheduleDeletion(string email)
-{
-    var patient = await _repo.GetPatientByEmail(email);
-    if (patient == null) return false;
+        {
+            var patient = await _repo.GetPatientByEmail(email);
+            if (patient == null) return false;
 
-    // Agendar exclusão para 1 minuto a partir da data e hora atuais
-    patient.DeletePatientDate = DateTime.UtcNow.AddMinutes(0.25);
+            var daysUntilExclude = 30;
+            
+            patient.DeletePatientDate = DateTime.Now.AddDays(daysUntilExclude);
 
-    await _unitOfWork.CommitAsync();
-    return true;
-}
+            await _unitOfWork.CommitAsync();
+            return true;
+        }
 
         private PatientDTO ConvertToDTO(Patient patient)
         {
@@ -209,33 +210,48 @@ namespace Sempi5.Domain.PatientEntity
 
         public async Task ProcessScheduledDeletions()
         {
-        var patientsToDelete = await _repo.GetPatientsForDeletion(DateTime.UtcNow);
+            var patientsToDelete = await _repo.GetPatientsForDeletion(DateTime.Now);
 
-        foreach (var patient in patientsToDelete)
-        {
-            await NotifyDeletionCompletion(patient.Email.ToString());
+            foreach (var patient in patientsToDelete)
+            {
+                var warningEmailBackup = patient.Email.ToString();
+                var warningNameBackup = patient.Name.ToString();
 
-            patient.Name = new Name("anonymous");
-            patient.Gender = Gender.Other;
-            patient.Email = new Email("anonymous@email.com");
-            patient.Phone = new Phone("000-000-0000");
-            patient.DeletePatientDate = null;
-            patient.EmergencyContact = new Phone("000-000-0000");
-            patient.Address = new Address("anonymos", "anonymos", "anonymos");
-            patient.DateOfBirth = DateTime.MinValue; 
-            patient.DeletePatientDate = null;
-            patient.SystemUser = null;
-            await _unitOfWork.CommitAsync();
+                try
+                {
+                    if (patient.SystemUser != null)
+                    {
+                        await _repoUser.DeleteAsync(patient.SystemUser);
+                    }
 
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException("Falha ao eliminar o SystemUser associado ao paciente.", ex);
+                }
+
+                patient.Name = new Name("anonymous");
+                patient.Gender = Gender.Other;
+                patient.Email = new Email("anonymous@anonymous.anonymous");
+                patient.Phone = new Phone("000-000-0000");
+                patient.DeletePatientDate = null;
+                patient.EmergencyContact = new Phone("000-000-0000");
+                patient.Address = new Address("anonymos", "anonymos", "anonymos");
+                patient.DateOfBirth = DateTime.MinValue; 
+                patient.DeletePatientDate = null;
+                patient.SystemUser = null;
+
+                await _unitOfWork.CommitAsync();
+
+                await NotifyDeletionCompletion(warningEmailBackup, warningNameBackup);
+            }
         }
-        }
 
-        private async Task NotifyDeletionCompletion(string email)
+        private async Task NotifyDeletionCompletion(string email, string name)
         {
-            var patient = await _repo.GetPatientByEmail(email);
-            var message = "Your account and personal data have been permanently deleted as requested.";
+            var message = "Your account and personal data have been permanently deleted as requested, respecting GDPR.";
             
-            _emailService.sendEmail(patient.Name.ToString(), email, "Account Deletion Complete", message);
+            _emailService.sendEmail(name, email, "Account Deletion Complete", message);
         }
     }
 }
