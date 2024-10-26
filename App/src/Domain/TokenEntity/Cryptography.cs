@@ -19,7 +19,7 @@ namespace Sempi5.Domain.TokenEntity
 
                 using (var memoryStream = new MemoryStream())
                 {
-                    memoryStream.Write(iv, 0, iv.Length); // Prepend IV
+                    memoryStream.Write(iv, 0, iv.Length); 
                     using (var cryptoStream = new CryptoStream(memoryStream, aes.CreateEncryptor(), CryptoStreamMode.Write))
                     {
                         using (var streamWriter = new StreamWriter(cryptoStream))
@@ -27,13 +27,16 @@ namespace Sempi5.Domain.TokenEntity
                             streamWriter.Write(plainText);
                         }
                     }
-                    return Convert.ToBase64String(memoryStream.ToArray());
+                    string encrypted = Convert.ToBase64String(memoryStream.ToArray());
+
+                    return encrypted.Replace('/', '_');
                 }
             }
         }
 
         public string DecryptString(string cipherText)
         {
+            cipherText = cipherText.Replace('_', '/');
             byte[] fullCipher = Convert.FromBase64String(cipherText);
 
             byte[] iv = new byte[16];
