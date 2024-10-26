@@ -162,7 +162,7 @@ namespace Sempi5.Controllers
                 return Ok(new { message = "Confirmation sent successfully." });
 
             } else {
-                CreateLog(emailCookie, editPatientDTO);
+                CreateLogUpdate(emailCookie, editPatientDTO);
                 
                 return Ok(new { message = "Update successful." });
             }
@@ -223,7 +223,7 @@ namespace Sempi5.Controllers
 
                 var newPatient = await _service.UpdatePatient(formerEmail.ToString(), editPatientDto, true);
 
-                CreateLog(formerEmail, editPatientDto);
+                CreateLogUpdate(formerEmail, editPatientDto);
                 
                 return Ok(new { message = "Changes confirmed." });
             }
@@ -233,7 +233,7 @@ namespace Sempi5.Controllers
             }
         }
 
-        private void CreateLog(string email, PatientDTO editPatientDTO)
+        private void CreateLogUpdate(string email, PatientDTO editPatientDTO)
         {
             var text = $"Patiente with email {email} has been updated with the following information:";
 
@@ -287,8 +287,9 @@ namespace Sempi5.Controllers
             var message = "<html>";
             message += "<body>";
             message += "<b>Hello,</b><br>";
-            message += $"<p>{name} has requested to delete their account.</p>"; 
+            message += $"<p>It was requested to delete the account of {name}.</p>"; 
             message += $"<p>Please <a href='{confirmationLink}'>Click here</a> to confirm the deletion.</p>";
+            message += "</body>";
             message += "</body>";
             message += "</html>";
 
@@ -356,6 +357,55 @@ namespace Sempi5.Controllers
             _logger.ForContext("CustomLogLevel", "CustomLevel")
                 .Information(logMessage.TrimEnd(',', ' '));
         }
-    
+
+        [HttpDelete("request-delete/{email}")]
+        [Authorize (Roles = "Admin")]
+        public async Task<IActionResult> RequestDeletePatient(string email){
+
+            var cookie = User.Identity as ClaimsIdentity;
+            var emailCookie = cookie?.FindFirst(ClaimTypes.Email)?.Value;
+
+            var patient = await _service.GetPatientByEmail(email);
+
+            if (patient == null)
+            {
+                return NotFound();
+            }
+
+            var confirmationLink = $"http://localhost:5012/api/Patient/request-delete/{Uri.EscapeDataString(_cryptography.EncryptString(JsonSerializer.Serialize(email)))}/confirm-deletion";
+
+            var message = CreateDeleteAccountEmail(patient.Name, confirmationLink);
+
+            _emailService.sendEmail(patient.Name, emailCookie, "Patient Account Deletion Request", message);
+
+            return Ok(new { message = "Confirmation sent successfully." });
+
+        }
+
+        [HttpGet("request-delete/{encryptedEmail}/confirm-deletion")]
+        public async Task<ActionResult> DeletePatient(string encryptedEmail)
+        {
+            try
+            {
+                var decryptedEmail = _cryptography.DecryptString(encryptedEmail);
+
+                var formerEmail = JsonSerializer.Deserialize<string>(decryptedEmail);
+
+                var deleteScheduled = await _service.ScheduleDeletion(formerEmail);
+
+                if (!deleteScheduled)
+                {
+                    return BadRequest("Deletion could not be scheduled.");
+                }
+
+                var numberOfDaysUntilDelete = 30;
+                
+                return Ok(new { message = "Deletion scheduled. Data will be erased in " +  numberOfDaysUntilDelete + "days." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("An error occurred while processing your request."+ex.Message);
+            }
+        }   
     }
 }
