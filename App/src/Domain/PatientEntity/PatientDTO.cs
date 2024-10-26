@@ -13,5 +13,8 @@ namespace Sempi5.Domain.PatientEntity
         public string? Address { get; set; }
         public List<string>? Conditions { get; set; }  
         public string? EmergencyContact { get; set; }
+        public string? DeletePatientDate { get; set; }
+
+        public int? SystemUserID { get; set; }
     }
 }
