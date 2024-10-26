@@ -2,7 +2,7 @@ using Sempi5.Domain.Shared;
 
 namespace Sempi5.Domain.UserEntity
 {
-    public class SystemUser : Entity<SystemUserId>, ISystemUser
+    public class SystemUser : Entity<SystemUserId>
     {
         public string Username { get; set; }
         public string Role { get; set; }
