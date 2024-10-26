@@ -102,7 +102,7 @@ public class OperationRequestService
     public async void DeleteOperationRequest(string requestId, string staffId)
     {
         //get request by id
-        var operationRequest = await _operationRequestRepository.GetOperationRequestById(new OperationRequestID(requestId));
+        var operationRequest = await _operationRequestRepository.GetOperationRequestById(new OperationRequestID(requestId.ToString()));
         if (operationRequest == null)
         {
             throw new BusinessRuleValidationException("Operation request not found.");
@@ -127,9 +127,9 @@ public class OperationRequestService
     }
 
      //list request
-    public async Task<List<OperationRequestCreateDTO>> SearchOperationRequests(string? patientName, string? operationType, string? priority, string? status)
+    public async Task<List<OperationRequestCreateDTO>> SearchOperationRequests(string? patientName, string? operationType, string? priority, string? status,int page, int pageSize)
     {
-        var operationRequests = await _operationRequestRepository.SearchOperationRequests(patientName, operationType, priority, status);
+        var operationRequests = await _operationRequestRepository.SearchOperationRequests(patientName, operationType, priority, status, page, pageSize);
 
         return operationRequests.Select(ConvertToDTO).ToList();
     }

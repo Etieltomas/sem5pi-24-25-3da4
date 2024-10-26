@@ -29,7 +29,7 @@ namespace Sempi5.Infrastructure
         }
 
 
-        public async Task<List<OperationRequest>> SearchOperationRequests(string? patientName, string? operationType, string? priority, string? status)
+        public async Task<List<OperationRequest>> SearchOperationRequests(string? patientName, string? operationType, string? priority, string? status, int page, int pageSize) 
         {
             return await _context.OperationRequests
             .Include(r => r.Staff)
@@ -40,8 +40,10 @@ namespace Sempi5.Infrastructure
                 (string.IsNullOrEmpty(operationType) || r.OperationType.Name.Contains(operationType)) &&
                 (string.IsNullOrEmpty(priority) || r.Priority.Value.Equals(priority, StringComparison.OrdinalIgnoreCase)) &&
                 (string.IsNullOrEmpty(status) || r.Status.Value.Equals(status, StringComparison.OrdinalIgnoreCase))
-            ).ToListAsync();
+            ).Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
         }
+
+    
         
         /*
         public async Task RemoveAsync(OperationRequest operationRequest)

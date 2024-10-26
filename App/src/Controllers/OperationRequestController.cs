@@ -58,11 +58,16 @@ public class OperationRequestController : ControllerBase
     
     [HttpGet]
     [Route("list")]
-    public async Task<ActionResult> SearchOperationRequests([FromQuery] string? patientName, [FromQuery] string? operationType, [FromQuery] string? priority, [FromQuery] string? status)
+    public async Task<ActionResult> SearchOperationRequests([FromQuery] string? patientName, 
+    [FromQuery] string? operationType, 
+    [FromQuery] string? priority, 
+    [FromQuery] string? status,
+    [FromQuery] int page = 1,
+    [FromQuery] int pageSize = 10)
     {
         try
         {
-            var result = _operationRequestService.SearchOperationRequests(patientName, operationType, priority, status);
+            var result =  await _operationRequestService.SearchOperationRequests(patientName, operationType, priority, status, page, pageSize);
             return Ok(result);
         }
         catch (Exception ex)
