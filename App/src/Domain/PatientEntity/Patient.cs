@@ -9,22 +9,22 @@ namespace Sempi5.Domain.PatientEntity
     {
         private DateTime _dateOfBirth;
 
-        public DateTime DateOfBirth
+        public virtual DateTime DateOfBirth
         {
             get => _dateOfBirth;
             set => ChangeBirthDate(value);
         }
 
-        public Name Name { get; set; }
-        public Gender Gender { get; set; }
-        public Email Email { get; set; }
-        public Phone Phone { get; set; }
-        public Address Address { get; set; }
-        public List<Condition> Conditions { get; set; }
-        public Phone EmergencyContact { get; set; }
-        public SystemUser? SystemUser { get; set; }
+        public virtual Name Name { get; set; }
+        public virtual Gender Gender { get; set; }
+        public virtual Email Email { get; set; }
+        public virtual Phone Phone { get; set; }
+        public virtual Address Address { get; set; }
+        public virtual List<Condition> Conditions { get; set; }
+        public virtual Phone EmergencyContact { get; set; }
+        public virtual SystemUser? SystemUser { get; set; }
 
-        public DateTime? DeletePatientDate { get; set; }
+        public virtual DateTime? DeletePatientDate { get; set; }
 
         public void ChangeBirthDate(DateTime newDate)
         {

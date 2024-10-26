@@ -8,13 +8,13 @@ namespace Sempi5.Domain.StaffEntity
 {
     public class Staff : Entity<StaffID>, IAggregateRoot
     {
-        public LicenseNumber LicenseNumber { get; set; }
-        public Name Name { get; set; }
-        public Email Email { get; set; }
-        public Phone Phone { get; set; }  
-        public Address Address { get; set; }
-        public List<AvailabilitySlot> AvailabilitySlots { get; set; }  
-        public Specialization Specialization { get; set; }
-        public SystemUser SystemUser { get; set; }
+        public virtual LicenseNumber LicenseNumber { get; set; }
+        public virtual Name Name { get; set; }
+        public virtual Email Email { get; set; }
+        public virtual Phone Phone { get; set; }  
+        public virtual Address Address { get; set; }
+        public virtual List<AvailabilitySlot> AvailabilitySlots { get; set; }  
+        public virtual Specialization Specialization { get; set; }
+        public virtual SystemUser SystemUser { get; set; }
     }
 }
