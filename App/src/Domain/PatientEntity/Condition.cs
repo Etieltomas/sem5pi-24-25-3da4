@@ -5,7 +5,6 @@ namespace Sempi5.Domain.PatientEntity{
     {
         private string _value { get; }
 
-        // TODO : Maybe some business rules should be added here
         public Condition(string value)
         {
             if (string.IsNullOrWhiteSpace(value))

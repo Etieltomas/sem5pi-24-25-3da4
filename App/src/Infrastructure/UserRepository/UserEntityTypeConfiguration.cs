@@ -33,6 +33,9 @@ namespace Sempi5.Infrastructure.UserRepository
                 )
                 .IsRequired();
 
+            builder.Property(t => t.MarketingConsent)
+                .IsRequired();
+    
             builder.Property(t => t.Username)
                 .IsRequired();
         }

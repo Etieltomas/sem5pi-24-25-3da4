@@ -130,7 +130,7 @@ namespace Sempi5.Controllers
             return Ok(new { message = "Confirmation sent successfully." });
         }
 
-        public string CreateStaffUpdateEmail(string name, StaffDTO editStaffDto, string confirmationLink)
+        private string CreateStaffUpdateEmail(string name, StaffDTO editStaffDto, string confirmationLink)
         {
             var message = "<html>";
             message += "<body>";

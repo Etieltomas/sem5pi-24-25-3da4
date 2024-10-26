@@ -6,8 +6,6 @@ public class Address : IValueObject
     private string street;
     private string state;
 
-
-    // TODO : Maybe some business rules should be added here
     public Address(string street, string city, string state)
     {
         if (string.IsNullOrWhiteSpace(city) || string.IsNullOrEmpty(street) || string.IsNullOrEmpty(state))

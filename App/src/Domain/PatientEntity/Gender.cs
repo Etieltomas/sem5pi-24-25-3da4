@@ -13,12 +13,13 @@ namespace Sempi5.Domain.PatientEntity
     {
         public static Gender FromString(string genderString)
         {
+            genderString = genderString?.Replace(" ", string.Empty).ToLower();
             if (string.IsNullOrEmpty(genderString))
             {
                 throw new BusinessRuleValidationException("Gender cannot be null or empty.");
             }
 
-            switch (genderString.ToLower())
+            switch (genderString)
             {
                 case "male":
                     return Gender.Male;

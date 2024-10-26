@@ -4,7 +4,6 @@ public class Name : IValueObject
 {
     private string _value { get; }
 
-    // TODO : Maybe some business rules should be added here
     public Name(string value)
     {
         if (string.IsNullOrWhiteSpace(value))

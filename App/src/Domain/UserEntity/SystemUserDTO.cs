@@ -9,6 +9,6 @@ namespace Sempi5.Domain.UserEntity
         public string Role { get; set; }
         public string Email { get; set; }    
         public bool Active { get; set; }
-        public bool MarktingConsent { get; set; }
+        public bool MarketingConsent { get; set; }
     }
 }

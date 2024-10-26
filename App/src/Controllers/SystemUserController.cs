@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Sempi5.Domain.TokenEntity;
@@ -37,6 +38,7 @@ namespace Sempi5.Controllers
 
 
         [HttpPut("active/{email}/{active}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateActive(string email, bool active)
         {
             var user = await _service.UpdateActive(email, active);

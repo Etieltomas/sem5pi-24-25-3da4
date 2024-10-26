@@ -5,7 +5,6 @@ namespace Sempi5.Domain.StaffEntity {
     {
         private string _value { get; }
 
-        // TODO : Maybe some business rules should be added here
         public LicenseNumber(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
