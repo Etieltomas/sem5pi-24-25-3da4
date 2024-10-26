@@ -353,7 +353,8 @@ namespace Sempi5.Controllers
             if (!string.IsNullOrEmpty(editPatientDTO.Phone)) logMessage += $"Phone: {editPatientDTO.Phone}, ";
             if (!string.IsNullOrEmpty(editPatientDTO.Address)) logMessage += $"Address: {editPatientDTO.Address}, ";
             if (editPatientDTO.Conditions != null) logMessage += $"Conditions: {string.Join(", ", editPatientDTO.Conditions)}, ";
-            _logger.Information(logMessage.TrimEnd(','));
+            _logger.ForContext("CustomLogLevel", "CustomLevel")
+                .Information(logMessage.TrimEnd(',', ' '));
         }
     
     }
