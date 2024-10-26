@@ -13,13 +13,15 @@ namespace Sempi5.Domain.PatientEntity
         private readonly IPatientRepository _repo;
         private readonly IUserRepository _repoUser;
         private readonly EmailService _emailService;
+        private readonly Serilog.ILogger _logger;
 
-        public PatientService(IPatientRepository repo, IUserRepository userRepo ,IUnitOfWork unitOfWork, EmailService emailService)
+        public PatientService(IPatientRepository repo, IUserRepository userRepo ,IUnitOfWork unitOfWork, EmailService emailService, Serilog.ILogger logger)
         {
             _repo = repo;
             _repoUser = userRepo;
             _unitOfWork = unitOfWork;
             _emailService = emailService;
+            _logger = logger;
         }
 
         public async Task<PatientDTO> AssociateAccount(string email, string cookieEmail)
@@ -245,9 +247,13 @@ namespace Sempi5.Domain.PatientEntity
             var patient = await _repo.GetPatientByEmail(email);
             if (patient == null) return false;
 
-            var daysUntilExclude = 30;
+            //var daysUntilExclude = 30;
             
-            patient.DeletePatientDate = DateTime.Now.AddDays(daysUntilExclude);
+            patient.DeletePatientDate = DateTime.Now.AddMinutes(0.25);
+
+            if(patient.SystemUser != null){
+                patient.SystemUser.Active = false;
+            }
 
             await _unitOfWork.CommitAsync();
             return true;
@@ -273,6 +279,7 @@ namespace Sempi5.Domain.PatientEntity
         public async Task ProcessScheduledDeletions()
         {
             var patientsToDelete = await _repo.GetPatientsForDeletion(DateTime.Now);
+            patientsToDelete.Select(ConvertToDTO).ToList();
 
             foreach (var patient in patientsToDelete)
             {
@@ -283,37 +290,45 @@ namespace Sempi5.Domain.PatientEntity
                 {
                     if (patient.SystemUser != null)
                     {
-                        await _repoUser.DeleteAsync(patient.SystemUser);
+                        _repoUser.Remove(patient.SystemUser);
+                        await _unitOfWork.CommitAsync();
                     }
 
                 }
                 catch (Exception ex)
                 {
-                    throw new InvalidOperationException("Falha ao eliminar o SystemUser associado ao paciente.", ex);
+                    throw new InvalidOperationException("Fail to exclude SystemUser of Patient.", ex);
                 }
 
                 patient.Name = new Name("anonymous");
-                patient.Gender = Gender.Other;
                 patient.Email = new Email("anonymous@anonymous.anonymous");
                 patient.Phone = new Phone("000-000-0000");
-                patient.DeletePatientDate = null;
                 patient.EmergencyContact = new Phone("000-000-0000");
-                patient.Address = new Address("anonymos", "anonymos", "anonymos");
-                patient.DateOfBirth = DateTime.MinValue; 
-                patient.DeletePatientDate = null;
+                var address = patient.Address.ToString().Split(", ");
+                patient.Address = new Address("anonymos", "anonymos", address[2]);
                 patient.SystemUser = null;
 
                 await _unitOfWork.CommitAsync();
 
                 await NotifyDeletionCompletion(warningEmailBackup, warningNameBackup);
+
+                CreateLogDelete();
             }
         }
 
         private async Task NotifyDeletionCompletion(string email, string name)
         {
-            var message = "Your account and personal data have been permanently deleted as requested, respecting GDPR.";
+            var message = "Your account and personal data have been permanently deleted from our system as requested, respecting GDPR.";
             
-            _emailService.sendEmail(name, email, "Account Deletion Complete", message);
+            _emailService.sendEmail(name, email, "Patient Account Deletion Complete", message);
+        }
+
+        private void CreateLogDelete()
+        {
+            var text = $"\n - Patient account deleted: All identifiable data associated with the patient has been permanently removed from the system as requested, in compliance with GDPR guidelines. Anonymized data has been retained for legal and/or research purposes.";
+
+            _logger.ForContext("CustomLogLevel", "CustomLevel")
+                    .Information(text.Remove(text.Length - 1));
         }
     }
 }
