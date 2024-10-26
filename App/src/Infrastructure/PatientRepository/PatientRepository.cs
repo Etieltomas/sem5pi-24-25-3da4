@@ -90,7 +90,9 @@ namespace Sempi5.Infrastructure.PatientRepository
         public async Task<List<Patient>> GetPatientsForDeletion(DateTime currentDateTime)
         {
             return await _context.Patients
-                .Where(p => p.DeletePatientDate.HasValue && p.DeletePatientDate.Value <= currentDateTime)
+                .Where(p => p.DeletePatientDate.HasValue && 
+                p.DeletePatientDate.Value <= currentDateTime &&
+                p.Email != new Email("anonymous@anonymous.anonymous"))
                 .Include(p => p.SystemUser)
                 .ToListAsync();
         }
