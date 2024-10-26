@@ -1,4 +1,6 @@
 
+using System.ComponentModel;
+using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Sempi5.Domain.UserEntity;
@@ -25,5 +27,15 @@ namespace Sempi5.Infrastructure.UserRepository
             return user;
         }
 
+        public async Task DeleteAsync(SystemUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user), "User cannot be null");
+            }
+
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+        }
     }
 }

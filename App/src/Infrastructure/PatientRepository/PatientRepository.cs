@@ -91,6 +91,7 @@ namespace Sempi5.Infrastructure.PatientRepository
         {
             return await _context.Patients
                 .Where(p => p.DeletePatientDate.HasValue && p.DeletePatientDate.Value <= currentDateTime)
+                .Include(p => p.SystemUser)
                 .ToListAsync();
         }
     }
