@@ -272,6 +272,7 @@ namespace Sempi5.Domain.PatientEntity
                 EmergencyContact = patient.EmergencyContact.ToString(),
                 Address = patient.Address.ToString(),
                 DateOfBirth = patient.DateOfBirth.ToString("dd-MM-yyyy"),
+                PatientID = patient.Id.ToString(),
                 DeletePatientDate = patient.DeletePatientDate?.ToString("dd-MM-yyyy")
             };
         }
@@ -300,10 +301,16 @@ namespace Sempi5.Domain.PatientEntity
                     throw new InvalidOperationException("Fail to exclude SystemUser of Patient.", ex);
                 }
 
+                string emailSuffix = patient.Id.AsString();
+
+                var phoneFirstSuffix = patient.Id.AsString().Substring(patient.Id.AsString().Length - 9, 2);
+                var phoneMiddleSuffix = patient.Id.AsString().Substring(patient.Id.AsString().Length - 7, 3);
+                var phoneLastSuffix = patient.Id.AsString().Substring(patient.Id.AsString().Length - 4);
+
                 patient.Name = new Name("anonymous");
-                patient.Email = new Email("anonymous@anonymous.anonymous");
-                patient.Phone = new Phone("000-000-0000");
-                patient.EmergencyContact = new Phone("000-000-0000");
+                patient.Email = new Email("anonymous_" + emailSuffix + "@anonymous.anonymous");
+                patient.Phone = new Phone("000-" + phoneMiddleSuffix + "-" + phoneLastSuffix);
+                patient.EmergencyContact = new Phone("0" + phoneFirstSuffix + "-" + phoneMiddleSuffix + "-" + phoneLastSuffix);
                 var address = patient.Address.ToString().Split(", ");
                 patient.Address = new Address("anonymos", "anonymos", address[2]);
                 patient.SystemUser = null;

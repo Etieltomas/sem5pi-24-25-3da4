@@ -92,7 +92,8 @@ namespace Sempi5.Infrastructure.PatientRepository
             return await _context.Patients
                 .Where(p => p.DeletePatientDate.HasValue && 
                 p.DeletePatientDate.Value <= currentDateTime &&
-                p.Email != new Email("anonymous@anonymous.anonymous"))
+                p.Name != new Name("anonymous") &&
+                p.EmergencyContact != new Phone("000-000-0000")) 
                 .Include(p => p.SystemUser)
                 .ToListAsync();
         }
