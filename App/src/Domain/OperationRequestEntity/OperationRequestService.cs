@@ -2,6 +2,7 @@ using Sempi5.Domain.OperationRequestEntity;
 using Sempi5.Domain.PatientEntity;
 using Sempi5.Domain.Shared;
 using Sempi5.Domain.StaffEntity;
+using Serilog.Core;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -14,19 +15,22 @@ public class OperationRequestService
     private readonly IOperationTypeRepository _operationTypeRepository;
     private readonly IStaffRepository _staffRepository;
     private readonly IPatientRepository _patientRepository;
+    private readonly Serilog.ILogger _logger;
 
     public OperationRequestService(
         IOperationRequestRepository operationRequestRepository,
         IOperationTypeRepository operationTypeRepository,
         IStaffRepository staffRepository,
         IPatientRepository patientRepository,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        Serilog.ILogger logger)
     {
         _operationRequestRepository = operationRequestRepository;
         _operationTypeRepository = operationTypeRepository;
         _staffRepository = staffRepository;
         _patientRepository = patientRepository;
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
 
     //create operation request
@@ -92,8 +96,10 @@ public class OperationRequestService
 
         //add to repository
         //var newOperationRequest = await _operationRequestRepository.AddAsync(operationRequest);
-
+        
         await _unitOfWork.CommitAsync();
+
+        UpdateOperationRequestLog(dto.OperationRequestId, $"Priority: {dto.NewPriority}, Deadline: {dto.NewDeadline}");
 
         return ConvertToDTO(operationRequest);
     }
@@ -147,4 +153,13 @@ public class OperationRequestService
             Deadline = newOperationRequest.Deadline.Value.ToString("dd-MM-yyyy")
         };
     }
+
+    private void UpdateOperationRequestLog(string operationRequestId, string updatedInfo)
+    {
+    var logMessage = $"\n - OperationRequestID: {operationRequestId}, Updated Information: {updatedInfo}.";
+
+    _logger.ForContext("CustomLogLevel", "CustomLevel")
+           .Information(logMessage.Trim());
+    }
+
 }
