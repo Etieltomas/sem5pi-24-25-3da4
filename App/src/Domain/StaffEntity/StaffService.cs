@@ -128,20 +128,20 @@ namespace Sempi5.Domain.StaffEntity
         
         private StaffDTO ConvertToDTO(Staff staff)
         {
-            var availabilitySlotsDTO = staff.AvailabilitySlots
+            var availabilitySlotsDTO = staff.AvailabilitySlots?
                 .Select(slot => slot.ToString())
                 .ToList();
 
             return new StaffDTO
             {
-                Id = staff.Id.Value,
-                LicenseNumber = staff.LicenseNumber.ToString(),
-                Name = staff.Name.ToString(),
-                Email = staff.Email.ToString(),
-                Phone = staff.Phone.ToString(),
-                Address = staff.Address.ToString(),
+                Id = staff.Id?.Value,
+                LicenseNumber = staff.LicenseNumber?.ToString(),
+                Name = staff.Name?.ToString(),
+                Email = staff.Email?.ToString(),
+                Phone = staff.Phone?.ToString(),
+                Address = staff.Address?.ToString(),
                 AvailabilitySlots = availabilitySlotsDTO,
-                Specialization = staff.Specialization.Id.AsString()
+                Specialization = staff.Specialization?.Id.AsString()
             };
         }
 
