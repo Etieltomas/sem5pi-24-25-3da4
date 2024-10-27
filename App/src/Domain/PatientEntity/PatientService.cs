@@ -145,18 +145,19 @@ namespace Sempi5.Domain.PatientEntity
             if (isSensitiveDataChanged)
             {
                 //email
-                var message = $"<p>Olá, {patient.Name}!</p>" +
-                              $"<p>Suas informações de contato foram atualizadas no sistema.</p>" +
+                var message = $"<p>Hello, {patient.Name}!</p>" +
+                              $"<p>Your contact information has been updated in the system.</p>" +
                               $"<p>Email: {patient.Email}</p>" +
-                              $"<p>Telefone: {patient.Phone}</p>" +
-                              $"<p>Endereço: {patient.Address}</p>" +
-                              "<p>Caso não tenha solicitado esta alteração, por favor entre em contato conosco.</p>";
+                              $"<p>Phone Number: {patient.Phone}</p>" +
+                              $"<p>Address: {patient.Address}</p>" +
+                              "<p>Best regards.</p>";
 
-                _emailService.sendEmail(patient.Name.ToString(), originalEmail, "Atualização de Perfil", message);
+                _emailService.sendEmail(patient.Name.ToString(), originalEmail, "Profile Update", message);
             }
 
             await _unitOfWork.CommitAsync();
 
+            UpdateAsAdminLog(patientId, updateDto.ToString());
 
             return ConvertToDTO(patient);
         }
@@ -333,6 +334,14 @@ namespace Sempi5.Domain.PatientEntity
         private void CreateLogDelete()
         {
             var text = $"\n - Patient account deleted: All identifiable data associated with the patient has been permanently removed from the system as requested, in compliance with GDPR guidelines. Anonymized data has been retained for legal and/or research purposes.";
+
+            _logger.ForContext("CustomLogLevel", "CustomLevel")
+                    .Information(text.Remove(text.Length - 1));
+        }
+
+        private void UpdateAsAdminLog(string patientId, string updatedInfo)
+        {
+            var text = $"\n - PatientID: {patientId}, Updated Information: {updatedInfo}.";
 
             _logger.ForContext("CustomLogLevel", "CustomLevel")
                     .Information(text.Remove(text.Length - 1));
