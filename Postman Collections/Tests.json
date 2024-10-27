@@ -4,5 +4,19 @@
 		"name": "Tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
-	"item": []
+	"item": [
+		{
+			"name": "New Request",
+			"id": "91a3802d-8f64-4b72-8e1b-3f6639c54670",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "dfffdsfsdfsfsdf"
+			},
+			"response": []
+		}
+	]
 }
