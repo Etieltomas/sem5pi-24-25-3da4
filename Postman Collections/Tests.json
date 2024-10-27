@@ -1160,6 +1160,31 @@
 		},
 		{
 			"name": "Update User Profile",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c77dc5a8-a9d2-4827-9c56-020cac80c075",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 4 seconds\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(4000);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Confirmation message is correct\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(jsonData.message).to.equal(\"Confirmation sent successfully.\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"id": "9320b56e-98a8-4afd-a00b-5214ee3b0767",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
@@ -1169,7 +1194,7 @@
 				"header": [
 					{
 						"key": "Cookie",
-						"value": ".AspNetCore.Cookies=CfDJ8PO27rPERe5CqRKRiXWCiET6Md_rIFBKsYFZuz1uz_d-FuMXBUqa3djDjWk33kxzPZU_vSen2FegAxjUnuo7hRymkguRzmLi-IeufCN994uLbUozL3gzUTNhESp3jcNdhJRKIPFJoJfUn5WuLZtjH8gpoty6G-PuoRw4eJvp77oJIuC4DID3F86fxGp2ISYnTgF7sq5SffJxK7EYYYItP_goHcUGaahE_EsNYq0ZS6W-NdgBapj-S2nTcVNZ3qVYxFs1jl63ycMU6dxFgqUZf4k-alOXiwouAFaiA_9nrA8C3s5MLB0r33VE-Zd5xQnlwgjaJQtupidE6MMHn8v2HRG3Akod8_Bx3byJAsSb66KVZjWDi6Rnx8bdg03QIXnSABrWo1ltD232e6Ng5q2Oeh3C41Omnm_CbS8sgllD7lvggkFlng2hCIdUewm3ap7fQS6HxPbCV4BoraQiLE7CgtEmKhOcscl9jTwNIiveX11k91s2K9MdeHGz131fLEeOQcIXb92sl3dxBs3qEpeMBnyLYVaOMjey55SjrkwL6AyvYe2ba6iz4svnQBBZs3VtKN6eOJarGrSzpCm-poFnH4YpLa_jYYdYxdmiyCCXN1HXi1mxll_aDJ-pQHlLpaoji8Ak5sPBpMi_f4EsHOG3RkLZGqO2HVJq7QoUoJLEFTcW8Gt42B1UshgmGBQ7DmhmKb3IP0QLkTa2owNv1S1nEPzx0tutVooqvDXCcaYOFZq0cE5i7Spc9PaR7FxA-4lf4ARMhpM4T2kCuFK6ioSHo4h7QA2W23rFHZZjA0-nWXCjJBwoEIlv0N4qijs3CdXs0EA0dZG_YqrlmDl0UV7pF6U",
+						"value": ".AspNetCore.Cookies=CfDJ8PO27rPERe5CqRKRiXWCiETjfFYZcmzNP47ouzc2zgz3szVlD2M3rxj0pto-9HeTU0xPi0H2fGwC1RN3NSRJsJgVsi0_G0VmroqLje8YeuDcsEJ_OvDPEPY44miljT__7-jkHk39TugWsJLqq3pvm-SJGbi3jGa-8riU29pft_qHrv5QiGJU3qBvZDl9qQFms_2Q3oTvJYuGcIK6JkpAPCL-c8DyFJYOvpglHcpd_pPS3HMRohMtGzsJJX4qbT0F-6NRR2R50fnHrs_EeOwSRGbITCkpwOKZApmlsVNYOvtXVGjdV5ymxKfTQgnfcOd2BtxQRYbWngCl6EfAEgcovo8oylocZl_cB7kcGT5nqmeC1YAUnLjtmMoxZ2OvQ_INwEPtd4MKE-EMuRA5uB3CGeo-bZPHOh-G7kUY_7Wbp65EmsXn4uHFreoXXLlcZTcvbdTn0Lac_QabVm8xJ7wgEvJ65xAhS9qTJOP1H9-S2gz_pfcYWy8h0FajDKjGmgC0Q_1_G2LD9ImChza0VGORowj7Vw8xre7fi1yG6lqZy-6NROn3eHvO6U_KpysegqPDNrlUOJBQoF1ux_lc5kov0is_88bwDE6KP538n3VmbupjWjuZUb7EQ8AQoUpYgKST--gFqMmx-qVV4stw6JVyDE5dABSoRu4cRNYMOgPlS5l6_adBDWY-u5J42PYfNua231SFxP14IM8yPRkECsTQKBFxhqKsDZj0JOOpGOCS1AflccmgUhAWwZfE-4EJ-eLIMIfLcX067lq5fSVldaVwmTWsQqy8SwvsNzsqTN47V7jQWUm6xBPeQzrSfe6mdXzQaSYThyjwTDBgqzC0-p4m0P50fwuaOW8MEGurCRY_SIZOI5qVgx7suCaUfz6Jkv70s8DXQ2VmXUBYt2OxRk-UjS6C7u-OR2O5cDRMdiv9XxWVXOK9GyVLZljTGgh5Axci3g",
 						"type": "text"
 					}
 				],
@@ -1183,6 +1208,19 @@
 					}
 				},
 				"url": "http://localhost:5012/api/patient/update"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Patient Profile",
+			"id": "3a5419db-4dbd-4c4c-818d-d2d716089aea",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": ""
 			},
 			"response": []
 		}
