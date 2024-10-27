@@ -872,6 +872,19 @@
 				"url": "http://localhost:5012/api/patient/register"
 			},
 			"response": []
+		},
+		{
+			"name": "List Patient Profile",
+			"id": "49f7325a-c2b2-4b8e-8d26-d7b793af438b",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": ""
+			},
+			"response": []
 		}
 	]
 }
