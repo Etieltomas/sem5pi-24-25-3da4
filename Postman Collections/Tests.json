@@ -1213,14 +1213,45 @@
 		},
 		{
 			"name": "Delete Patient Profile",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "dc9c842d-f7b2-4e35-8f34-dc11eff8db2c",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 4 seconds\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(4000);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Confirmation message is correct\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(jsonData.message).to.equal(\"Confirmation sent successfully.\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"id": "3a5419db-4dbd-4c4c-818d-d2d716089aea",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
 			"request": {
 				"method": "DELETE",
-				"header": [],
-				"url": ""
+				"header": [
+					{
+						"key": "Cookie",
+						"value": ".AspNetCore.Cookies=CfDJ8PO27rPERe5CqRKRiXWCiEQ8jGuA196K7IIg_hCxWcYSsqDwQbDT9-SpXSmV5huMt4AB4qSsjaO-2Zo_Sj8EzdyUivVT-KlduoLEhErnO4aR6DJk6ysLy7dpPI063emWPvWO2F6McUmi8tr3kCV6XfrncAMTcZOnQ3FNHbhb4UGrSC1HJSlxVt_VLi3dHKh1ctxZ_QHn8SCUHa_W4Ak-qAQ9QcqfM2fmEnkcj7KDk1e75sA-v4NMJkIof8EI-hh_fpB68J4lkiRVz0z3C23tnOFh95Ht5-KlJdv5ABCYJRirTQ8dhktGJdcFlqknofwQS6Ncq-I1NW4kjiAHXIvX1Sc3i5_VEvR_Sw4GcamTWc_LDv0-Ohi0-5hwzwDeiUr0PSQlb1SBfywpdxxFE00SBrGKQn62Fv_svHrFu1Qv5MQQK9XivSmYGbpND0TohtMc_cTyBFFYhZCuyovXrNugGpgV9ugTwBy_K-shb3stQ9FeUDSzhfPVpMvJS0VCozKBZ1ipwJc2YHAquH6DeDN8p4xIKIIsaVUgXZhdSZDmERDnGB0z2F-H2HQQPsZvCd3X0M15Jj8ldYt34aAsQB_vvt8L-NObTnRkNjmy25TZvNwcJmQBqNfzGe7ZdW5SEw-_FWYDfhAL5HOaU2GHLWTr_dZbH-WAbhOlIvfYLgb2nyTXPIdu0do0oBPl5ergX2k_DM_7vkpTdcvEkjfPTqV1f0UBeldFGkt035RoTfRm3QTdErOl5XoYeFxujAaPKLqWgf3jdMIBLXQnFXKGaHr4lh-hQP69PnPj84S1kN1blOMDXGRyqSqtyV33thZ3DElcjFHzLb4O0cywC6eYWz9XmmBstm2FSxVvUyDMZ7ufGCbWk_uzI7VuZ5auS21lIOjMx3CLb2Co_YArIDb_hbmswJnaCLHrq_Y7H4MSlshN3Es3",
+						"type": "text"
+					}
+				],
+				"url": "http://localhost:5012/api/patient/request-delete/sblsimaolopes@gmail.com"
 			},
 			"response": []
 		}
