@@ -45,7 +45,7 @@ namespace Sempi5.Controllers
 
         // Function to create patient
         [HttpPost("register")]
-        [Authorize(Roles = "Admin, Patient")]  
+        [Authorize]  
         public async Task<ActionResult<PatientDTO>> RegisterPatient(PatientDTO PatientDTO)
         {
             var patient = await _service.AddPatient(PatientDTO);
