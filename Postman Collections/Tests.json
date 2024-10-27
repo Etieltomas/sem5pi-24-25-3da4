@@ -218,12 +218,12 @@
 			"response": []
 		},
 		{
-			"name": "List/Search Staff",
+			"name": "List/Search Staff Not Found",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
-						"id": "668168ed-2655-4cc9-8caf-180fb3fe0647",
+						"id": "a5f6cb4e-81c2-457a-9ac7-9dde13c25337",
 						"exec": [
 							"pm.test(\"Status code is 404\", function () {",
 							"    pm.expect(pm.response.code).to.equal(404);",
@@ -236,7 +236,17 @@
 							"pm.test(\"Response body is 'No staff members found with the given criteria.'\", function () {",
 							"    const responseBody = pm.response.text(); ",
 							"    pm.expect(responseBody).to.equal(\"No staff members found with the given criteria.\");",
-							"});",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8bd190f5-2b5f-4f92-b642-0c605dbc0ef6",
+						"exec": [
 							""
 						],
 						"type": "text/javascript",
@@ -258,7 +268,7 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:5012/api/Staff/search?name=Tomás&email=tomasandreleite@gmail.com",
+					"raw": "http://localhost:5012/api/Staff/search?name=Tomás&email=tomasandreleite11@gmail.com",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -273,6 +283,88 @@
 						{
 							"key": "name",
 							"value": "Tomás"
+						},
+						{
+							"key": "email",
+							"value": "tomasandreleite11@gmail.com"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List/Search Staff",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4d6d9074-3818-479e-b8b7-a13e41025dd1",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 2 seconds\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+							"});",
+							"",
+							"pm.test(\"All values in the first response item match the expected values\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    const firstItem = jsonData[0];",
+							"    pm.expect(firstItem.id).to.equal(\"T202400001\");",
+							"    pm.expect(firstItem.licenseNumber).to.equal(\"SN567842\");",
+							"    pm.expect(firstItem.name).to.equal(\"Laura Múrias\");",
+							"    pm.expect(firstItem.email).to.equal(\"tomasandreleite@gmail.com\");",
+							"    pm.expect(firstItem.phone).to.equal(\"555-12342\");",
+							"    pm.expect(firstItem.address).to.equal(\"123 Main St, Sample City, Sample State\");",
+							"    ",
+							"    const expectedAvailabilitySlots = [",
+							"        \"21-11-2024T09:00:00 - 21-11-2024T11:00:00\",",
+							"        \"22-11-2024T13:00:00 - 22-11-2024T21:00:00\"",
+							"    ];",
+							"    pm.expect(JSON.stringify(firstItem.availabilitySlots)).to.equal(JSON.stringify(expectedAvailabilitySlots));",
+							"    ",
+							"    pm.expect(firstItem.specialization).to.equal(\"Cardiology\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "28dc63f0-ce0c-437b-8062-b57bf02b388c",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5012/api/Staff/search?name=Laura%20Múrias&email=tomasandreleite@gmail.com",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5012",
+					"path": [
+						"api",
+						"Staff",
+						"search"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "Laura%20Múrias"
 						},
 						{
 							"key": "email",
