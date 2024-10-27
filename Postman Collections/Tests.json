@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "New Request",
+			"name": "RegisterPatient",
 			"id": "91a3802d-8f64-4b72-8e1b-3f6639c54670",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
