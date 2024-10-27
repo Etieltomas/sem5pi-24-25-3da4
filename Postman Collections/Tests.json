@@ -579,6 +579,53 @@
 				"url": "http://localhost:5012/api/OperationRequest/list"
 			},
 			"response": []
+		},
+		{
+			"name": "Edit Patient as an Admin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "999862da-d111-445b-8c5b-ad55655582fc",
+						"exec": [
+							"pm.test(\"Status code is 200 or 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 2 seconds\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "d0a8a113-a55a-4216-a1d8-b8a28eff3aa1",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": ".AspNetCore.Cookies=CfDJ8Lp1eZmYPg9Oh65Wzjxz_3ngtU0MRyGJVnBIVqLScIem3w01iVjdz1-rr0CfU3CWeFfQszM1DWUsuZFtSi3iJcXt8anCMMEY7YZac1gHTURLIwgQLH256jOroBGCi7z-MabNDePU57p3KVuc2hGK2tvh5vfkmH14gg9OESCBuE2JIBntfZp9vpSVa8Eqkgc6lfPfvzeWh2VI3jLlKP4WkFSscGO67ndjkayfg799aZjgPWdx1EInj0ULK3i2FrXhfHV4ceNVXTOzOdF9VMqKn347I0mqALVTEfRg7JPYCSiMBqPEZ4uIBKqNe2dEYMuQHsU4aSvSqMpfBGRmqNXuor5Xq6pn6A2tyDqyrq9QsSwuQuzw5O36gsIjigbSgXeemygDGSWH1pbItC9Z1vx9vGnHC2gdnk7xacHL5yXaaWAARN3RJPClV6nfAFcdQRYsMNhj3xSpkk844oITrME43EDTcZWhGAH55rtgZUD8RGu8GQwM2hTfo-1mTIVLmk_ydR_YfZn_55bxA09cyZjBebZJbN1KHwCHUSqq94lI2s6OQUMZgnraOr7I0aqF1Bvwre6r37LnFrtZRBKsNJT8aFg7NJNhFd5AjHC6lG5TLmrZ8oVkScZx6nJFDjFcIXnnS608vepJA87TQcb2YQ9n3q0eldDVlv2r-oxYxgFQLNl7Me10TIU-174vqOqrpXqIOT_HkQ5WPgKl5T6FjldXOI5OMKTYwWhIQKkqhXhhnpItpTDXAATJDBaSeuAwlphCMeoWLhJt5aJYgoH4qbcH80PTwsGrguYyCM_v5DWU1LD-oxiXXCXOg5op8HpquuL3yUuucKHozibTMdhx_31-a-SXrxcBd9f1XvkPJd98cC8Qicv6LHRk9veQ8L74X8iunMT5x--v_LVND1wZv8hJVcSx_FmQtwzQpP0tr-55PZLCpd3fQv1ztwE_aPzQDLu3ZkzW1dDKgTN270afpv0YT8c",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Name\": \"Ricardo Guimaraes\",\r\n    \"Email\": \"ricardo.guimaraes400@gmail.com\",\r\n    \"Phone\": \"+5511998765462\",\r\n    \"Address\": \"Rua do Casal, Porto, Portugal\",\r\n    \"Conditions\": [\"Rinite Alergica\", \"Asma\"],\r\n    \"EmergencyContact\": \"Jota Silva - +5511998765435\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5012/api/Patient/202410000002"
+			},
+			"response": []
 		}
 	]
 }
