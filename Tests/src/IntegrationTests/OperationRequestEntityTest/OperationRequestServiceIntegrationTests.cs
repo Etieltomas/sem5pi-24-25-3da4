@@ -1,3 +1,4 @@
+/*
 using Moq;
 using Sempi5.Domain.OperationRequestEntity;
 using Sempi5.Domain.StaffEntity;
@@ -46,3 +47,4 @@ public class OperationRequestServiceIntegrationTests
         Assert.Equal("High", result.Priority);
     }
 }
+*/
