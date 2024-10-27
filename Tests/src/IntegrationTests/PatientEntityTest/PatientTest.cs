@@ -161,4 +161,201 @@ public class PatientTest
         Assert.NotEqual(patient1.SystemUser.Username, patient2.SystemUser.Username);
         Assert.NotEqual(patient1.SystemUser.Email.ToString(), patient2.SystemUser.Email.ToString());
     } 
+
+    [Fact]
+    public void CanInitializePatientWithMinimumData()
+    {
+        var patient = new Patient
+        {
+            DateOfBirth = new DateTime(1990, 1, 1),
+            Name = new Name("Francisco Aguiar")
+        };
+
+        Assert.NotNull(patient);
+        Assert.Equal("Francisco Aguiar", patient.Name.ToString());
+    }
+
+    [Fact]
+    public void AddCondition_IncreasesConditionsCount()
+    {
+        var patient = new Patient
+        {
+            Conditions = new List<Condition>()
+        };
+
+        var condition = new Condition("Asthma");
+        patient.Conditions.Add(condition);
+
+        Assert.Single(patient.Conditions);
+    }
+    
+    [Fact]
+    public void RemoveCondition_DecreasesConditionsCount()
+    {
+        var condition = new Condition("Asthma");
+        var patient = new Patient
+        {
+            Conditions = new List<Condition> { condition }
+        };
+
+        patient.Conditions.Remove(condition);
+
+        Assert.Empty(patient.Conditions);
+    }
+
+    [Fact]
+    public void PatientWithSameEmailShouldNotBeEqual()
+    {
+        var patient1 = new Patient
+        {
+            Email = new Email("franciscoaguiar@example.com")
+        };
+
+        var patient2 = new Patient
+        {
+            Email = new Email("franciscoaguiar@example.com")
+        };
+
+        Assert.Equal(patient1.Email.ToString(), patient2.Email.ToString());
+    }
+
+    [Fact]
+    public void PatientWithDifferentEmailShouldNotBeEqual()
+    {
+        var patient1 = new Patient
+        {
+            Email = new Email("franciscoaguiar@example.com")
+        };
+
+        var patient2 = new Patient
+        {
+            Email = new Email("saraaguiar@example.com")
+        };
+
+        Assert.NotEqual(patient1.Email.ToString(), patient2.Email.ToString());
+    }
+
+    [Fact]
+    public void CanAddAndRemoveConditions()
+    {
+        var patient = new Patient
+        {
+            Conditions = new List<Condition>()
+        };
+
+        var condition1 = new Condition("Asthma");
+        var condition2 = new Condition("Diabetes");
+
+        patient.Conditions.Add(condition1);
+        patient.Conditions.Add(condition2);
+
+        Assert.Equal(2, patient.Conditions.Count);
+
+        patient.Conditions.Remove(condition1);
+        Assert.Equal(1, patient.Conditions.Count);
+    }
+
+    [Fact]
+    public void SetDeletePatientDate_ShouldSetCorrectly()
+    {
+        var patient = new Patient();
+        var deleteDate = DateTime.Now.AddDays(30);
+        patient.DeletePatientDate = deleteDate;
+
+        Assert.Equal(deleteDate, patient.DeletePatientDate);
+    }
+
+    [Fact]
+    public void PatientIsNotActiveWhenSystemUserIsInactive()
+    {
+        var systemUser = new SystemUser
+        {
+            Username = "franciscoaguiar",
+            Role = "Patient",
+            Email = new Email("franciscoaguiar@example.com"),
+            Active = false,
+            MarketingConsent = false
+        };
+
+        var patient = new Patient { SystemUser = systemUser };
+
+        Assert.False(patient.SystemUser.Active);
+    }   
+
+    [Fact]
+    public void Email_ValidEmail_SetsEmail()
+    {
+        var patient = new Patient();
+        var email = new Email("valid@example.com");
+
+        patient.Email = email;
+
+        Assert.Equal("valid@example.com", patient.Email.ToString());
+    }
+
+    [Fact]
+    public void Email_InvalidEmail_ThrowsException()
+    {
+        var patient = new Patient();
+
+        Assert.Throws<BusinessRuleValidationException>(() => patient.Email = new Email("invalid-email"));
+    }
+
+    [Fact]
+    public void AddEmergencyContact_SetsEmergencyContact()
+    {
+        var patient = new Patient();
+        var emergencyContact = new Phone("123-456-7890");
+
+        patient.EmergencyContact = emergencyContact;
+
+        Assert.Equal("123-456-7890", patient.EmergencyContact.ToString());
+    }
+
+    [Fact]
+    public void UpdateEmergencyContact_ChangesEmergencyContact()
+    {
+        var patient = new Patient { EmergencyContact = new Phone("123-456-7890") };
+        var newEmergencyContact = new Phone("987-654-3210");
+
+        patient.EmergencyContact = newEmergencyContact;
+
+        Assert.Equal("987-654-3210", patient.EmergencyContact.ToString());
+    }  
+
+    [Fact]
+    public void Patient_IsActive_ReturnsCorrectStatus()
+    {
+        var systemUser = new SystemUser { Active = true };
+        var patient = new Patient { SystemUser = systemUser };
+
+        Assert.True(patient.SystemUser.Active);
+    } 
+
+    [Fact]
+    public void RemoveCondition_NonExistentCondition_DoesNotThrow()
+    {
+        var patient = new Patient { Conditions = new List<Condition>() };
+
+        var exception = Record.Exception(() => patient.Conditions.Remove(new Condition("NonExistent")));
+
+        Assert.Null(exception);
+        Assert.Empty(patient.Conditions);
+    }
+
+    [Fact]
+    public void UpdatePersonalDetails_UpdatesFields()
+    {
+        var patient = new Patient
+        {
+            Name = new Name("Francisco Aguiar"),
+            Phone = new Phone("123-456-7890")
+        };
+
+        patient.Name = new Name("Sara Aguiar");
+        patient.Phone = new Phone("987-654-3210");
+
+        Assert.Equal("Sara Aguiar", patient.Name.ToString());
+        Assert.Equal("987-654-3210", patient.Phone.ToString());
+    }       
 }

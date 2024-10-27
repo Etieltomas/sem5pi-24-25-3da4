@@ -361,5 +361,45 @@ namespace Sempi5Test.UnitTests.PatientEntityTest
             Assert.Equal("Patient1", result[0].Name);
             Assert.Equal("patient1@example.com", result[0].Email);
         }
+
+        [Fact]
+        public async Task GetUserByID_UserExists_ReturnsUserDTO()
+        {
+            // Arrange
+            var userID = 1L;
+            var systemUser = new SystemUser
+            {
+                Username = "franciscoaguiar",
+                Role = "Admin",
+                Email = new Email("franciscoaguiar@example.com"),
+                Active = true,
+                MarketingConsent = false
+            };
+
+            _mockUserRepo.Setup(repo => repo.GetUserByID(userID)).ReturnsAsync(systemUser);
+
+            // Act
+            var result = await _patientService.GetUserByID(userID);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("franciscoaguiar@example.com", result.Email);
+            Assert.True(result.Active);
+            Assert.False(result.MarketingConsent);
+        }
+
+        [Fact]
+        public async Task GetUserByID_UserDoesNotExist_ReturnsNull()
+        {
+            // Arrange
+            var userId = 1L;
+            _mockUserRepo.Setup(repo => repo.GetUserByID(userId)).ReturnsAsync((SystemUser)null);
+
+            // Act
+            var result = await _patientService.GetUserByID(userId);
+
+            // Assert
+            Assert.Null(result);
+        }        
     }        
 }
