@@ -157,7 +157,7 @@ namespace Sempi5.Domain.PatientEntity
 
             await _unitOfWork.CommitAsync();
 
-            UpdateAsAdminLog(patientId, updateDto.ToString());
+            UpdateAsAdminLog(patientId, updateDto);
 
             return ConvertToDTO(patient);
         }
@@ -339,9 +339,34 @@ namespace Sempi5.Domain.PatientEntity
                     .Information(text.Remove(text.Length - 1));
         }
 
-        private void UpdateAsAdminLog(string patientId, string updatedInfo)
+        private void UpdateAsAdminLog(string patientId, PatientDTO patientDTO)
         {
-            var text = $"\n - PatientID: {patientId}, Updated Information: {updatedInfo}.";
+             var text = $"Patient {patientId} has been updated with the following information:";
+
+            if (patientDTO.Name != null)
+            {
+                text += $" Name: {patientDTO.Name},";
+            }
+            if (patientDTO.Email != null)
+            {
+                text += $" Email: {patientDTO.Email},";
+            }
+            if (patientDTO.Phone != null)
+            {
+                text += $" Phone: {patientDTO.Phone},";
+            }
+            if (patientDTO.Address != null)
+            {
+                text += $" Address: {patientDTO.Address},";
+            }
+            if (patientDTO.Conditions != null)
+            {
+                text += $" Conditions: {patientDTO.Conditions},";
+            }
+            if (patientDTO.EmergencyContact != null)
+            {
+                text += $" EmergencyContact: {patientDTO.EmergencyContact},";
+            }
 
             _logger.ForContext("CustomLogLevel", "CustomLevel")
                     .Information(text.Remove(text.Length - 1));
