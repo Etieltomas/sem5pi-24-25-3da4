@@ -28,6 +28,12 @@ public class AvailabilitySlot : IValueObject
             throw new BusinessRuleValidationException("AvailabilitySlot start date must be before end date.");
         }
 
+        if (start < DateTime.Now || end < DateTime.Now)
+        {
+            throw new BusinessRuleValidationException("AvailabilitySlot start and end date must be in the future.");
+        }
+
+
         _value = value;
     }
 
