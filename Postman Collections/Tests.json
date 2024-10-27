@@ -229,7 +229,7 @@
 							"    pm.expect(jsonData.dateOfBirth).to.equal(\"01-01-2000\");",
 							"    pm.expect(jsonData.gender).to.equal(\"Male\");",
 							"    pm.expect(jsonData.name).to.equal(\"Tomás Leite\");",
-							"    pm.expect(jsonData.email).to.equal(\"left4deadgame2@gmail.com\");",
+							"    pm.expect(jsonData.email).to.equal(\"left4deadgame21@gmail.com\");",
 							"    pm.expect(jsonData.phone).to.equal(\"123-456-7891\");",
 							"    pm.expect(jsonData.address).to.equal(\"123 Main St, Anytown, USA\");",
 							"    ",
@@ -1058,7 +1058,7 @@
 							"    pm.expect(jsonData.dateOfBirth).to.equal(\"05-10-2012\");\r",
 							"    pm.expect(jsonData.gender).to.equal(\"Male\");\r",
 							"    pm.expect(jsonData.name).to.equal(\"Test Patient\");\r",
-							"    pm.expect(jsonData.email).to.equal(\"sblsimaolopes@gmail.com\");\r",
+							"    pm.expect(jsonData.email).to.equal(\"left4deadgame2@gmail.com\");\r",
 							"    pm.expect(jsonData.phone).to.equal(\"937-453-5638\");\r",
 							"    pm.expect(jsonData.address).to.equal(\"Rua de Cima, Anytown, USA\");\r",
 							"    \r",
@@ -1094,7 +1094,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"DateOfBirth\": \"05-10-2012\",\r\n    \"Gender\": \"Male\",\r\n    \"Name\": \"Test Patient\",\r\n    \"Email\": \"sblsimaolopes@gmail.com\",\r\n    \"Phone\": \"937-453-5638\",\r\n    \"Address\": \"Rua de Cima, Anytown, USA\",\r\n    \"Conditions\": [\"Diabetes\", \"Hypertension\"],\r\n    \"EmergencyContact\": \"Jane Doe: 098-765-4321\"\r\n}",
+					"raw": "{\r\n    \"DateOfBirth\": \"05-10-2012\",\r\n    \"Gender\": \"Male\",\r\n    \"Name\": \"Test Patient\",\r\n    \"Email\": \"left4deadgame2@gmail.com\",\r\n    \"Phone\": \"937-453-5638\",\r\n    \"Address\": \"Rua de Cima, Anytown, USA\",\r\n    \"Conditions\": [\"Diabetes\", \"Hypertension\"],\r\n    \"EmergencyContact\": \"Jane Doe: 098-765-4321\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
