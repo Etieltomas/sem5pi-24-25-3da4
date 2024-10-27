@@ -964,7 +964,22 @@
 			},
 			"request": {
 				"method": "PUT",
-				"header": [],
+				"header": [
+					{
+						"key": "Cookie",
+						"value": ".AspNetCore.Cookies=CfDJ8PO27rPERe5CqRKRiXWCiET6Md_rIFBKsYFZuz1uz_d-FuMXBUqa3djDjWk33kxzPZU_vSen2FegAxjUnuo7hRymkguRzmLi-IeufCN994uLbUozL3gzUTNhESp3jcNdhJRKIPFJoJfUn5WuLZtjH8gpoty6G-PuoRw4eJvp77oJIuC4DID3F86fxGp2ISYnTgF7sq5SffJxK7EYYYItP_goHcUGaahE_EsNYq0ZS6W-NdgBapj-S2nTcVNZ3qVYxFs1jl63ycMU6dxFgqUZf4k-alOXiwouAFaiA_9nrA8C3s5MLB0r33VE-Zd5xQnlwgjaJQtupidE6MMHn8v2HRG3Akod8_Bx3byJAsSb66KVZjWDi6Rnx8bdg03QIXnSABrWo1ltD232e6Ng5q2Oeh3C41Omnm_CbS8sgllD7lvggkFlng2hCIdUewm3ap7fQS6HxPbCV4BoraQiLE7CgtEmKhOcscl9jTwNIiveX11k91s2K9MdeHGz131fLEeOQcIXb92sl3dxBs3qEpeMBnyLYVaOMjey55SjrkwL6AyvYe2ba6iz4svnQBBZs3VtKN6eOJarGrSzpCm-poFnH4YpLa_jYYdYxdmiyCCXN1HXi1mxll_aDJ-pQHlLpaoji8Ak5sPBpMi_f4EsHOG3RkLZGqO2HVJq7QoUoJLEFTcW8Gt42B1UshgmGBQ7DmhmKb3IP0QLkTa2owNv1S1nEPzx0tutVooqvDXCcaYOFZq0cE5i7Spc9PaR7FxA-4lf4ARMhpM4T2kCuFK6ioSHo4h7QA2W23rFHZZjA0-nWXCjJBwoEIlv0N4qijs3CdXs0EA0dZG_YqrlmDl0UV7pF6U",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Phone\": \"923-435-3456\",\r\n    \"MarketingConsent\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": "http://localhost:5012/api/patient/update"
 			},
 			"response": []
