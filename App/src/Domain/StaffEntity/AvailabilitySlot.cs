@@ -1,3 +1,4 @@
+using System.Globalization;
 using Sempi5.Domain.Shared;
 using Sempi5.Domain.StaffEntity;
 
@@ -5,7 +6,7 @@ public class AvailabilitySlot : IValueObject
 {
     private string _value;
 
-    // Example: 2024-10-21T09:00:00 - 2024-10-21T11:00:00,
+    // Example: 21-10-2024T09:00:00 - 21-10-2024T11:00:00,
     public AvailabilitySlot(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
@@ -19,8 +20,8 @@ public class AvailabilitySlot : IValueObject
             throw new BusinessRuleValidationException("AvailabilitySlot must have a start and end date.");
         }
 
-        var start = DateTime.Parse(split[0]);
-        var end = DateTime.Parse(split[1]);
+        var start = DateTime.ParseExact(split[0], "dd-MM-yyyyTHH:mm:ss", CultureInfo.InvariantCulture);
+        var end = DateTime.ParseExact(split[1], "dd-MM-yyyyTHH:mm:ss", CultureInfo.InvariantCulture);
 
         if (start >= end)
         {
