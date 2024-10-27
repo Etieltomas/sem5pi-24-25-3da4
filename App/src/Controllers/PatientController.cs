@@ -265,7 +265,7 @@ namespace Sempi5.Controllers
                     .Information(text.Remove(text.Length - 1));
         }
 
-        [HttpPost("request-delete")]
+        [HttpDelete("request-delete")]
         [Authorize (Roles = "Patient")]
         public async Task<IActionResult> RequestDeleteAccount(){
 
