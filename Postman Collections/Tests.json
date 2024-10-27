@@ -802,6 +802,34 @@
 				"url": "http://localhost:5012/api/Patient/202410000002"
 			},
 			"response": []
+		},
+		{
+			"name": "Create Patient Profile",
+			"id": "e87d8887-8048-4b15-ae8d-645592e0df0f",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": ".AspNetCore.Cookies=CfDJ8PO27rPERe5CqRKRiXWCiETfJJ_700o1z8rGLK2HQjqZVUozOXGGw3eGVL9PojnYGdjz4XhD3UY6uvqRELN6TGS7ZF6R5G6VhTQx_VuVBykIJjsXA5xHg4yzwTrSo4EzJ0gY5TH_8GPF2rHo1qsE5VxkbKHEqQCd3esQ3Yy6YcYA8Zxq8amAN1HZvp_EAco1Lw0BeQ66U561gFo0tYEtX-vq92z1pSpWglzn_TCq92QYGtEhBbdno5YGxb1RSUF305nb3GT0SPPBntbVkRwddL6dFg3_Vb-VHFRR6Kjb4YhCTBs8CPLTjZabE5UwjbIE3KdJrDEBMOGlFjnjwi6mAlYzSG2BY_d6jzw8EHJ92yM09onNT13gQkBEeHrS2nzVhwwkGP19HZerPasaJOtbI5VoQLECDAm9AzSYY4jRYZMIqAu6hOQ-B_qNU8kSC0zOwTUYutwF0fp7gvNOpPN3CqE0Sz0-yTm_pZ63jvcwlxFDzuqBKEfNEjaZmdvljNptT9EDo-YV7zUNOIVKjTug4BbP-LkCJTcrRgZGCEUgoQK8_JyqDY8tFUkFnqW5ZVDpn-xynvfU3KHykBa6j8NjWXcz0QeY0CIXkFbHowqK77e2dHsNYi3FpoIvIoL6UDZfKiIgvYPn_SSi9aYMlHY8_WlxujAILt9cCZYoHPbsqIUPvoMxOzqYlfFmKFJ2vaICNQi8XPGqV_7gQU9EU8eTjnBXM0CyEIjPukj7DcbuGq0YVYKTI7gPqkKShiZOTtgfO5kPo0hu367nSJ77xksiGjylUmvfZXPmvQHrruAHWz6QKJw0p6Bv34sU0RWuef7dRA",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"DateOfBirth\": \"05-10-2012\",\r\n    \"Gender\": \"Male\",\r\n    \"Name\": \"Test Patient\",\r\n    \"Email\": \"sblsimaolopes@gmail.com\",\r\n    \"Phone\": \"937-453-5638\",\r\n    \"Address\": \"Rua de Cima, Anytown, USA\",\r\n    \"Conditions\": [\"Diabetes\", \"Hypertension\"],\r\n    \"EmergencyContact\": \"Jane Doe: 098-765-4321\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5012/api/patient/register"
+			},
+			"response": []
 		}
 	]
 }
