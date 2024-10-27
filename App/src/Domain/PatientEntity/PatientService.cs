@@ -103,6 +103,12 @@ namespace Sempi5.Domain.PatientEntity
             return patient == null ? null : ConvertToDTO(patient);
         }
 
+        public async Task<SystemUserDTO> GetUserByID(long userID)
+        {
+            var user = await _repoUser.GetUserByID(userID);
+            return user == null ? null : ConvertToUserDTO(user);
+        }
+
         public async Task<PatientDTO> UpdatePatientProfile(string patientId, PatientDTO updateDto)
         {
             //get patient by id
@@ -243,6 +249,29 @@ namespace Sempi5.Domain.PatientEntity
             return ConvertToDTO(patient);
         }
 
+        public async Task<SystemUserDTO> UpdateUser(long userID, PatientDTO patientDTO, bool isEmailComfirmed)
+        {
+            var user = await _repoUser.GetUserByID(userID);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            bool confirmationEmailNeeded = false;
+            if ( patientDTO.MarketingConsent!= null)
+            {
+                user.MarketingConsent = (bool)patientDTO.MarketingConsent;
+            }
+
+            if (!confirmationEmailNeeded || isEmailComfirmed)
+            {
+                await _unitOfWork.CommitAsync();
+            }
+
+            return ConvertToUserDTO(user);
+        }
+
         public async Task<bool> ScheduleDeletion(string email)
         {
             var patient = await _repo.GetPatientByEmail(email);
@@ -273,8 +302,19 @@ namespace Sempi5.Domain.PatientEntity
                 EmergencyContact = patient.EmergencyContact.ToString(),
                 Address = patient.Address.ToString(),
                 DateOfBirth = patient.DateOfBirth.ToString("dd-MM-yyyy"),
-                PatientID = patient.Id.ToString(),
-                DeletePatientDate = patient.DeletePatientDate?.ToString("dd-MM-yyyy")
+                DeletePatientDate = patient.DeletePatientDate?.ToString("dd-MM-yyyy"),
+                UserID = patient.SystemUser?.Id.AsLong(),
+                MarketingConsent = patient.SystemUser?.MarketingConsent 
+            };
+        }
+
+        private SystemUserDTO ConvertToUserDTO(SystemUser user)
+        {
+            return new SystemUserDTO
+            {
+                Email = user.Email.ToString(),
+                Active = user.Active,
+                MarketingConsent = user.MarketingConsent
             };
         }
 

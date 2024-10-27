@@ -27,6 +27,17 @@ namespace Sempi5.Infrastructure.UserRepository
             return user;
         }
 
+        public async Task<SystemUser> GetUserByID(long userID)
+        {
+            var user = await  _context.Users.FirstOrDefaultAsync(x => x.Id.Equals(new SystemUserId(userID)));
+
+            if(user == null){
+                return null;
+            }
+
+            return user;
+        }
+
         public async Task DeleteAsync(SystemUser user)
         {
             if (user == null)

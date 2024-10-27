@@ -127,8 +127,10 @@ namespace Sempi5.Controllers
             var emailCookie = cookie?.FindFirst(ClaimTypes.Email)?.Value;
 
             var myProfile = await _service.GetPatientByEmail(emailCookie);
+            long userID = myProfile.UserID.Value;
+            var myUser = await _service.GetUserByID(userID);
 
-            if (myProfile == null)
+            if (myProfile == null || myUser == null)
             {
                 return NotFound();
             }
@@ -137,8 +139,8 @@ namespace Sempi5.Controllers
             var originalPhone = myProfile.Phone;
             var originalEmail = myProfile.Email;
             var originalAddress = myProfile.Address;
-            // Ver se é para adicionar preferências
 
+            await _service.UpdateUser(userID, editPatientDTO, false);
             var newPatientProfile = await _service.UpdatePatient(emailCookie, editPatientDTO, false);
 
             if (newPatientProfile == null)
@@ -193,6 +195,11 @@ namespace Sempi5.Controllers
             if (!string.IsNullOrEmpty(editPatientDto.Address))
             {
                 message += $"<p>Address: {editPatientDto.Address}</p>";
+            }
+
+            if(editPatientDto.MarketingConsent.HasValue)
+            {
+                message += $"<p>Marketing Consent: {editPatientDto.MarketingConsent}</p>";
             }
 
             message += $"<p>Please <a href='{confirmationLink}'>Click here</a> to confirm the changes.</p>";

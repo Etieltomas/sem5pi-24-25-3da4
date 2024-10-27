@@ -14,7 +14,7 @@ namespace Sempi5.Domain.PatientEntity
         public List<string>? Conditions { get; set; }  
         public string? EmergencyContact { get; set; }
         public string? DeletePatientDate { get; set; }
-
-        public string? PatientID { get; set; }
+        public long? UserID { get; set; }
+        public bool? MarketingConsent { get; set; }
     }
 }
