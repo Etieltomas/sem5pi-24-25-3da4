@@ -2,6 +2,7 @@ using System;
 using Xunit;
 using Sempi5.Domain.Shared;
 
+namespace Sempi5Test.DomainTests.SharedTest;
 public class PhoneTest
 {
     [Theory]

@@ -3,7 +3,7 @@ using Xunit;
 using Sempi5.Domain.PatientEntity;
 using Sempi5.Domain.Shared;
 
-namespace Sempi5.DomainTests.PatientEntityTest;
+namespace Sempi5Test.DomainTests.PatientEntityTest;
 
 public class ConditionTest
 {

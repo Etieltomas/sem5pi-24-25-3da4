@@ -2,7 +2,7 @@ using System;
 using Xunit;
 using Sempi5.Domain.OperationRequestEntity;
 
-namespace Tests.DomainTests.OperationRequestEntityTest;
+namespace Sempi5Test.DomainTests.OperationRequestEntityTest;
 
 public class PriorityTest
 {

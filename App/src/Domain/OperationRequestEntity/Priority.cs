@@ -5,7 +5,7 @@ namespace Sempi5.Domain.OperationRequestEntity
 {
     public class Priority : ValueObject
     {
-        public string Value { get; }
+        public virtual string Value { get; }
 
         private Priority(string value)
         {

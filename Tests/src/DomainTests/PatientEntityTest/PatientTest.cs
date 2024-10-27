@@ -6,7 +6,9 @@ using Sempi5.Domain.Shared;
 using Sempi5.Domain.UserEntity;
 using System.Collections.Generic;
 
-public class PatientTests
+namespace Sempi5Test.DomainTests.PatientEntityTest;
+
+public class PatientTest
 { 
     [Fact]
     public void CanInitializePatient()
@@ -15,16 +17,34 @@ public class PatientTests
         systemUserMock.Setup(su => su.Username).Returns("franciscoaguiar");
         systemUserMock.Setup(su => su.Email).Returns(new Email("franciscoaguiar@example.com"));
 
+        var nameMock = new Mock<Name>("Francisco Aguiar");
+        nameMock.Setup(n => n.ToString()).Returns("Francisco Aguiar");
+
+        var emailMock = new Mock<Email>("franciscoaguiar@example.com");
+        emailMock.Setup(e => e.ToString()).Returns("franciscoaguiar@example.com");
+
+        var phoneMock = new Mock<Phone>("123-456-7890");
+        phoneMock.Setup(p => p.ToString()).Returns("123-456-7890");
+
+        var addressMock = new Mock<Address>("123 Main St", "Springfield", "IL");
+        addressMock.Setup(a => a.ToString()).Returns("123 Main St, Springfield, IL");
+
+        var conditionMock = new Mock<Condition>("Asthma");
+        conditionMock.Setup(c => c.ToString()).Returns("Asthma");
+
+        var emergencyContactMock = new Mock<Phone>("098-765-4321");
+        emergencyContactMock.Setup(ec => ec.ToString()).Returns("098-765-4321");
+
         var patient = new Patient
         {
             DateOfBirth = new DateTime(1990, 1, 1),
-            Name = new Name("Francisco Aguiar"),
+            Name = nameMock.Object,
             Gender = Gender.Male,
-            Email = new Email("franciscoaguiar@example.com"),
-            Phone = new Phone("123-456-7890"),
-            Address = new Address("123 Main St", "Springfield", "IL"),
-            Conditions = new List<Condition> { new Condition("Asthma") },
-            EmergencyContact = new Phone("098-765-4321"),
+            Email = emailMock.Object,
+            Phone = phoneMock.Object,
+            Address = addressMock.Object,
+            Conditions = new List<Condition> { conditionMock.Object },
+            EmergencyContact = emergencyContactMock.Object,
             SystemUser = systemUserMock.Object
         };
 
@@ -50,7 +70,7 @@ public class PatientTests
     public void ChangeBirthDate_InvalidDate_ThrowsException()
     {
         var patient = new Patient { DateOfBirth = new DateTime(1990, 1, 1) };
-        var newDate = DateTime.Now.AddDays(1); // Future date
+        var newDate = DateTime.Now.AddDays(1); 
 
         Assert.Throws<BusinessRuleValidationException>(() => patient.DateOfBirth = newDate);
     }
@@ -62,29 +82,47 @@ public class PatientTests
         systemUserMock.Setup(su => su.Username).Returns("franciscoaguiar");
         systemUserMock.Setup(su => su.Email).Returns(new Email("franciscoaguiar@example.com"));
 
+        var nameMock = new Mock<Name>("Francisco Aguiar");
+        nameMock.Setup(n => n.ToString()).Returns("Francisco Aguiar");
+
+        var emailMock = new Mock<Email>("franciscoaguiar@example.com");
+        emailMock.Setup(e => e.ToString()).Returns("franciscoaguiar@example.com");
+
+        var phoneMock = new Mock<Phone>("123-456-7890");
+        phoneMock.Setup(p => p.ToString()).Returns("123-456-7890");
+
+        var addressMock = new Mock<Address>("123 Main St", "Springfield", "IL");
+        addressMock.Setup(a => a.ToString()).Returns("123 Main St, Springfield, IL");
+
+        var conditionMock = new Mock<Condition>("Asthma");
+        conditionMock.Setup(c => c.ToString()).Returns("Asthma");
+
+        var emergencyContactMock = new Mock<Phone>("098-765-4321");
+        emergencyContactMock.Setup(ec => ec.ToString()).Returns("098-765-4321");
+
         var patient1 = new Patient
         {
             DateOfBirth = new DateTime(1990, 1, 1),
-            Name = new Name("Francisco Aguiar"),
+            Name = nameMock.Object,
             Gender = Gender.Male,
-            Email = new Email("franciscoaguiar@example.com"),
-            Phone = new Phone("123-456-7890"),
-            Address = new Address("123 Main St", "Springfield", "IL"),
-            Conditions = new List<Condition> { new Condition("Asthma") },
-            EmergencyContact = new Phone("098-765-4321"),
+            Email = emailMock.Object,
+            Phone = phoneMock.Object,
+            Address = addressMock.Object,
+            Conditions = new List<Condition> { conditionMock.Object },
+            EmergencyContact = emergencyContactMock.Object,
             SystemUser = systemUserMock.Object
         };
 
         var patient2 = new Patient
         {
             DateOfBirth = new DateTime(1990, 1, 1),
-            Name = new Name("Francisco Aguiar"),
+            Name = nameMock.Object,
             Gender = Gender.Male,
-            Email = new Email("franciscoaguiar@example.com"),
-            Phone = new Phone("123-456-7890"),
-            Address = new Address("123 Main St", "Springfield", "IL"),
-            Conditions = new List<Condition> { new Condition("Asthma") },
-            EmergencyContact = new Phone("098-765-4321"),
+            Email = emailMock.Object,
+            Phone = phoneMock.Object,
+            Address = addressMock.Object,
+            Conditions = new List<Condition> { conditionMock.Object },
+            EmergencyContact = emergencyContactMock.Object,
             SystemUser = systemUserMock.Object
         };
 
@@ -109,29 +147,59 @@ public class PatientTests
         systemUserMock2.Setup(su => su.Username).Returns("saraaguiar");
         systemUserMock2.Setup(su => su.Email).Returns(new Email("saraaguiar@example.com"));
 
+        var nameMock1 = new Mock<Name>("Francisco Aguiar");
+        nameMock1.Setup(n => n.ToString()).Returns("Francisco Aguiar");
+
+        var nameMock2 = new Mock<Name>("Sara Aguiar");
+        nameMock2.Setup(n => n.ToString()).Returns("Sara Aguiar");
+
+        var emailMock1 = new Mock<Email>("franciscoaguiar@example.com");
+        emailMock1.Setup(e => e.ToString()).Returns("franciscoaguiar@example.com");
+
+        var emailMock2 = new Mock<Email>("saraaguiar@example.com");
+        emailMock2.Setup(e => e.ToString()).Returns("saraaguiar@example.com");
+
+        var phoneMock1 = new Mock<Phone>("123-456-7890");
+        phoneMock1.Setup(p => p.ToString()).Returns("123-456-7890");
+
+        var phoneMock2 = new Mock<Phone>("098-765-4321");
+        phoneMock2.Setup(p => p.ToString()).Returns("098-765-4321");
+
+        var addressMock1 = new Mock<Address>("123 Main St", "Springfield", "IL");
+        addressMock1.Setup(a => a.ToString()).Returns("123 Main St, Springfield, IL");
+
+        var addressMock2 = new Mock<Address>("456 Elm St", "Metropolis", "NY");
+        addressMock2.Setup(a => a.ToString()).Returns("456 Elm St, Metropolis, NY");
+
+        var conditionMock1 = new Mock<Condition>("Asthma");
+        conditionMock1.Setup(c => c.ToString()).Returns("Asthma");
+
+        var conditionMock2 = new Mock<Condition>("Diabetes");
+        conditionMock2.Setup(c => c.ToString()).Returns("Diabetes");
+
         var patient1 = new Patient
         {
             DateOfBirth = new DateTime(1990, 1, 1),
-            Name = new Name("Francisco Aguiar"),
+            Name = nameMock1.Object,
             Gender = Gender.Male,
-            Email = new Email("franciscoaguiar@example.com"),
-            Phone = new Phone("123-456-7890"),
-            Address = new Address("123 Main St", "Springfield", "IL"),
-            Conditions = new List<Condition> { new Condition("Asthma") },
-            EmergencyContact = new Phone("098-765-4321"),
+            Email = emailMock1.Object,
+            Phone = phoneMock1.Object,
+            Address = addressMock1.Object,
+            Conditions = new List<Condition> { conditionMock1.Object },
+            EmergencyContact = phoneMock2.Object,
             SystemUser = systemUserMock1.Object
         };
 
         var patient2 = new Patient
         {
-            DateOfBirth = new DateTime(2000, 1, 1), 
-            Name = new Name("Sara Aguiar"),
-            Gender = Gender.Female, 
-            Email = new Email("saraaguiar@example.com"),
-            Phone = new Phone("098-765-4321"),
-            Address = new Address("456 Elm St", "Metropolis", "NY"),
-            Conditions = new List<Condition> { new Condition("Diabetes") },
-            EmergencyContact = new Phone("123-456-7890"),
+            DateOfBirth = new DateTime(2000, 1, 1),
+            Name = nameMock2.Object,
+            Gender = Gender.Female,
+            Email = emailMock2.Object,
+            Phone = phoneMock2.Object,
+            Address = addressMock2.Object,
+            Conditions = new List<Condition> { conditionMock2.Object },
+            EmergencyContact = phoneMock1.Object,
             SystemUser = systemUserMock2.Object
         };
 
@@ -143,5 +211,5 @@ public class PatientTests
         Assert.NotEqual(patient1.Address.ToString(), patient2.Address.ToString());
         Assert.NotEqual(patient1.SystemUser.Username, patient2.SystemUser.Username);
         Assert.NotEqual(patient1.SystemUser.Email.ToString(), patient2.SystemUser.Email.ToString());
-    } 
+    }
 }

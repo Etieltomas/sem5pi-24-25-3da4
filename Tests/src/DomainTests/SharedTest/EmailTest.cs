@@ -3,7 +3,7 @@ using Xunit;
 using Sempi5.Domain.Shared;
 using System.Text.RegularExpressions;
 
-namespace Sempi5.DomainTests.SharedTest;
+namespace Sempi5Test.DomainTests.SharedTest;
 
 public class EmailTest
 {

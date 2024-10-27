@@ -2,6 +2,7 @@ using System;
 using Xunit;
 using Sempi5.Domain.OperationRequestEntity;
 
+namespace Sempi5Test.DomainTests.OperationRequestEntityTest;
 
 public class StatusTest
 {

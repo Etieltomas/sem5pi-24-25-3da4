@@ -3,6 +3,8 @@ using Xunit;
 using Sempi5.Domain.PatientEntity;
 using Sempi5.Domain.Shared;
 
+namespace Sempi5Test.DomainTests.PatientEntityTest;
+
 public class GenderTest
 {
     [Theory]

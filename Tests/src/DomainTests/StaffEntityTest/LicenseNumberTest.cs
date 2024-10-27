@@ -3,7 +3,7 @@ using Xunit;
 using Sempi5.Domain.Shared;
 using Sempi5.Domain.StaffEntity;
 
-namespace Sempi5.DomainTests.StaffEntityTest;
+namespace Sempi5Test.DomainTests.StaffEntityTest;
 
 public class LicenseNumberTest
 {
