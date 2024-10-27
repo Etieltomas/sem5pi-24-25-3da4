@@ -1332,6 +1332,19 @@
 				"url": "http://localhost:5012/api/patient/request-delete"
 			},
 			"response": []
+		},
+		{
+			"name": "List Patient Profile As No Admin",
+			"id": "448f90f2-087a-43fd-93b2-a513f759d450",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": ""
+			},
+			"response": []
 		}
 	]
 }
