@@ -2,7 +2,7 @@ using System;
 using Xunit;
 using Sempi5.Domain.TokenEntity;
 
-namespace Sempi5Test.DomainTests.TokenTest;
+namespace Sempi5Test.UnitTests.TokenTest;
 
 public class CryptographyTest
 {

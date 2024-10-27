@@ -6,7 +6,7 @@ using Sempi5.Domain.StaffEntity;
 using Sempi5.Domain.UserEntity;
 using Sempi5.Domain.SpecializationEntity;
 
-namespace Sempi5Test.DomainTests.StaffEntityTest
+namespace Sempi5Test.UnitTests.StaffEntityTest
 {
     public class StaffTest
     {

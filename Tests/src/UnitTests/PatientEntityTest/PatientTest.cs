@@ -6,7 +6,7 @@ using Sempi5.Domain.Shared;
 using Sempi5.Domain.UserEntity;
 using System.Collections.Generic;
 
-namespace Sempi5Test.DomainTests.PatientEntityTest;
+namespace Sempi5Test.UnitTests.PatientEntityTest;
 
 public class PatientTest
 { 

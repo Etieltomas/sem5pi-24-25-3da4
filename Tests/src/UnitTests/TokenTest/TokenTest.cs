@@ -4,7 +4,7 @@ using Moq;
 using Sempi5.Domain.Shared;
 using Sempi5.Domain.TokenEntity;
 
-namespace Sempi5Test.DomainTests.TokenTest;
+namespace Sempi5Test.UnitTests.TokenTest;
 
 public class TokenTest
 {

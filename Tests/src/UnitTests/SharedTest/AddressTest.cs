@@ -2,7 +2,7 @@ using System;
 using Xunit;
 using Sempi5.Domain.Shared;
 
-namespace Sempi5Test.DomainTests.SharedTest;
+namespace Sempi5Test.UnitTests.SharedTest;
 public class AddressTest
 {
     [Theory]

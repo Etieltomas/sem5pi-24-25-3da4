@@ -4,7 +4,7 @@ using Sempi5.Domain.UserEntity;
 using Sempi5.Domain.Shared;
 using Moq;
 
-namespace Sempi5Test.DomainTests.UserTest;
+namespace Sempi5Test.UnitTests.UserTest;
 
 public class SystemUserTest
 {
