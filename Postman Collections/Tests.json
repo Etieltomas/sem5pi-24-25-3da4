@@ -497,6 +497,88 @@
 				"url": "http://localhost:5012/api/OperationRequest/update"
 			},
 			"response": []
+		},
+		{
+			"name": "Operation Request Delete",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "be9e89ae-44a7-4eb3-94e1-d1fd220c89cf",
+						"exec": [
+							"pm.test(\"Status code is 200 or 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 2 seconds\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "a2a2de4d-82c5-43c3-8836-700be5418df7",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"operationRequestId\": \"656b80da-3929-4149-92a0-527bf3343bba\",\r\n    \"staffId\": \"L202400001\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5012/api/OperationRequest/delete"
+			},
+			"response": []
+		},
+		{
+			"name": "Operation Request List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4d1c906e-cd61-42b0-8331-5443e073f721",
+						"exec": [
+							"pm.test(\"Status code is 200 or 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 2 seconds\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "2ad94064-6d04-4c01-87f4-4667adc57d93",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5012/api/OperationRequest/list"
+			},
+			"response": []
 		}
 	]
 }
