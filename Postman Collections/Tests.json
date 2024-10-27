@@ -7,7 +7,138 @@
 	"item": [
 		{
 			"name": "Patient and Staff for Operation Requests Tests",
-			"item": [],
+			"item": [
+				{
+					"name": "Patient Register 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5adb387b-99c2-4fa1-b09b-bdb4a5d7e257",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 2 seconds\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"All values in the response match the expected values\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(jsonData.DateOfBirth).to.equal(\"15-08-1985\");\r",
+									"    pm.expect(jsonData.Gender).to.equal(\"Female\");\r",
+									"    pm.expect(jsonData.Name).to.equal(\"Maria da Silva\");\r",
+									"    pm.expect(jsonData.Email).to.equal(\"maria.silva@example.com\");\r",
+									"    pm.expect(jsonData.Phone).to.equal(\"+5511998765432\");\r",
+									"    pm.expect(jsonData.Address).to.equal(\"Rua das Flores, São Paulo, Brasil\");\r",
+									"\r",
+									"    const expectedConditions = [\"Diabetes\", \"Hipertensão\"];\r",
+									"    pm.expect(JSON.stringify(jsonData.Conditions)).to.equal(JSON.stringify(expectedConditions));\r",
+									"\r",
+									"    pm.expect(jsonData.EmergencyContact).to.equal(\"João Silva - +5511998765433\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "66f3ccbf-1a76-4117-b4ae-b5bbb6d0c177",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": ".AspNetCore.Cookies=CfDJ8Lp1eZmYPg9Oh65Wzjxz_3ngtU0MRyGJVnBIVqLScIem3w01iVjdz1-rr0CfU3CWeFfQszM1DWUsuZFtSi3iJcXt8anCMMEY7YZac1gHTURLIwgQLH256jOroBGCi7z-MabNDePU57p3KVuc2hGK2tvh5vfkmH14gg9OESCBuE2JIBntfZp9vpSVa8Eqkgc6lfPfvzeWh2VI3jLlKP4WkFSscGO67ndjkayfg799aZjgPWdx1EInj0ULK3i2FrXhfHV4ceNVXTOzOdF9VMqKn347I0mqALVTEfRg7JPYCSiMBqPEZ4uIBKqNe2dEYMuQHsU4aSvSqMpfBGRmqNXuor5Xq6pn6A2tyDqyrq9QsSwuQuzw5O36gsIjigbSgXeemygDGSWH1pbItC9Z1vx9vGnHC2gdnk7xacHL5yXaaWAARN3RJPClV6nfAFcdQRYsMNhj3xSpkk844oITrME43EDTcZWhGAH55rtgZUD8RGu8GQwM2hTfo-1mTIVLmk_ydR_YfZn_55bxA09cyZjBebZJbN1KHwCHUSqq94lI2s6OQUMZgnraOr7I0aqF1Bvwre6r37LnFrtZRBKsNJT8aFg7NJNhFd5AjHC6lG5TLmrZ8oVkScZx6nJFDjFcIXnnS608vepJA87TQcb2YQ9n3q0eldDVlv2r-oxYxgFQLNl7Me10TIU-174vqOqrpXqIOT_HkQ5WPgKl5T6FjldXOI5OMKTYwWhIQKkqhXhhnpItpTDXAATJDBaSeuAwlphCMeoWLhJt5aJYgoH4qbcH80PTwsGrguYyCM_v5DWU1LD-oxiXXCXOg5op8HpquuL3yUuucKHozibTMdhx_31-a-SXrxcBd9f1XvkPJd98cC8Qicv6LHRk9veQ8L74X8iunMT5x--v_LVND1wZv8hJVcSx_FmQtwzQpP0tr-55PZLCpd3fQv1ztwE_aPzQDLu3ZkzW1dDKgTN270afpv0YT8c",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"DateOfBirth\": \"15-08-1985\",\r\n    \"Gender\": \"Female\",\r\n    \"Name\": \"Maria da Silva\",\r\n    \"Email\": \"maria.silva@example.com\",\r\n    \"Phone\": \"+5511998765432\",\r\n    \"Address\": \"Rua das Flores, São Paulo, Brasil\",\r\n    \"Conditions\": [\"Diabetes\", \"Hipertensão\"],\r\n    \"EmergencyContact\": \"João Silva - +5511998765433\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:5012/api/Patient/register"
+					},
+					"response": []
+				},
+				{
+					"name": "Staff Register 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "56ac9c54-784a-4625-ac55-64dcf1e7d94b",
+								"exec": [
+									"pm.test(\"Status code is 200 or 201\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 2 seconds\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"All values in the response match the expected values\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(jsonData.LicenseNumber).to.equal(\"SN567846\");\r",
+									"    pm.expect(jsonData.Name).to.equal(\"Laura Múrias\");\r",
+									"    pm.expect(jsonData.Email).to.equal(\"lauramurias@gmail.com\");\r",
+									"    pm.expect(jsonData.Phone).to.equal(\"111-12343\");\r",
+									"    pm.expect(jsonData.Address).to.equal(\"123 Main St, Sample City, Sample State\");\r",
+									"\r",
+									"    const expectedAvailability = [\r",
+									"        \"21-10-2024T09:00:00 - 21-10-2024T11:00:00\",\r",
+									"        \"22-10-2024T09:00:00 - 22-10-2024T11:00:00\"\r",
+									"    ];\r",
+									"    pm.expect(JSON.stringify(jsonData.AvailabilitySlots)).to.equal(JSON.stringify(expectedAvailability));\r",
+									"\r",
+									"    pm.expect(jsonData.Specialization).to.equal(\"Cardiology\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "1e2d309e-cd17-4ecf-9405-249c09dc71b8",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": ".AspNetCore.Cookies=CfDJ8Lp1eZmYPg9Oh65Wzjxz_3ngtU0MRyGJVnBIVqLScIem3w01iVjdz1-rr0CfU3CWeFfQszM1DWUsuZFtSi3iJcXt8anCMMEY7YZac1gHTURLIwgQLH256jOroBGCi7z-MabNDePU57p3KVuc2hGK2tvh5vfkmH14gg9OESCBuE2JIBntfZp9vpSVa8Eqkgc6lfPfvzeWh2VI3jLlKP4WkFSscGO67ndjkayfg799aZjgPWdx1EInj0ULK3i2FrXhfHV4ceNVXTOzOdF9VMqKn347I0mqALVTEfRg7JPYCSiMBqPEZ4uIBKqNe2dEYMuQHsU4aSvSqMpfBGRmqNXuor5Xq6pn6A2tyDqyrq9QsSwuQuzw5O36gsIjigbSgXeemygDGSWH1pbItC9Z1vx9vGnHC2gdnk7xacHL5yXaaWAARN3RJPClV6nfAFcdQRYsMNhj3xSpkk844oITrME43EDTcZWhGAH55rtgZUD8RGu8GQwM2hTfo-1mTIVLmk_ydR_YfZn_55bxA09cyZjBebZJbN1KHwCHUSqq94lI2s6OQUMZgnraOr7I0aqF1Bvwre6r37LnFrtZRBKsNJT8aFg7NJNhFd5AjHC6lG5TLmrZ8oVkScZx6nJFDjFcIXnnS608vepJA87TQcb2YQ9n3q0eldDVlv2r-oxYxgFQLNl7Me10TIU-174vqOqrpXqIOT_HkQ5WPgKl5T6FjldXOI5OMKTYwWhIQKkqhXhhnpItpTDXAATJDBaSeuAwlphCMeoWLhJt5aJYgoH4qbcH80PTwsGrguYyCM_v5DWU1LD-oxiXXCXOg5op8HpquuL3yUuucKHozibTMdhx_31-a-SXrxcBd9f1XvkPJd98cC8Qicv6LHRk9veQ8L74X8iunMT5x--v_LVND1wZv8hJVcSx_FmQtwzQpP0tr-55PZLCpd3fQv1ztwE_aPzQDLu3ZkzW1dDKgTN270afpv0YT8c",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \r\n        \"LicenseNumber\": \"SN567846\",\r\n        \"Name\": \"Laura Múrias\",\r\n        \"Email\": \"lauramurias@gmail.com\",\r\n        \"Phone\": \"111-12343\",\r\n        \"Address\": \"123 Main St, Sample City, Sample State\",\r\n        \"AvailabilitySlots\": [\r\n            \"21-10-2024T09:00:00 - 21-10-2024T11:00:00\",\r\n            \"22-10-2024T09:00:00 - 22-10-2024T11:00:00\"\r\n        ],\r\n        \"Specialization\": \"Cardiology\"\r\n    \r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:5012/api/Staff/register"
+					},
+					"response": []
+				}
+			],
 			"id": "0f8cbc1a-8302-4e4b-9999-a0d59d41b261"
 		},
 		{
