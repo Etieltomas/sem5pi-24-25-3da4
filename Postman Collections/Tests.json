@@ -1335,12 +1335,72 @@
 		},
 		{
 			"name": "List Patient Profile As No Admin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7b7d51b6-f392-425f-8313-f362ee945daa",
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(401);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 4 seconds\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(4000);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"id": "448f90f2-087a-43fd-93b2-a513f759d450",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
 			"request": {
 				"method": "GET",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": ".AspNetCore.Cookies=CfDJ8PO27rPERe5CqRKRiXWCiETjfFYZcmzNP47ouzc2zgz3szVlD2M3rxj0pto-9HeTU0xPi0H2fGwC1RN3NSRJsJgVsi0_G0VmroqLje8YeuDcsEJ_OvDPEPY44miljT__7-jkHk39TugWsJLqq3pvm-SJGbi3jGa-8riU29pft_qHrv5QiGJU3qBvZDl9qQFms_2Q3oTvJYuGcIK6JkpAPCL-c8DyFJYOvpglHcpd_pPS3HMRohMtGzsJJX4qbT0F-6NRR2R50fnHrs_EeOwSRGbITCkpwOKZApmlsVNYOvtXVGjdV5ymxKfTQgnfcOd2BtxQRYbWngCl6EfAEgcovo8oylocZl_cB7kcGT5nqmeC1YAUnLjtmMoxZ2OvQ_INwEPtd4MKE-EMuRA5uB3CGeo-bZPHOh-G7kUY_7Wbp65EmsXn4uHFreoXXLlcZTcvbdTn0Lac_QabVm8xJ7wgEvJ65xAhS9qTJOP1H9-S2gz_pfcYWy8h0FajDKjGmgC0Q_1_G2LD9ImChza0VGORowj7Vw8xre7fi1yG6lqZy-6NROn3eHvO6U_KpysegqPDNrlUOJBQoF1ux_lc5kov0is_88bwDE6KP538n3VmbupjWjuZUb7EQ8AQoUpYgKST--gFqMmx-qVV4stw6JVyDE5dABSoRu4cRNYMOgPlS5l6_adBDWY-u5J42PYfNua231SFxP14IM8yPRkECsTQKBFxhqKsDZj0JOOpGOCS1AflccmgUhAWwZfE-4EJ-eLIMIfLcX067lq5fSVldaVwmTWsQqy8SwvsNzsqTN47V7jQWUm6xBPeQzrSfe6mdXzQaSYThyjwTDBgqzC0-p4m0P50fwuaOW8MEGurCRY_SIZOI5qVgx7suCaUfz6Jkv70s8DXQ2VmXUBYt2OxRk-UjS6C7u-OR2O5cDRMdiv9XxWVXOK9GyVLZljTGgh5Axci3g",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5012/api/patient/search?name=Test Patient&email=sblsimaolopes@gmail.com",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5012",
+					"path": [
+						"api",
+						"patient",
+						"search"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "Test Patient"
+						},
+						{
+							"key": "email",
+							"value": "sblsimaolopes@gmail.com"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User Profile As No Patient",
+			"id": "d928b985-0927-4a80-8fa2-ee918ff11da9",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "PUT",
 				"header": [],
 				"url": ""
 			},
