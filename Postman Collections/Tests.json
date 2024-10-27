@@ -374,6 +374,129 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Operation Request Create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "59253093-5cf8-47b3-8f03-521f0ec4d269",
+						"exec": [
+							"pm.test(\"Status code is 200 or 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 2 seconds\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "9d34f564-929e-443e-baa0-d50ebe4b75f7",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"StaffId\": \"L202400001\",\r\n    \"PatientId\": \"202410000001\",\r\n    \"OperationTypeId\": \"Cardiology\",\r\n    \"Priority\": \"High\",\r\n    \"Deadline\": \"25-12-2024\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5012/api/OperationRequest/create"
+			},
+			"response": []
+		},
+		{
+			"name": "Operation Request Create 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "510c518b-9f8c-47b2-9ed7-72d7b209eeed",
+						"exec": [
+							"pm.test(\"Status code is 200 or 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 2 seconds\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "14cc6ebc-8994-4bca-b78c-7a718d98cb3a",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"StaffId\": \"R202400001\",\r\n    \"PatientId\": \"202410000001\",\r\n    \"OperationTypeId\": \"Neurology\",\r\n    \"Priority\": \"High\",\r\n    \"Deadline\": \"30-12-2025\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5012/api/OperationRequest/create"
+			},
+			"response": []
+		},
+		{
+			"name": "Operation Request Update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "63a90fa6-1b78-4173-b955-915e6c75d7c8",
+						"exec": [
+							"pm.test(\"Status code is 200 or 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 2 seconds\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "32d1980d-f795-4bd6-9b03-6fcf1b5b5485",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"OperationRequestId\": \"8905a217-047c-4f1d-9304-5bae918b805b\",\r\n  \"StaffId\": \"R202400001\",\r\n  \"NewPriority\": \"Low\",\r\n  \"NewDeadline\": \"28-12-2027\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5012/api/OperationRequest/update"
+			},
+			"response": []
 		}
 	]
 }
