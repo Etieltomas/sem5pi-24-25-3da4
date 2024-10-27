@@ -805,6 +805,48 @@
 		},
 		{
 			"name": "Create Patient Profile",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "411aca45-a6ed-4c47-814f-ed9ce8b2cee5",
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 2 seconds\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"All values in the response match the expected values\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(jsonData.medicalRecordNumber).to.equal(\"202410000001\");\r",
+							"    pm.expect(jsonData.dateOfBirth).to.equal(\"05-10-2012\");\r",
+							"    pm.expect(jsonData.gender).to.equal(\"Male\");\r",
+							"    pm.expect(jsonData.name).to.equal(\"Test Patient\");\r",
+							"    pm.expect(jsonData.email).to.equal(\"sblsimaolopes@gmail.com\");\r",
+							"    pm.expect(jsonData.phone).to.equal(\"937-453-5638\");\r",
+							"    pm.expect(jsonData.address).to.equal(\"Rua de Cima, Anytown, USA\");\r",
+							"    \r",
+							"    // Stringify arrays for accurate comparison of Conditions\r",
+							"    const expectedConditions = [\"Diabetes\", \"Hypertension\"];\r",
+							"    pm.expect(JSON.stringify(jsonData.conditions)).to.equal(JSON.stringify(expectedConditions));\r",
+							"    \r",
+							"    pm.expect(jsonData.emergencyContact).to.equal(\"Jane Doe: 098-765-4321\");\r",
+							"    \r",
+							"    // Check for additional fields\r",
+							"    pm.expect(jsonData.deletePatientDate).to.be.null;\r",
+							"    pm.expect(jsonData.userID).to.be.null;\r",
+							"    pm.expect(jsonData.marketingConsent).to.be.null;\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"id": "e87d8887-8048-4b15-ae8d-645592e0df0f",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
@@ -814,7 +856,7 @@
 				"header": [
 					{
 						"key": "Cookie",
-						"value": ".AspNetCore.Cookies=CfDJ8PO27rPERe5CqRKRiXWCiETfJJ_700o1z8rGLK2HQjqZVUozOXGGw3eGVL9PojnYGdjz4XhD3UY6uvqRELN6TGS7ZF6R5G6VhTQx_VuVBykIJjsXA5xHg4yzwTrSo4EzJ0gY5TH_8GPF2rHo1qsE5VxkbKHEqQCd3esQ3Yy6YcYA8Zxq8amAN1HZvp_EAco1Lw0BeQ66U561gFo0tYEtX-vq92z1pSpWglzn_TCq92QYGtEhBbdno5YGxb1RSUF305nb3GT0SPPBntbVkRwddL6dFg3_Vb-VHFRR6Kjb4YhCTBs8CPLTjZabE5UwjbIE3KdJrDEBMOGlFjnjwi6mAlYzSG2BY_d6jzw8EHJ92yM09onNT13gQkBEeHrS2nzVhwwkGP19HZerPasaJOtbI5VoQLECDAm9AzSYY4jRYZMIqAu6hOQ-B_qNU8kSC0zOwTUYutwF0fp7gvNOpPN3CqE0Sz0-yTm_pZ63jvcwlxFDzuqBKEfNEjaZmdvljNptT9EDo-YV7zUNOIVKjTug4BbP-LkCJTcrRgZGCEUgoQK8_JyqDY8tFUkFnqW5ZVDpn-xynvfU3KHykBa6j8NjWXcz0QeY0CIXkFbHowqK77e2dHsNYi3FpoIvIoL6UDZfKiIgvYPn_SSi9aYMlHY8_WlxujAILt9cCZYoHPbsqIUPvoMxOzqYlfFmKFJ2vaICNQi8XPGqV_7gQU9EU8eTjnBXM0CyEIjPukj7DcbuGq0YVYKTI7gPqkKShiZOTtgfO5kPo0hu367nSJ77xksiGjylUmvfZXPmvQHrruAHWz6QKJw0p6Bv34sU0RWuef7dRA",
+						"value": ".AspNetCore.Cookies=CfDJ8PO27rPERe5CqRKRiXWCiEQ8jGuA196K7IIg_hCxWcYSsqDwQbDT9-SpXSmV5huMt4AB4qSsjaO-2Zo_Sj8EzdyUivVT-KlduoLEhErnO4aR6DJk6ysLy7dpPI063emWPvWO2F6McUmi8tr3kCV6XfrncAMTcZOnQ3FNHbhb4UGrSC1HJSlxVt_VLi3dHKh1ctxZ_QHn8SCUHa_W4Ak-qAQ9QcqfM2fmEnkcj7KDk1e75sA-v4NMJkIof8EI-hh_fpB68J4lkiRVz0z3C23tnOFh95Ht5-KlJdv5ABCYJRirTQ8dhktGJdcFlqknofwQS6Ncq-I1NW4kjiAHXIvX1Sc3i5_VEvR_Sw4GcamTWc_LDv0-Ohi0-5hwzwDeiUr0PSQlb1SBfywpdxxFE00SBrGKQn62Fv_svHrFu1Qv5MQQK9XivSmYGbpND0TohtMc_cTyBFFYhZCuyovXrNugGpgV9ugTwBy_K-shb3stQ9FeUDSzhfPVpMvJS0VCozKBZ1ipwJc2YHAquH6DeDN8p4xIKIIsaVUgXZhdSZDmERDnGB0z2F-H2HQQPsZvCd3X0M15Jj8ldYt34aAsQB_vvt8L-NObTnRkNjmy25TZvNwcJmQBqNfzGe7ZdW5SEw-_FWYDfhAL5HOaU2GHLWTr_dZbH-WAbhOlIvfYLgb2nyTXPIdu0do0oBPl5ergX2k_DM_7vkpTdcvEkjfPTqV1f0UBeldFGkt035RoTfRm3QTdErOl5XoYeFxujAaPKLqWgf3jdMIBLXQnFXKGaHr4lh-hQP69PnPj84S1kN1blOMDXGRyqSqtyV33thZ3DElcjFHzLb4O0cywC6eYWz9XmmBstm2FSxVvUyDMZ7ufGCbWk_uzI7VuZ5auS21lIOjMx3CLb2Co_YArIDb_hbmswJnaCLHrq_Y7H4MSlshN3Es3",
 						"type": "text"
 					}
 				],
