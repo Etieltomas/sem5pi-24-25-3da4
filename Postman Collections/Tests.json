@@ -393,6 +393,31 @@
 		},
 		{
 			"name": "Edit Staff",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2677aceb-4388-4741-82c3-2f6a82686d7b",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 2 seconds\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+							"});",
+							"",
+							"pm.test(\"All values in the response match the expected values\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    ",
+							"    pm.expect(jsonData.message).to.equal(\"Confirmation sent successfully.\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"id": "c3de46ef-4566-41d8-b01e-9fb37d85f2c2",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
@@ -1252,6 +1277,59 @@
 					}
 				],
 				"url": "http://localhost:5012/api/patient/request-delete/sblsimaolopes@gmail.com"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8ae3a181-8f06-4184-b92e-ce382b2ea58f",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 4 seconds\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(4000);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Confirmation message is correct\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(jsonData.message).to.equal(\"Confirmation sent successfully.\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "735675f9-5932-4ea6-9ed6-ea56cd4b991b",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": ".AspNetCore.Cookies=CfDJ8PO27rPERe5CqRKRiXWCiETjfFYZcmzNP47ouzc2zgz3szVlD2M3rxj0pto-9HeTU0xPi0H2fGwC1RN3NSRJsJgVsi0_G0VmroqLje8YeuDcsEJ_OvDPEPY44miljT__7-jkHk39TugWsJLqq3pvm-SJGbi3jGa-8riU29pft_qHrv5QiGJU3qBvZDl9qQFms_2Q3oTvJYuGcIK6JkpAPCL-c8DyFJYOvpglHcpd_pPS3HMRohMtGzsJJX4qbT0F-6NRR2R50fnHrs_EeOwSRGbITCkpwOKZApmlsVNYOvtXVGjdV5ymxKfTQgnfcOd2BtxQRYbWngCl6EfAEgcovo8oylocZl_cB7kcGT5nqmeC1YAUnLjtmMoxZ2OvQ_INwEPtd4MKE-EMuRA5uB3CGeo-bZPHOh-G7kUY_7Wbp65EmsXn4uHFreoXXLlcZTcvbdTn0Lac_QabVm8xJ7wgEvJ65xAhS9qTJOP1H9-S2gz_pfcYWy8h0FajDKjGmgC0Q_1_G2LD9ImChza0VGORowj7Vw8xre7fi1yG6lqZy-6NROn3eHvO6U_KpysegqPDNrlUOJBQoF1ux_lc5kov0is_88bwDE6KP538n3VmbupjWjuZUb7EQ8AQoUpYgKST--gFqMmx-qVV4stw6JVyDE5dABSoRu4cRNYMOgPlS5l6_adBDWY-u5J42PYfNua231SFxP14IM8yPRkECsTQKBFxhqKsDZj0JOOpGOCS1AflccmgUhAWwZfE-4EJ-eLIMIfLcX067lq5fSVldaVwmTWsQqy8SwvsNzsqTN47V7jQWUm6xBPeQzrSfe6mdXzQaSYThyjwTDBgqzC0-p4m0P50fwuaOW8MEGurCRY_SIZOI5qVgx7suCaUfz6Jkv70s8DXQ2VmXUBYt2OxRk-UjS6C7u-OR2O5cDRMdiv9XxWVXOK9GyVLZljTGgh5Axci3g",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5012/api/patient/request-delete"
 			},
 			"response": []
 		}
