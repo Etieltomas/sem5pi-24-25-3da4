@@ -79,7 +79,7 @@ namespace Sempi5Test.UnitTests.StaffEntityTest
                 AvailabilitySlots = new List<AvailabilitySlot>()
             };
 
-            string begin = DateTime.Now.ToString("dd-MM-yyyyTHH:mm:ss");
+            string begin = DateTime.Now.AddHours(1).ToString("dd-MM-yyyyTHH:mm:ss");
             string end = DateTime.Now.AddHours(2).ToString("dd-MM-yyyyTHH:mm:ss");
 
             var availabilitySlot = new Mock<AvailabilitySlot>(begin + " - " + end).Object;

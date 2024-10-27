@@ -9,14 +9,21 @@ namespace Sempi5Test.UnitTests.StaffEntityTest
     public class AvailabilitySlotTest
     {
         [Theory]
-        [InlineData("21-10-2024T09:00:00 - 21-10-2024T11:00:00")]
-        [InlineData("31-12-2024T23:59:00 - 01-01-2025T01:00:00")]
-        public void CanCreateValidAvailabilitySlot(string slotValue)
+        [InlineData(1)]
+        [InlineData(2)] 
+        public void CanCreateValidAvailabilitySlot(int hoursToAdd)
         {
-            var availabilitySlot = new AvailabilitySlot(slotValue);
+            var startDateTime = DateTime.Now.AddHours(hoursToAdd);
+            var endDateTime = startDateTime.AddHours(2);
+            var availabilitySlot = new AvailabilitySlot(FormatDateTimeRange(startDateTime, endDateTime));
 
             Assert.NotNull(availabilitySlot);
-            Assert.Equal(slotValue, availabilitySlot.ToString());
+            Assert.Equal(FormatDateTimeRange(startDateTime, endDateTime), availabilitySlot.ToString());
+        }
+
+        private string FormatDateTimeRange(DateTime startDateTime, DateTime endDateTime)
+        {
+            return $"{startDateTime:dd-MM-yyyyTHH:mm:ss} - {endDateTime:dd-MM-yyyyTHH:mm:ss}";
         }
 
         [Theory]
@@ -29,11 +36,13 @@ namespace Sempi5Test.UnitTests.StaffEntityTest
         }
 
         [Theory]
-        [InlineData("21-10-2024T11:00:00 - 21-10-2024T09:00:00")]
-        [InlineData("21-10-2024T09:00:00 - 21-10-2024T09:00:00")]
-        public void CreatingAvailabilitySlotWithInvalidTimesThrowsException(string invalidSlotValue)
+        [InlineData(1)] 
+        [InlineData(0)] 
+        public void CreatingAvailabilitySlotWithInvalidTimesThrowsException(int hoursToAdd)
         {
-            Assert.Throws<BusinessRuleValidationException>(() => new AvailabilitySlot(invalidSlotValue));
+            var startDateTime = DateTime.Now.AddHours(hoursToAdd);
+            var endDateTime = startDateTime.AddHours(-1); 
+            Assert.Throws<BusinessRuleValidationException>(() => new AvailabilitySlot(FormatDateTimeRange(startDateTime, endDateTime)));
         }
 
         [Theory]
