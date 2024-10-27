@@ -7,7 +7,7 @@ POST: http://localhost:5012/api/Patient/register
     "DateOfBirth": "01-01-2000",
     "Gender": "Male",
     "Name": "Tomás Leite",
-    "Email": "tomasandreleite1@gmail.com",
+    "Email": "left4deadgame2@gmail.com",
     "Phone": "123-456-7891",
     "Address": "123 Main St, Anytown, USA",
     "Conditions": ["Diabetes", "Hypertension"],
@@ -30,7 +30,7 @@ pm.test("All values in the response match the expected values", function () {
     pm.expect(jsonData.dateOfBirth).to.equal("01-01-2000");
     pm.expect(jsonData.gender).to.equal("Male");
     pm.expect(jsonData.name).to.equal("Tomás Leite");
-    pm.expect(jsonData.email).to.equal("tomasandreleite1@gmail.com");
+    pm.expect(jsonData.email).to.equal("left4deadgame2@gmail.com");
     pm.expect(jsonData.phone).to.equal("123-456-7891");
     pm.expect(jsonData.address).to.equal("123 Main St, Anytown, USA");
     
