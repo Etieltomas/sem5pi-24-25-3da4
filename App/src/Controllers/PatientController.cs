@@ -242,7 +242,7 @@ namespace Sempi5.Controllers
 
         private void CreateLogUpdate(string email, PatientDTO editPatientDTO)
         {
-            var text = $"Patiente with email {email} has been updated with the following information:";
+            var text = $"\n - Patiente with email {email} has been updated with the following information:";
 
             if (editPatientDTO.Name != null)
             {
@@ -259,6 +259,10 @@ namespace Sempi5.Controllers
             if (editPatientDTO.Address != null)
             {
                 text += $" Address: {editPatientDTO.Address},";
+            }
+            if (editPatientDTO.MarketingConsent != null)
+            {
+                text += $" Marketing Consent: {editPatientDTO.MarketingConsent},";
             }
 
             _logger.ForContext("CustomLogLevel", "CustomLevel")

@@ -10,7 +10,7 @@ namespace Sempi5 {
         {
         }
 
-        public void sendEmail(string name, string email, string subject, string message)
+        public virtual void sendEmail(string name, string email, string subject, string message)
         {
             var _email = new MimeMessage();
 

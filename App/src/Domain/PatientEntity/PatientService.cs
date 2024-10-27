@@ -318,7 +318,7 @@ namespace Sempi5.Domain.PatientEntity
             };
         }
 
-        public async Task ProcessScheduledDeletions()
+        public async virtual Task ProcessScheduledDeletions()
         {
             var patientsToDelete = await _repo.GetPatientsForDeletion(DateTime.Now);
             patientsToDelete.Select(ConvertToDTO).ToList();

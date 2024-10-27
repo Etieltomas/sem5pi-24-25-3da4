@@ -212,4 +212,79 @@ public class PatientTest
         Assert.NotEqual(patient1.SystemUser.Username, patient2.SystemUser.Username);
         Assert.NotEqual(patient1.SystemUser.Email.ToString(), patient2.SystemUser.Email.ToString());
     }
+
+    [Fact]
+    public void CanSetDeletePatientDate()
+    {
+        var patient = new Patient();
+        var deleteDate = DateTime.Now;
+
+        patient.DeletePatientDate = deleteDate;
+
+        Assert.Equal(deleteDate, patient.DeletePatientDate);
+    }
+
+    [Fact]
+    public void CanAddMultipleConditions()
+    {
+        var patient = new Patient();
+        var condition1 = new Mock<Condition>("Asthma").Object;
+        var condition2 = new Mock<Condition>("Diabetes").Object;
+
+        patient.Conditions = new List<Condition> { condition1, condition2 };
+
+        Assert.Contains(condition1, patient.Conditions);
+        Assert.Contains(condition2, patient.Conditions);
+        Assert.Equal(2, patient.Conditions.Count);
+    }
+
+    [Fact]
+    public void CanSetEmergencyContact()
+    {
+        var patient = new Patient();
+        var emergencyContact = new Mock<Phone>("098-765-4321");
+
+        emergencyContact.Setup(ec => ec.ToString()).Returns("098-765-4321");
+
+        patient.EmergencyContact = emergencyContact.Object;
+
+        Assert.Equal("098-765-4321", patient.EmergencyContact.ToString());
+    }
+
+    [Fact]
+    public void CanChangeSystemUser()
+    {
+        var patient = new Patient();
+        var initialUser = new Mock<SystemUser>();
+        initialUser.Setup(u => u.Username).Returns("user1");
+
+        var newUser = new Mock<SystemUser>();
+        newUser.Setup(u => u.Username).Returns("user2");
+
+        patient.SystemUser = initialUser.Object;
+        Assert.Equal("user1", patient.SystemUser.Username);
+
+        patient.SystemUser = newUser.Object;
+        Assert.Equal("user2", patient.SystemUser.Username);
+    }   
+
+    [Fact]
+    public void ChangeBirthDate_ExactCurrentDate_ValidDate()
+    {
+        var patient = new Patient();
+        var currentDate = DateTime.Now;
+
+        patient.DateOfBirth = currentDate;
+
+        Assert.Equal(currentDate, patient.DateOfBirth);
+    }
+
+    [Fact]
+    public void ChangeBirthDate_AfterDate_ThrowsException()
+    {
+        var patient = new Patient();
+        var oldDate = new DateTime(2025, 1, 1);
+
+        Assert.Throws<BusinessRuleValidationException>(() => patient.DateOfBirth = oldDate);
+    }
 }
