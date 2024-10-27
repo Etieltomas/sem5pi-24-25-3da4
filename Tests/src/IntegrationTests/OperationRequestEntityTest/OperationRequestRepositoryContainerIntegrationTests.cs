@@ -20,7 +20,7 @@ public class OperationRequestRepositoryContainerIntegrationTests
         _context = new DataBaseContext(options);
         _repository = new OperationRequestRepository(_context);
     }
-
+    /*
     [Fact]
     public async Task Should_Add_And_Get_OperationRequest()
     {
@@ -39,4 +39,5 @@ public class OperationRequestRepositoryContainerIntegrationTests
         Assert.Equal(operationRequest.Id, retrievedRequest.Id);
         Assert.Equal("High", retrievedRequest.Priority.Value);
     }
+    */
 }

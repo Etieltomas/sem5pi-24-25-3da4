@@ -251,12 +251,11 @@ namespace Sempi5.Domain.PatientEntity
 
         public async Task<SystemUserDTO> UpdateUser(long userID, PatientDTO patientDTO, bool isEmailComfirmed)
         {
-            var user = await _repoUser.GetUserByID(userID);
-
-            if (user == null)
-            {
+            if (userID == -1){
                 return null;
             }
+
+            var user = await _repoUser.GetUserByID(userID);
 
             bool confirmationEmailNeeded = false;
             if ( patientDTO.MarketingConsent!= null)

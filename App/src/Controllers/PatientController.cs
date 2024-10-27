@@ -127,10 +127,15 @@ namespace Sempi5.Controllers
             var emailCookie = cookie?.FindFirst(ClaimTypes.Email)?.Value;
 
             var myProfile = await _service.GetPatientByEmail(emailCookie);
-            long userID = myProfile.UserID.Value;
-            var myUser = await _service.GetUserByID(userID);
+            
+            long userID;
+            if (myProfile.UserID == null){
+                userID = -1;
+            } else {
+                userID = myProfile.UserID.Value;
+            }            
 
-            if (myProfile == null || myUser == null)
+            if (myProfile == null)
             {
                 return NotFound();
             }
