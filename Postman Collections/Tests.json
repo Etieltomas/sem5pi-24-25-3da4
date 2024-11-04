@@ -144,7 +144,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "cc6ae259-50fd-47dd-b699-b56cd3717413",
+								"id": "6ec6f65d-55d0-424c-bfc3-2f788009c920",
 								"exec": [
 									"pm.test(\"Status code is 200 or 201\", function () {\r",
 									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
@@ -157,11 +157,11 @@
 									"pm.test(\"All values in the response match the expected values\", function () {\r",
 									"    const jsonData = pm.response.json();\r",
 									"\r",
-									"    pm.expect(jsonData.LicenseNumber).to.equal(\"SN567843\");\r",
-									"    pm.expect(jsonData.Name).to.equal(\"Ricky Balboa\");\r",
-									"    pm.expect(jsonData.Email).to.equal(\"rickybalboa@gmail.com\");\r",
-									"    pm.expect(jsonData.Phone).to.equal(\"555-12344\");\r",
-									"    pm.expect(jsonData.Address).to.equal(\"123 Main St, Sample City, Sample State\");\r",
+									"    pm.expect(jsonData.licenseNumber).to.equal(\"SN567843\");\r",
+									"    pm.expect(jsonData.name).to.equal(\"Ricky Balboa\");\r",
+									"    pm.expect(jsonData.email).to.equal(\"rickybalboa@gmail.com\");\r",
+									"    pm.expect(jsonData.phone).to.equal(\"555-12344\");\r",
+									"    pm.expect(jsonData.address).to.equal(\"123 Main St, Sample City, Sample State\");\r",
 									"\r",
 									"    const expectedAvailability = [\r",
 									"        \"21-10-2024T09:00:00 - 21-10-2024T11:00:00\",\r",
@@ -169,7 +169,7 @@
 									"    ];\r",
 									"    pm.expect(JSON.stringify(jsonData.AvailabilitySlots)).to.equal(JSON.stringify(expectedAvailability));\r",
 									"\r",
-									"    pm.expect(jsonData.Specialization).to.equal(\"Neurology\");\r",
+									"    pm.expect(jsonData.specialization).to.equal(\"Neurology\");\r",
 									"});\r",
 									""
 								],
