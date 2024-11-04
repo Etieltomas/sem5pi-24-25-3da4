@@ -16,9 +16,27 @@ namespace Sempi5.Controllers
         [HttpGet("login")]
         public IActionResult Login()
         {
-            var redirectUrl = Url.Content("/");
+            var redirectUrl = Url.Content("api/login/redirect-to-frontend");
             var properties = new AuthenticationProperties { RedirectUri = redirectUrl };
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+        }
+
+        [HttpGet("redirect-to-frontend")]
+        public IActionResult RedirectToFrontEnd()
+        {   var claimsIdentity = User.Identity as ClaimsIdentity;
+            var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value;
+            switch (role?.ToLower()){
+                case "patient":
+                    return Redirect("http://localhost:4200/patient");
+                case "admin":
+                    return Redirect("http://localhost:4200/admin");
+                case "doctor":
+                case "nurse":
+                case "technician":
+                    return Redirect("http://localhost:4200/staff");
+                default:
+                    return Redirect("http://localhost:4200");
+            }
         }
 
 
@@ -28,9 +46,14 @@ namespace Sempi5.Controllers
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
 
-            var userClaims = claimsIdentity?.Claims.ToDictionary(c => c.Type, c => c.Value);
+            var userClaims = new
+            {
+                name = claimsIdentity?.FindFirst(ClaimTypes.Name)?.Value,
+                email = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value,
+                role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value
+            };
 
-            return Ok(new { success = true, Claims = userClaims });
+            return Ok(new { userClaims });
         }
 
 

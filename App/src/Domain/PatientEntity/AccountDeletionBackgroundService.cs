@@ -27,7 +27,7 @@ public class AccountDeletionBackgroundService : BackgroundService
                 }
             }
 
-            int refreshSeconds = 30;
+            int refreshSeconds = 60 * 30;
 
             await Task.Delay(TimeSpan.FromSeconds(refreshSeconds), stoppingToken);
         }
