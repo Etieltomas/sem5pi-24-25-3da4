@@ -355,6 +355,7 @@ namespace Sempi5
             services.AddTransient<PatientService>();
 
             services.AddTransient<ISpecializationRepository, SpecializationRepository>();
+            services.AddTransient<SpecializationService>();
 
             services.AddTransient<ITokenRepository, TokenRepository>();
 
@@ -369,7 +370,6 @@ namespace Sempi5
 
             services.AddTransient<IOperationTypeRepository, OperationTypeRepository>();
             //services.AddTransient<OperationTypeService>();
-
             services.AddHostedService<AccountDeletionBackgroundService>();
         }
     }
