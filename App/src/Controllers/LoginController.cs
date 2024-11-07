@@ -31,8 +31,7 @@ namespace Sempi5.Controllers
                 case "admin":
                     return Redirect("http://localhost:4200/admin");
                 case "doctor":
-                case "nurse":
-                case "technician":
+                case "other":
                     return Redirect("http://localhost:4200/staff");
                 default:
                     return Redirect("http://localhost:4200");
