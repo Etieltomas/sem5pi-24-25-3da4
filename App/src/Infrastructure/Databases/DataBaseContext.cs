@@ -8,8 +8,10 @@ using Sempi5.Infrastructure.UserRepository;
 using Sempi5.Infrastructure.StaffRepository;
 using Sempi5.Infrastructure.PatientRepository;
 using Sempi5.Infrastructure.SpecializationRepository;
+using Sempi5.Infrastructure.RoomRepository;
 using Sempi5.Domain.OperationRequestEntity;
 using Sempi5.Infrastructure.TokenRepository;
+using Sempi5.Domain.RoomEntity;
 
 namespace Sempi5.Infrastructure.Databases
 {
@@ -22,6 +24,7 @@ namespace Sempi5.Infrastructure.Databases
         public DbSet<Token> Tokens { get; set; }
         public DbSet<OperationRequest> OperationRequests {get; set;}
         public DbSet<OperationType> OperationTypes {get; set;}
+        public DbSet<Room> Rooms {get; set;}
         public DataBaseContext(DbContextOptions<DataBaseContext> options)
             : base(options)
         {
@@ -38,7 +41,7 @@ namespace Sempi5.Infrastructure.Databases
             modelBuilder.ApplyConfiguration(new TokenEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new OperationRequestEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new OperationTypeEntityTypeConfiguration());
-        
+            modelBuilder.ApplyConfiguration(new RoomEntityTypeConfiguration());
         }
         
     }

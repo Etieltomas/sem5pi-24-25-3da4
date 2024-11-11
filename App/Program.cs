@@ -19,6 +19,8 @@ using Sempi5.Infrastructure.UserRepository;
 using Serilog;
 using Serilog.Events;
 using Sempi5.Infrastructure;
+using Sempi5.Domain.RoomEntity;
+using Sempi5.Infrastructure.RoomRepository;
 
 namespace Sempi5
 {
@@ -248,11 +250,40 @@ namespace Sempi5
                 await SeedSpecializationsAsync(services);
                 await SeedUsersAsync(services);
                 await SeedOperationTypeAsync(services);
+                await SeedRooms(services);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred while seeding the database: {ex.Message}");
             }
+        }
+
+        private static async Task SeedRooms(IServiceProvider services)
+        {
+            var roomRep = services.GetRequiredService<IRoomRepository>();
+            var unitOfWork = services.GetRequiredService<IUnitOfWork>();
+
+            if ((await roomRep.GetAllAsync()).Count > 0)
+            {
+                return;
+            }
+
+            // TODO: Add more rooms if needed
+            var room = new Room {
+                Capacity = new Capacity(2),
+                AssignedEquipment = new AssignedEquipment(new List<string> { "Bisturi", "Scalpels" }),
+                RoomStatus = RoomStatus.Available,
+                MaintenanceSlot = new List<MaintenanceSlot> { 
+                    new MaintenanceSlot("21-10-2025T09:00:00 - 21-10-2025T11:00:00"),
+                    new MaintenanceSlot("21-10-2025T14:00:00 - 21-10-2025T16:00:00"),
+                    new MaintenanceSlot("21-10-2025T18:00:00 - 21-10-2025T20:00:00")
+                },
+                Type = RoomType.OperatingRoom
+            };
+            
+            await roomRep.AddAsync(room);
+
+            await unitOfWork.CommitAsync();
         }
 
         private static async Task SeedSpecializationsAsync(IServiceProvider services)
@@ -370,6 +401,8 @@ namespace Sempi5
 
             services.AddTransient<IOperationTypeRepository, OperationTypeRepository>();
             //services.AddTransient<OperationTypeService>();
+
+            services.AddTransient<IRoomRepository, RoomRepository>();
             services.AddHostedService<AccountDeletionBackgroundService>();
         }
     }
