@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Security.Claims;
+using System.Text;
 using Microsoft.DotNet.Scaffolding.Shared;
 using Sempi5.Domain.Shared;
 using Sempi5.Domain.UserEntity;
@@ -15,7 +16,7 @@ namespace Sempi5.Domain.PatientEntity
         private readonly EmailService _emailService;
         private readonly Serilog.ILogger _logger;
 
-        public PatientService(IPatientRepository repo, IUserRepository userRepo ,IUnitOfWork unitOfWork, EmailService emailService, Serilog.ILogger logger)
+        public PatientService(IPatientRepository repo, IUserRepository userRepo, IUnitOfWork unitOfWork, EmailService emailService, Serilog.ILogger logger)
         {
             _repo = repo;
             _repoUser = userRepo;
@@ -51,7 +52,7 @@ namespace Sempi5.Domain.PatientEntity
             pat.SystemUser = newUser;
 
             await _repoUser.AddAsync(newUser);
-            
+
             await _unitOfWork.CommitAsync();
 
 
@@ -79,7 +80,7 @@ namespace Sempi5.Domain.PatientEntity
                 Name = new Name(patientDTO.Name),
                 Email = new Email(patientDTO.Email),
                 Phone = new Phone(patientDTO.Phone),
-                Conditions = patientDTO.Conditions.Select(condition => new Condition(condition)).ToList(), 
+                Conditions = patientDTO.Conditions.Select(condition => new Condition(condition)).ToList(),
                 EmergencyContact = new Phone(patientDTO.EmergencyContact),
                 Address = new Address(address[0], address[1], address[2]),
                 DateOfBirth = DateTime.ParseExact(patientDTO.DateOfBirth, "dd-MM-yyyy", CultureInfo.InvariantCulture)
@@ -168,21 +169,21 @@ namespace Sempi5.Domain.PatientEntity
             return ConvertToDTO(patient);
         }
 
-        
+
 
         public async Task<List<PatientDTO>> GetAllPatients()
         {
-            var list = await _repo.GetAllPatients();  
+            var list = await _repo.GetAllPatients();
 
             if (list == null)
             {
                 return null;
             }
 
-            
+
             List<PatientDTO> listDto = list.ConvertAll(pat => ConvertToDTO(pat));
 
-            return listDto;  
+            return listDto;
         }
 
         public async Task<PatientDTO> GetPatientByName(string name)
@@ -191,9 +192,10 @@ namespace Sempi5.Domain.PatientEntity
             return patient == null ? null : ConvertToDTO(patient);
         }
 
-        public async Task<List<PatientDTO>> SearchPatients(string name, string email, string dateOfBirth, string medicalRecordNumber, int page, int pageSize){
-            
-            var list = await _repo.GetPatientsFiltered(name, email, dateOfBirth, medicalRecordNumber, page, pageSize);  
+        public async Task<List<PatientDTO>> SearchPatients(string name, string email, string dateOfBirth, string medicalRecordNumber, int page, int pageSize)
+        {
+
+            var list = await _repo.GetPatientsFiltered(name, email, dateOfBirth, medicalRecordNumber, page, pageSize);
 
             if (list == null)
             {
@@ -222,19 +224,55 @@ namespace Sempi5.Domain.PatientEntity
                 patient.Name = new Name(patientDTO.Name);
             }
 
-            if(patientDTO.Phone != null)
+            if (patientDTO.Conditions.Count > 0)
+            {
+                var conditionsList = new List<Condition>();
+                var conditionBuilder = new StringBuilder();
+
+                foreach (var ch in patientDTO.Conditions)
+                {
+                    if (ch.Equals(',')) 
+                    {
+                        if (conditionBuilder.Length > 0)
+                        {
+                            conditionsList.Add(new Condition(conditionBuilder.ToString().Trim()));
+                            conditionBuilder.Clear();
+                        }
+                    }
+                    else
+                    {
+                        conditionBuilder.Append(ch + ", ");
+                    }
+                }
+                conditionBuilder.Remove(conditionBuilder.Length - 2, 2);
+
+                if (conditionBuilder.Length > 0)
+                {
+                    conditionsList.Add(new Condition(conditionBuilder.ToString().Trim()));
+                }
+
+                patient.Conditions = conditionsList;
+            }
+
+            if (patientDTO.Phone != null)
             {
                 patient.Phone = new Phone(patientDTO.Phone);
                 confirmationEmailNeeded = true;
             }
 
-            if(patientDTO.Email != null)
+            if (patientDTO.Email != null)
             {
                 patient.Email = new Email(patientDTO.Email);
                 confirmationEmailNeeded = true;
             }
 
-            if(patientDTO.Address != null)
+            if (patientDTO.EmergencyContact != null)
+            {
+                patient.EmergencyContact = new Phone(patientDTO.Phone);
+                confirmationEmailNeeded = true;
+            }
+
+            if (patientDTO.Address != null)
             {
                 var address = patientDTO.Address.Split(", ");
                 patient.Address = new Address(address[0], address[1], address[2]);
@@ -251,14 +289,15 @@ namespace Sempi5.Domain.PatientEntity
 
         public async Task<SystemUserDTO> UpdateUser(long userID, PatientDTO patientDTO, bool isEmailComfirmed)
         {
-            if (userID == -1){
+            if (userID == -1)
+            {
                 return null;
             }
 
             var user = await _repoUser.GetUserByID(userID);
 
             bool confirmationEmailNeeded = false;
-            if ( patientDTO.MarketingConsent!= null)
+            if (patientDTO.MarketingConsent != null)
             {
                 user.MarketingConsent = (bool)patientDTO.MarketingConsent;
             }
@@ -277,10 +316,11 @@ namespace Sempi5.Domain.PatientEntity
             if (patient == null) return false;
 
             //var daysUntilExclude = 30;
-            
+
             patient.DeletePatientDate = DateTime.Now.AddMinutes(0.25);
 
-            if(patient.SystemUser != null){
+            if (patient.SystemUser != null)
+            {
                 patient.SystemUser.Active = false;
             }
 
@@ -296,14 +336,14 @@ namespace Sempi5.Domain.PatientEntity
                 MedicalRecordNumber = patient.Id?.Value,
                 Name = patient.Name?.ToString(),
                 Email = patient.Email?.ToString(),
-                Phone = patient.Phone?.ToString(), 
-                Conditions = patient.Conditions?.Select(condition => condition.ToString()).ToList(), 
+                Phone = patient.Phone?.ToString(),
+                Conditions = patient.Conditions?.Select(condition => condition.ToString()).ToList(),
                 EmergencyContact = patient.EmergencyContact?.ToString(),
                 Address = patient.Address?.ToString(),
                 DateOfBirth = patient.DateOfBirth.ToString("dd-MM-yyyy"),
                 DeletePatientDate = patient.DeletePatientDate?.ToString("dd-MM-yyyy"),
                 UserID = patient.SystemUser?.Id.AsLong(),
-                MarketingConsent = patient.SystemUser?.MarketingConsent 
+                MarketingConsent = patient.SystemUser?.MarketingConsent
             };
         }
 
@@ -366,7 +406,7 @@ namespace Sempi5.Domain.PatientEntity
         private async Task NotifyDeletionCompletion(string email, string name)
         {
             var message = "Your account and personal data have been permanently deleted from our system as requested, respecting GDPR.";
-            
+
             _emailService.sendEmail(name, email, "Patient Account Deletion Complete", message);
         }
 
@@ -380,7 +420,7 @@ namespace Sempi5.Domain.PatientEntity
 
         private void UpdateAsAdminLog(string patientId, PatientDTO patientDTO)
         {
-             var text = $"Patient {patientId} has been updated with the following information:";
+            var text = $"Patient {patientId} has been updated with the following information:";
 
             if (patientDTO.Name != null)
             {
