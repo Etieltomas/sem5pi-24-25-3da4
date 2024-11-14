@@ -143,6 +143,7 @@ namespace Sempi5.Controllers
             var originalPhone = myProfile.Phone;
             var originalEmail = myProfile.Email;
             var originalAddress = myProfile.Address;
+            var originalEmergencyContact = myProfile.EmergencyContact;
 
             await _service.UpdateUser(userID, editPatientDTO, false);
             var newPatientProfile = await _service.UpdatePatient(emailCookie, editPatientDTO, false);
@@ -154,7 +155,7 @@ namespace Sempi5.Controllers
 
             if (!originalEmail.Equals(newPatientProfile.Email) ||
                 !originalPhone.Equals(newPatientProfile.Phone) ||
-                !originalAddress.Equals(newPatientProfile.Address))
+                !originalAddress.Equals(newPatientProfile.Address) || !originalEmergencyContact.Equals(newPatientProfile.EmergencyContact))
             {
                 var confirmationLink = "http://localhost:5012/api/Patient/update/confirm-changes?email=" +
                         Uri.EscapeDataString(_cryptography.EncryptString(JsonSerializer.Serialize(emailCookie))) + 
@@ -194,6 +195,16 @@ namespace Sempi5.Controllers
             if (!string.IsNullOrEmpty(editPatientDto.Phone))
             {
                 message += $"<p>Phone: {editPatientDto.Phone}</p>";
+            }
+
+            if (!string.IsNullOrEmpty(editPatientDto.EmergencyContact))
+            {
+                message += $"<p>Emergency Contact: {editPatientDto.EmergencyContact}</p>";
+            }
+
+            if (editPatientDto.Conditions != null && editPatientDto.Conditions.Count > 0)
+            {
+                message += $"<p>Conditions: {string.Join(", ", editPatientDto.Conditions)}</p>";
             }
 
             if (!string.IsNullOrEmpty(editPatientDto.Address))
@@ -259,6 +270,14 @@ namespace Sempi5.Controllers
             if (editPatientDTO.Phone != null)
             {
                 text += $" Phone: {editPatientDTO.Phone},";
+            }
+            if (editPatientDTO.EmergencyContact != null)
+            {
+                text += $" Emergency Contact: {editPatientDTO.EmergencyContact},";
+            }
+            if (editPatientDTO.Conditions != null && editPatientDTO.Conditions.Count > 0)
+            {
+                text += $" Conditions: {string.Join(", ", editPatientDTO.Conditions)},";
             }
             if (editPatientDTO.Address != null)
             {

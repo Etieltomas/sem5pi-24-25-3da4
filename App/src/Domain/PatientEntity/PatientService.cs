@@ -268,7 +268,7 @@ namespace Sempi5.Domain.PatientEntity
 
             if (patientDTO.EmergencyContact != null)
             {
-                patient.EmergencyContact = new Phone(patientDTO.Phone);
+                patient.EmergencyContact = new Phone(patientDTO.EmergencyContact);
                 confirmationEmailNeeded = true;
             }
 
