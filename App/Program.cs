@@ -268,8 +268,7 @@ namespace Sempi5
                 return;
             }
 
-            // TODO: Add more rooms if needed
-            var room = new Room {
+            var room1 = new Room {
                 Capacity = new Capacity(2),
                 AssignedEquipment = new AssignedEquipment(new List<string> { "Bisturi", "Scalpels" }),
                 RoomStatus = RoomStatus.Available,
@@ -280,8 +279,93 @@ namespace Sempi5
                 },
                 Type = RoomType.OperatingRoom
             };
+
+            var room2 = new Room {
+                Capacity = new Capacity(4),
+                AssignedEquipment = new AssignedEquipment(new List<string> { "Monitor", "Defibrillator" }),
+                RoomStatus = RoomStatus.Occupied,
+                MaintenanceSlot = new List<MaintenanceSlot> { 
+                    new MaintenanceSlot("22-10-2025T09:00:00 - 22-10-2025T11:00:00"),
+                    new MaintenanceSlot("22-10-2025T14:00:00 - 22-10-2025T16:00:00")
+                },
+                Type = RoomType.OperatingRoom
+            };
+
+            var room3 = new Room {
+                Capacity = new Capacity(1),
+                AssignedEquipment = new AssignedEquipment(new List<string> { "Ultrasound", "ECG" }),
+                RoomStatus = RoomStatus.Available,
+                MaintenanceSlot = new List<MaintenanceSlot> { 
+                    new MaintenanceSlot("23-10-2025T09:00:00 - 23-10-2025T11:00:00"),
+                    new MaintenanceSlot("23-10-2025T14:00:00 - 23-10-2025T16:00:00")
+                },
+                Type = RoomType.OperatingRoom
+            };
+
+            var room4 = new Room {
+                Capacity = new Capacity(3),
+                AssignedEquipment = new AssignedEquipment(new List<string> { "X-Ray", "MRI" }),
+                RoomStatus = RoomStatus.UnderMaintenance,
+                MaintenanceSlot = new List<MaintenanceSlot> { 
+                    new MaintenanceSlot("24-10-2025T09:00:00 - 24-10-2025T11:00:00"),
+                    new MaintenanceSlot("24-10-2025T14:00:00 - 24-10-2025T16:00:00")
+                },
+                Type = RoomType.OperatingRoom
+            };
+
+            var room5 = new Room {
+                Capacity = new Capacity(2),
+                AssignedEquipment = new AssignedEquipment(new List<string> { "Ventilator", "Suction Machine" }),
+                RoomStatus = RoomStatus.Available,
+                MaintenanceSlot = new List<MaintenanceSlot> { 
+                    new MaintenanceSlot("25-10-2025T09:00:00 - 25-10-2025T11:00:00"),
+                    new MaintenanceSlot("25-10-2025T14:00:00 - 25-10-2025T16:00:00")
+                },
+                Type = RoomType.OperatingRoom
+            };
+
+            var room6 = new Room {
+                Capacity = new Capacity(5),
+                AssignedEquipment = new AssignedEquipment(new List<string> { "Infusion Pump", "Patient Monitor" }),
+                RoomStatus = RoomStatus.Occupied,
+                MaintenanceSlot = new List<MaintenanceSlot> { 
+                    new MaintenanceSlot("26-10-2025T09:00:00 - 26-10-2025T11:00:00"),
+                    new MaintenanceSlot("26-10-2025T14:00:00 - 26-10-2025T16:00:00")
+                },
+                Type = RoomType.OperatingRoom
+            };
+
+            var room7 = new Room {
+                Capacity = new Capacity(1),
+                AssignedEquipment = new AssignedEquipment(new List<string> { "Oxygen Cylinder", "Nebulizer" }),
+                RoomStatus = RoomStatus.Available,
+                MaintenanceSlot = new List<MaintenanceSlot> { 
+                    new MaintenanceSlot("27-10-2025T09:00:00 - 27-10-2025T11:00:00"),
+                    new MaintenanceSlot("27-10-2025T14:00:00 - 27-10-2025T16:00:00")
+                },
+                Type = RoomType.OperatingRoom
+            };
+
+            var room8 = new Room {
+                Capacity = new Capacity(3),
+                AssignedEquipment = new AssignedEquipment(new List<string> { "Dialysis Machine", "Blood Warmer" }),
+                RoomStatus = RoomStatus.UnderMaintenance,
+                MaintenanceSlot = new List<MaintenanceSlot> { 
+                    new MaintenanceSlot("28-10-2025T09:00:00 - 28-10-2025T11:00:00"),
+                    new MaintenanceSlot("28-10-2025T14:00:00 - 28-10-2025T16:00:00")
+                },
+                Type = RoomType.OperatingRoom
+            };
             
-            await roomRep.AddAsync(room);
+            await roomRep.AddAsync(room1);
+            await roomRep.AddAsync(room2);
+            await roomRep.AddAsync(room3);
+            await roomRep.AddAsync(room4);
+            await roomRep.AddAsync(room5);
+            await roomRep.AddAsync(room6);
+            await roomRep.AddAsync(room7);
+            await roomRep.AddAsync(room8);
+
 
             await unitOfWork.CommitAsync();
         }
@@ -403,6 +487,8 @@ namespace Sempi5
             //services.AddTransient<OperationTypeService>();
 
             services.AddTransient<IRoomRepository, RoomRepository>();
+            services.AddTransient<RoomService>();
+
             services.AddHostedService<AccountDeletionBackgroundService>();
         }
     }

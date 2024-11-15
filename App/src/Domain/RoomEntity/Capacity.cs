@@ -24,5 +24,10 @@ namespace Sempi5.Domain.RoomEntity {
         {
             return capacity.ToString();
         }
+
+        public int AsInt()
+        {
+            return capacity;
+        }
     }
 }
