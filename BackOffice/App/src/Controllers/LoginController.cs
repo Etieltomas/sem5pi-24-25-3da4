@@ -23,20 +23,23 @@ namespace Sempi5.Controllers
 
         [HttpGet("redirect-to-frontend")]
         public IActionResult RedirectToFrontEnd()
-        {   var claimsIdentity = User.Identity as ClaimsIdentity;
+        {
+            var claimsIdentity = User.Identity as ClaimsIdentity;
             var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value;
-            switch (role?.ToLower()){
-                case "patient":
-                    return Redirect("http://localhost:4200/patient");
-                case "admin":
-                    return Redirect("http://localhost:4200/admin");
-                case "doctor":
-                case "other":
-                    return Redirect("http://localhost:4200/staff");
-                default:
-                    return Redirect("http://localhost:4200");
-            }
+            var email = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
+
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = false, 
+                SameSite = SameSiteMode.None,
+                Expires = DateTime.UtcNow.AddMinutes(30)
+            };
+
+            Response.Cookies.Append("UserInfo", $"role={role}&email={email}", cookieOptions);
+
+            return Redirect("http://localhost:4200");
         }
+
 
 
         [HttpGet("google-response")]
@@ -61,7 +64,7 @@ namespace Sempi5.Controllers
         public IActionResult Logout()
         {
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            
+            Response.Cookies.Delete("UserInfo");
             return Ok(new { success = true});
         }
 
