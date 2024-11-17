@@ -12,6 +12,8 @@ using Sempi5.Infrastructure.RoomRepository;
 using Sempi5.Domain.OperationRequestEntity;
 using Sempi5.Infrastructure.TokenRepository;
 using Sempi5.Domain.RoomEntity;
+using Sempi5.Domain.AppointmentEntity;
+using Sempi5.Infrastructure.AppointmentRepository;
 
 namespace Sempi5.Infrastructure.Databases
 {
@@ -25,6 +27,7 @@ namespace Sempi5.Infrastructure.Databases
         public DbSet<OperationRequest> OperationRequests {get; set;}
         public DbSet<OperationType> OperationTypes {get; set;}
         public DbSet<Room> Rooms {get; set;}
+        public DbSet<Appointment> Appointments {get; set;}
         public DataBaseContext(DbContextOptions<DataBaseContext> options)
             : base(options)
         {
@@ -42,6 +45,7 @@ namespace Sempi5.Infrastructure.Databases
             modelBuilder.ApplyConfiguration(new OperationRequestEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new OperationTypeEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new RoomEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new AppointmentEntityTypeConfiguration());
         }
         
     }
