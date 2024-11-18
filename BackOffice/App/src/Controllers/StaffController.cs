@@ -14,7 +14,7 @@ namespace Sempi5.Controllers
         private readonly StaffService _service;  
         private readonly EmailService _emailService; 
         private readonly Cryptography _cryptography;
-        private readonly Serilog.ILogger _logger;
+        private readonly Serilog.ILogger _logger; 
 
         public StaffController(StaffService service, EmailService emailService, Serilog.ILogger logger, Cryptography cryptography)
         {
