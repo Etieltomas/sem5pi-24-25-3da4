@@ -5,7 +5,7 @@ using Sempi5.Domain.StaffEntity;
 using Sempi5.Domain.TokenEntity;
 using Serilog.Core; 
 
-namespace Sempi5.Controllers
+namespace Sempi5.Controllers 
 {
     [Route("api/[controller]")]
     [ApiController]
