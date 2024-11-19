@@ -9,7 +9,7 @@ namespace Sempi5.Controllers
 {
     [Route("api/[controller]")] 
     [ApiController]
-    public class LoginController : ControllerBase
+    public class LoginController : ControllerBase 
     {
         
         [HttpGet("login")]
