@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sempi5.Domain.StaffEntity;
 using Sempi5.Domain.TokenEntity;
-using Serilog.Core; 
+using Serilog.Core;  
 
 namespace Sempi5.Controllers 
 {
