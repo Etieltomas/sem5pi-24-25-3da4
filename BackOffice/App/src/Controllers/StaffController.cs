@@ -18,7 +18,7 @@ namespace Sempi5.Controllers
         public StaffController(StaffService service, EmailService emailService, Serilog.ILogger logger, Cryptography cryptography)
         {
             _service = service;
-            _emailService = emailService;
+            _emailService = emailService; 
             _logger = logger;
             _cryptography = cryptography;
         }
