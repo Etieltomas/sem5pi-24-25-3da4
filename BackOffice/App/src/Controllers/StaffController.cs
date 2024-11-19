@@ -19,7 +19,7 @@ namespace Sempi5.Controllers
         {
             _service = service;
             _emailService = emailService; 
-            _logger = logger;
+            _logger = logger; 
             _cryptography = cryptography;
         }
 
