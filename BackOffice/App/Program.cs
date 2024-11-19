@@ -83,6 +83,7 @@ namespace Sempi5
             })
             .AddCookie(options =>
             {
+                options.Cookie.HttpOnly = false;
                 options.Cookie.SameSite = SameSiteMode.None;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;                
             })
