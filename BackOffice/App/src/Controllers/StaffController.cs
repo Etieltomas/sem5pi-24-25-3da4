@@ -23,7 +23,7 @@ namespace Sempi5.Controllers
             _cryptography = cryptography;
         }
 
-        [HttpPost("register")]
+        [HttpPost("register")] 
         [Authorize(Roles = "Admin")]  
         public async Task<ActionResult<StaffDTO>> RegisterStaff(StaffDTO staffDTO)
         {
