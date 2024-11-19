@@ -11,7 +11,7 @@ namespace Sempi5.Controllers
     public class StaffController : ControllerBase
     {
         private readonly StaffService _service;  
-        private readonly EmailService _emailService;  
+        private readonly EmailService _emailService;   
         private readonly Cryptography _cryptography;
         private readonly Serilog.ILogger _logger; 
 
