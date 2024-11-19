@@ -24,7 +24,7 @@ namespace Sempi5.Controllers
         }
 
         [HttpPost("register")]
-        [Authorize(Roles = "Admin")] 
+        [Authorize(Roles = "Admin")]  
         public async Task<ActionResult<StaffDTO>> RegisterStaff(StaffDTO staffDTO)
         {
             var staff = await _service.AddStaffMember(staffDTO);
