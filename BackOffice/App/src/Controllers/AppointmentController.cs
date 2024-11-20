@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Sempi5.Domain.AppointmentEntity;
 
 
-namespace Sempi5.Controllers
+namespace Sempi5.Controllers 
 {
     [Route("api/[controller]")]
     [ApiController]
