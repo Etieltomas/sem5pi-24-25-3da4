@@ -5,7 +5,7 @@ using Sempi5.Domain.AppointmentEntity;
 namespace Sempi5.Controllers 
 {
     [Route("api/[controller]")]
-    [ApiController]
+    [ApiController] 
     public class AppointmentController : ControllerBase
     {
 
