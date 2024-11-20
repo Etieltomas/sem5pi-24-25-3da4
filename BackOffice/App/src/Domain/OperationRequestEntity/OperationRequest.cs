@@ -14,6 +14,10 @@ namespace Sempi5.Domain.OperationRequestEntity
         public virtual Deadline Deadline { get; set; }
         public virtual Status Status { get; set; }
 
+        public virtual DateTime? StartDate { get; set; }
+        public virtual DateTime? EndDate { get; set; }
+        public virtual Staff? Staffs { get; set; }
+
         public void UpdatePriority(Priority newPriority)
         {
             Priority = newPriority;
@@ -27,6 +31,17 @@ namespace Sempi5.Domain.OperationRequestEntity
         public void MarkAsDeleted()
         {
         Status = Status.Cancelled;
+        }
+        public void SetStartAndEndDate(DateTime startDate, DateTime endDate)
+        {
+        if (endDate <= startDate)
+        {
+        throw new ArgumentException("EndDate must be greater than StartDate.");
+        }
+        StartDate = startDate;
+        EndDate = endDate;
+
+        Status = Status.scheduled;
         }
     }
 }
