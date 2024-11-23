@@ -18,16 +18,13 @@ availability_all_surgeries([OpCode|LOpCode],Room,Day):-
 
     intersect_all_agendas(LDoctors,Day,LDoctorsAgendas1),
     remove_unf_intervals(TSurgery,LDoctorsAgendas1,LDoctorsAgendas),
-    %write('All doctor: '), write(LDoctorsAgendas), nl,
-
+    
     Tianas is TAnesthesia+TSurgery,
     intersect_all_agendas(LAnesthetists,Day,LAnesthetistsAgendas1),
     remove_unf_intervals(Tianas,LAnesthetistsAgendas1,LAnesthetistsAgendas),
-    %write('All anat: '), write(LAnesthetistsAgendas), nl,
 
     intersect_all_agendas(LAssistants,Day,LAssistantsAgendas1),
     remove_unf_intervals(TCleaning,LAssistantsAgendas1,LAssistantsAgendas),
-    %write('All ass: '), write(LAssistantsAgendas), nl,
 
     reverse(LAssistantsAgendas, ListASSR),
     availability_operation(OpCode,Room,Day,LAnesthetistsAgendas,ListASSR,LPossibilities),
@@ -41,16 +38,11 @@ availability_all_surgeries([OpCode|LOpCode],Room,Day):-
 
 loopToScheduleInCorrectTime(Count1, LPossibilities, OpCode, LOpCode, Room, Day, TTotal, TAnesthesia, TCleaning, LDoctorsAgendas, LAnesthetistsAgendas, LAssistantsAgendas, Doctor):-
     schedule_first_interval(Count1, TTotal,LPossibilities,(TinS,TfinS), NewLPossibilities, Count),
-    %write('Poss: '), write(NewLPossibilities), write(' --> '),
-    %write('['), write(TinS), write(', '), write(TfinS),write(']'),nl,
     TfiAn is TfinS-TCleaning,
     TiDoc is TinS+TAnesthesia,
     intersect_2_agendas(LDoctorsAgendas, [(TiDoc,TfiAn)], LDoctorsAgendas2),
-    %write('Doctors: '), write(LDoctorsAgendas2), nl,
     intersect_2_agendas(LAnesthetistsAgendas, [(TinS,TfiAn)], LAnesthetistsAgendas2),
-    %write('An: '), write(LAnesthetistsAgendas2), nl,
     intersect_2_agendas(LAssistantsAgendas, [(TfiAn,TfinS)], LAssistantsAgendas2),
-    %write('ASS: '), write(LAssistantsAgendas2), nl,
  
     findall(Doctor,assignment_surgery(OpCode,Doctor),LStaff),
     (   
@@ -58,7 +50,6 @@ loopToScheduleInCorrectTime(Count1, LPossibilities, OpCode, LOpCode, Room, Day, 
         LAnesthetistsAgendas2 == [(TinS,TfiAn)],
         LAssistantsAgendas2 == [(TfiAn,TfinS)]
     ->  !,
-        %write('AGENDAR'),nl,
         findall(Doctor, assignment_surgery(OpCode, Doctor), LStaff),
         retract(agenda_operation_room1(Room, Day, Agenda)),
         insert_agenda((TinS, TfinS, OpCode), Agenda, Agenda1),
