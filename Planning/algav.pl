@@ -44,7 +44,7 @@ loopToScheduleInCorrectTime(Count1, LPossibilities, OpCode, LOpCode, Room, Day, 
     intersect_2_agendas(LAnesthetistsAgendas, [(TinS,TfiAn)], LAnesthetistsAgendas2),
     intersect_2_agendas(LAssistantsAgendas, [(TfiAn,TfinS)], LAssistantsAgendas2),
  
-    findall(Doctor,assignment_surgery(OpCode,Doctor),LStaff),
+    %findall(Doctor,assignment_surgery(OpCode,Doctor),LStaff),
     (   
         LDoctorsAgendas2 == [(TiDoc,TfiAn)],
         LAnesthetistsAgendas2 == [(TinS,TfiAn)],
