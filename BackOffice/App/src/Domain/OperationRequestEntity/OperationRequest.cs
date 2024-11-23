@@ -16,7 +16,7 @@ namespace Sempi5.Domain.OperationRequestEntity
 
         public virtual DateTime? StartDate { get; set; }
         public virtual DateTime? EndDate { get; set; }
-        public virtual Staff? Staffs { get; set; }
+        public virtual List<Staff>? Staffs { get; set; }
 
         public void UpdatePriority(Priority newPriority)
         {
