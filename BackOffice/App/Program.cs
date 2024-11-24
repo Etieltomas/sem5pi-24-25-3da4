@@ -420,10 +420,17 @@ namespace Sempi5
                 Role = "Admin",
                 Active = true
             };
+            var user4 = new SystemUser{
+                Username = "tomasStaff",
+                Email = new Email("left4deadgame2@gmail.com"),
+                Role = "Staff",
+                Active = true
+            };
 
             await userRep.AddAsync(user1);
             await userRep.AddAsync(user2);
             await userRep.AddAsync(user3);
+            await userRep.AddAsync(user4);
 
             await unitOfWork.CommitAsync();
         }
