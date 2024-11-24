@@ -432,12 +432,19 @@ namespace Sempi5
                 Role = "Patient",
                 Active = true
             };
+            var user6 = new SystemUser{
+                Username = "tomasPatient",
+                Email = new Email("sem5pi.isep@gmail.com"),
+                Role = "Patient",
+                Active = true
+            };
 
             await userRep.AddAsync(user1);
             await userRep.AddAsync(user2);
             await userRep.AddAsync(user3);
             await userRep.AddAsync(user4);
             await userRep.AddAsync(user5);
+            await userRep.AddAsync(user6);
 
             await unitOfWork.CommitAsync();
         }
