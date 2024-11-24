@@ -426,11 +426,18 @@ namespace Sempi5
                 Role = "Staff",
                 Active = true
             };
+            var user5 = new SystemUser{
+                Username = "simaoPatient",
+                Email = new Email("sblsimaolopes@gmail.com"),
+                Role = "Patient",
+                Active = true
+            };
 
             await userRep.AddAsync(user1);
             await userRep.AddAsync(user2);
             await userRep.AddAsync(user3);
             await userRep.AddAsync(user4);
+            await userRep.AddAsync(user5);
 
             await unitOfWork.CommitAsync();
         }
