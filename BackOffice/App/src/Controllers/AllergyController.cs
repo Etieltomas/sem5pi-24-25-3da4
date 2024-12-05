@@ -21,7 +21,13 @@ namespace Sempi5.Controllers
         [HttpPost]
         public async Task<ActionResult<AllergyDTO>> AddAllergy([FromBody] AllergyDTO allergy)
         {
-            return Ok(await _service.AddAllergy(allergy));
+            var result = await _service.AddAllergy(allergy);
+            if (result == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(result);
         }
 
         [HttpGet]

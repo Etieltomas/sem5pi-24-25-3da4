@@ -28,6 +28,11 @@ namespace Sempi5.Domain.AllergyEntity
             // Make the POST request
             var response = await _httpClient.PostAsync(url, content);
 
+            if (!response.IsSuccessStatusCode)
+            {
+                // Return null if the request was not successful
+                return null;
+            }
             // Return the response body as a string
             return await response.Content.ReadAsStringAsync();
         }
