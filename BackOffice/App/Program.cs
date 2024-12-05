@@ -21,6 +21,7 @@ using Serilog.Events;
 using Sempi5.Infrastructure;
 using Sempi5.Domain.RoomEntity;
 using Sempi5.Infrastructure.RoomRepository;
+using Sempi5.Domain.AllergyEntity;
 
 namespace Sempi5
 {
@@ -510,6 +511,8 @@ namespace Sempi5
 
             services.AddTransient<IRoomRepository, RoomRepository>();
             services.AddTransient<RoomService>();
+
+            services.AddHttpClient<AllergyService>();
 
             services.AddHostedService<AccountDeletionBackgroundService>();
         }
