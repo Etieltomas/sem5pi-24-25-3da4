@@ -1,16 +1,19 @@
+using System.Text.Json.Serialization;
 using Sempi5.Domain.Shared;
 
 namespace Sempi5.Domain.AllergyEntity{
     public class Code : IValueObject
     {
-        private int _value { get; }
+        [JsonPropertyName("value")]
+        private int _value;
 
+        [JsonConstructor]
         public Code(int value)
         {
             _value = value;
         }
 
-        public int ToInt()
+        public virtual int ToInt()
         {
             return _value;
         }

@@ -1,7 +1,4 @@
-using Sempi5.Domain.AllergyEntity;
-using Sempi5.Domain.Shared;
-
-namespace Sempi5.Domain.AllergyEntityEntity
+namespace Sempi5.Domain.AllergyEntity
 {
     public class Allergy
     {

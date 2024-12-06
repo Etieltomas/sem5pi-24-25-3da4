@@ -2,7 +2,6 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
-using Sempi5.Domain.AllergyEntityEntity;
 
 namespace Sempi5.Domain.AllergyEntity
 {

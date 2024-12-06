@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sempi5.Domain.AllergyEntity;
-using Sempi5.Domain.AllergyEntityEntity;
 
 
 namespace Sempi5.Controllers
