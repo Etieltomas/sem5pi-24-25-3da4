@@ -38,7 +38,7 @@ namespace Sempi5
             builder.Services.AddControllersWithViews();
             
             CreateDataBase(builder);            
-            ConfigureMyServices(builder.Services);
+            ConfigureMyServices(builder);
             
             builder.Services.AddEndpointsApiExplorer();
 
@@ -479,42 +479,44 @@ namespace Sempi5
 
 
 
-        public static void ConfigureMyServices(IServiceCollection services)
+        public static void ConfigureMyServices(WebApplicationBuilder builder)
         {
-            services.AddTransient<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 
-            services.AddTransient<IUserRepository, UserRepository>();
-            services.AddTransient<SystemUserService>();
+            builder.Services.AddTransient<IUserRepository, UserRepository>();
+            builder.Services.AddTransient<SystemUserService>();
 
-            services.AddTransient<IStaffRepository, StaffRepository>();
-            services.AddTransient<StaffService>();
+            builder.Services.AddTransient<IStaffRepository, StaffRepository>();
+            builder.Services.AddTransient<StaffService>();
 
-            services.AddTransient<IPatientRepository, PatientRepository>();
-            services.AddTransient<PatientService>();
+            builder.Services.AddTransient<IPatientRepository, PatientRepository>();
+            builder.Services.AddTransient<PatientService>();
 
-            services.AddTransient<ISpecializationRepository, SpecializationRepository>();
-            services.AddTransient<SpecializationService>();
+            builder.Services.AddTransient<ISpecializationRepository, SpecializationRepository>();
+            builder.Services.AddTransient<SpecializationService>();
 
-            services.AddTransient<ITokenRepository, TokenRepository>();
+            builder.Services.AddTransient<ITokenRepository, TokenRepository>();
 
-            services.AddTransient<EmailService>();
+            builder.Services.AddTransient<EmailService>();
 
-            services.AddTransient<Cryptography>();
+            builder.Services.AddTransient<Cryptography>();
 
-            services.AddSingleton(Log.Logger);
+            builder.Services.AddSingleton(Log.Logger);
 
-            services.AddTransient<IOperationRequestRepository, OperationRequestRepository>();
-            services.AddTransient<OperationRequestService>();
+            builder.Services.AddTransient<IOperationRequestRepository, OperationRequestRepository>();
+            builder.Services.AddTransient<OperationRequestService>();
 
-            services.AddTransient<IOperationTypeRepository, OperationTypeRepository>();
+            builder.Services.AddTransient<IOperationTypeRepository, OperationTypeRepository>();
             //services.AddTransient<OperationTypeService>();
 
-            services.AddTransient<IRoomRepository, RoomRepository>();
-            services.AddTransient<RoomService>();
+            builder.Services.AddTransient<IRoomRepository, RoomRepository>();
+            builder.Services.AddTransient<RoomService>();
 
-            services.AddHttpClient<AllergyService>();
+            builder.Services.AddHttpClient<AllergyService>();
 
-            services.AddHostedService<AccountDeletionBackgroundService>();
+            builder.Services.AddHostedService<AccountDeletionBackgroundService>();
+
+            builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
         }
     }
 }

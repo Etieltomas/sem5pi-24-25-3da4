@@ -12,18 +12,21 @@ namespace Sempi5.Controllers
     [ApiController]
     public class PatientController : ControllerBase
     {
-
+        private readonly IConfiguration _configuration;
         private readonly PatientService _service;
         private readonly EmailService _emailService;
         private readonly Cryptography _cryptography;
         private readonly Serilog.ILogger _logger;
+        private readonly string base_url;
 
-        public PatientController(PatientService service, EmailService emailService, Serilog.ILogger logger, Cryptography cryptography)
+        public PatientController(IConfiguration configuration, PatientService service, EmailService emailService, Serilog.ILogger logger, Cryptography cryptography)
         {
+            _configuration = configuration;
             _service = service;
             _emailService = emailService;
             _logger = logger;
             _cryptography = cryptography;
+            base_url = _configuration["IpAddresses:This"] ?? "http://localhost:5012";
         }
 
         [HttpPut("associate/{email}")]
@@ -157,7 +160,7 @@ namespace Sempi5.Controllers
                 !originalPhone.Equals(newPatientProfile.Phone) ||
                 !originalAddress.Equals(newPatientProfile.Address) || !originalEmergencyContact.Equals(newPatientProfile.EmergencyContact))
             {
-                var confirmationLink = "http://localhost:5012/api/Patient/update/confirm-changes?email=" +
+                var confirmationLink = base_url+"/api/Patient/update/confirm-changes?email=" +
                         Uri.EscapeDataString(_cryptography.EncryptString(JsonSerializer.Serialize(emailCookie))) + 
                         "&json=" +
                         Uri.EscapeDataString(_cryptography.EncryptString(JsonSerializer.Serialize(editPatientDTO)));
@@ -306,7 +309,7 @@ namespace Sempi5.Controllers
                 return NotFound();
             }
 
-            var confirmationLink = "http://localhost:5012/api/Patient/request-delete/confirm-deletion?email=" +
+            var confirmationLink = base_url+"/api/Patient/request-delete/confirm-deletion?email=" +
                         Uri.EscapeDataString(_cryptography.EncryptString(JsonSerializer.Serialize(emailCookie)));
 
             var message = CreateDeleteAccountEmail(patient.Name, confirmationLink);
@@ -406,7 +409,7 @@ namespace Sempi5.Controllers
                 return NotFound();
             }
 
-            var confirmationLink = $"http://localhost:5012/api/Patient/request-delete/{Uri.EscapeDataString(_cryptography.EncryptString(JsonSerializer.Serialize(email)))}/confirm-deletion";
+            var confirmationLink = $"{base_url}/api/Patient/request-delete/{Uri.EscapeDataString(_cryptography.EncryptString(JsonSerializer.Serialize(email)))}/confirm-deletion";
 
             var message = CreateDeleteAccountEmail(patient.Name, confirmationLink);
 

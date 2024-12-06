@@ -10,19 +10,23 @@ namespace Sempi5.Domain.PatientEntity
 {
     public class PatientService
     {
+        private readonly IConfiguration _configuration;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPatientRepository _repo;
         private readonly IUserRepository _repoUser;
         private readonly EmailService _emailService;
         private readonly Serilog.ILogger _logger;
+        private readonly string base_url;
 
-        public PatientService(IPatientRepository repo, IUserRepository userRepo, IUnitOfWork unitOfWork, EmailService emailService, Serilog.ILogger logger)
+        public PatientService(IConfiguration configuration, IPatientRepository repo, IUserRepository userRepo, IUnitOfWork unitOfWork, EmailService emailService, Serilog.ILogger logger)
         {
+            _configuration = configuration;
             _repo = repo;
             _repoUser = userRepo;
             _unitOfWork = unitOfWork;
             _emailService = emailService;
             _logger = logger;
+            base_url = _configuration["IpAddresses:This"] ?? "http://localhost:5012";
         }
 
         public async Task<PatientDTO> AssociateAccount(string email, string cookieEmail)
@@ -60,7 +64,7 @@ namespace Sempi5.Domain.PatientEntity
             //  email logic
             var message = "<b>Hello,</b><br>" +
                         "Thank you for signing up! Please confirm your account by clicking the link below:<br><br>" +
-                        "<a href='http://localhost:5012/api/SystemUser/confirm/" + user.Id.AsLong() + "/true'>Click here to confirm your account</a><br><br>" +
+                        "<a href='"+base_url+"/api/SystemUser/confirm/" + user.Id.AsLong() + "/true'>Click here to confirm your account</a><br><br>" +
                         "If you didn't sign up, please ignore this email.";
 
             var subject = "Confirmation of Account";

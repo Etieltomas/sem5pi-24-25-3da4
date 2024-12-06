@@ -7,19 +7,22 @@ namespace Sempi5.Domain.AllergyEntity
 {
     public class AllergyService
     {
-        private readonly string base_url = "http://localhost:3000/api/allergies";
+        private readonly IConfiguration _configuration;
+        private readonly string base_url;
         private readonly HttpClient _httpClient;
 
         // Constructor with HttpClient dependency injection
-        public AllergyService(HttpClient httpClient)
+        public AllergyService(IConfiguration configuration, HttpClient httpClient)
         {
+            _configuration = configuration;
             _httpClient = httpClient;
+            base_url = _configuration["IpAddresses:BackEnd2"] ?? "http://localhost:3000";
         }
 
         // Method to add a new allergy using DTO
         public async Task<string> AddAllergy([FromBody] AllergyDTO allergyDTO)
         {
-            var url = base_url;
+            var url = base_url+"/api/allergies";
 
             // Create the JSON payload
             var content = new StringContent(JsonSerializer.Serialize(allergyDTO), Encoding.UTF8, "application/json");

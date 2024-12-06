@@ -10,17 +10,21 @@ namespace Sempi5.Controllers
     [ApiController]
     public class StaffController : ControllerBase
     {
+        private readonly IConfiguration _configuration;
         private readonly StaffService _service;   
         private readonly EmailService _emailService;   
         private readonly Cryptography _cryptography;
         private readonly Serilog.ILogger _logger; 
+        private readonly string base_url;
 
-        public StaffController(StaffService service, EmailService emailService, Serilog.ILogger logger, Cryptography cryptography)
+        public StaffController(IConfiguration configuration, StaffService service, EmailService emailService, Serilog.ILogger logger, Cryptography cryptography)
         {
+            _configuration = configuration;
             _service = service;
             _emailService = emailService; 
             _logger = logger; 
             _cryptography = cryptography;
+            base_url = _configuration["IpAddresses:This"] ?? "http://localhost:5012";
         }
 
         [HttpPost("register")] 
@@ -114,7 +118,7 @@ namespace Sempi5.Controllers
                 !originalPhone.Equals(newStaff.Phone) ||
                 !originalAddress.Equals(newStaff.Address))
             {
-                var confirmationLink = "http://localhost:5012/api/Staff/update/confirm-changes?email=" +
+                var confirmationLink = base_url+"/api/Staff/update/confirm-changes?email=" +
                                         Uri.EscapeDataString(_cryptography.EncryptString(JsonSerializer.Serialize(email))) + 
                                         "&json=" +
                                         Uri.EscapeDataString(_cryptography.EncryptString(JsonSerializer.Serialize(editStaffDto)));

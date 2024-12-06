@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Sempi5.Domain.PatientEntity; 
+using Microsoft.Extensions.Configuration;
 
 namespace Sempi5.Controllers
 {
@@ -12,7 +12,14 @@ namespace Sempi5.Controllers
     [ApiController]
     public class LoginController : ControllerBase 
     {
-        
+        private readonly IConfiguration _configuration;
+
+        // Constructor to inject IConfiguration
+        public LoginController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         [HttpGet("login")]
         public IActionResult Login()
         {
@@ -24,6 +31,9 @@ namespace Sempi5.Controllers
         [HttpGet("redirect-to-frontend")]
         public IActionResult RedirectToFrontEnd()
         {
+            // Retrieve the FrontEnd URL from the configuration
+            var frontEndUrl = _configuration["IpAddresses:FrontEnd"] ?? "http://localhost:4200"; // Default to localhost:4200 if not configured
+
             var claimsIdentity = User.Identity as ClaimsIdentity;
             var role = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value;
             var email = claimsIdentity?.FindFirst(ClaimTypes.Email)?.Value;
@@ -35,12 +45,12 @@ namespace Sempi5.Controllers
                 Expires = DateTime.UtcNow.AddMinutes(30)
             };
 
+            // Set user info in cookies
             Response.Cookies.Append("UserInfo", $"role={role}&email={email}", cookieOptions);
 
-            return Redirect("http://localhost:4200");
+            // Redirect to the frontend URL
+            return Redirect(frontEndUrl);
         }
-
-
 
         [HttpGet("google-response")]
         [Authorize]
@@ -58,15 +68,13 @@ namespace Sempi5.Controllers
             return Ok(new { userClaims });
         }
 
-
         [HttpGet("logout")]
         [Authorize]
         public IActionResult Logout()
         {
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             Response.Cookies.Delete("UserInfo");
-            return Ok(new { success = true});
+            return Ok(new { success = true });
         }
-
     }
 }
