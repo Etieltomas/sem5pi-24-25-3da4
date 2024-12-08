@@ -2,6 +2,7 @@ using System.Security.Claims;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Sempi5.Domain.MedicalRecordEntity;
 using Sempi5.Domain.PatientEntity;
 using Sempi5.Domain.TokenEntity;
 
@@ -14,12 +15,13 @@ namespace Sempi5.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly PatientService _service;
+        private readonly MedicalRecordService _MRservice;
         private readonly EmailService _emailService;
         private readonly Cryptography _cryptography;
         private readonly Serilog.ILogger _logger;
         private readonly string base_url;
 
-        public PatientController(IConfiguration configuration, PatientService service, EmailService emailService, Serilog.ILogger logger, Cryptography cryptography)
+        public PatientController(MedicalRecordService MRservice, IConfiguration configuration, PatientService service, EmailService emailService, Serilog.ILogger logger, Cryptography cryptography)
         {
             _configuration = configuration;
             _service = service;
@@ -27,6 +29,7 @@ namespace Sempi5.Controllers
             _logger = logger;
             _cryptography = cryptography;
             base_url = _configuration["IpAddresses:This"] ?? "http://localhost:5012";
+            _MRservice = MRservice;
         }
 
         [HttpPut("associate/{email}")]
@@ -51,6 +54,8 @@ namespace Sempi5.Controllers
         public async Task<ActionResult<PatientDTO>> RegisterPatient(PatientDTO PatientDTO)
         {
             var patient = await _service.AddPatient(PatientDTO);
+            
+            await _MRservice.AddMedicalRecord(patient);
 
             return CreatedAtAction(nameof(GetPatient), new { id = patient.MedicalRecordNumber }, patient);
         }

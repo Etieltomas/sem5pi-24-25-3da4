@@ -22,6 +22,7 @@ using Sempi5.Infrastructure;
 using Sempi5.Domain.RoomEntity;
 using Sempi5.Infrastructure.RoomRepository;
 using Sempi5.Domain.AllergyEntity;
+using Sempi5.Domain.MedicalRecordEntity;
 
 namespace Sempi5
 {
@@ -513,6 +514,8 @@ namespace Sempi5
             builder.Services.AddTransient<RoomService>();
 
             builder.Services.AddHttpClient<AllergyService>();
+
+            builder.Services.AddHttpClient<MedicalRecordService>();
 
             builder.Services.AddHostedService<AccountDeletionBackgroundService>();
 
