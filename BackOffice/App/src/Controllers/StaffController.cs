@@ -220,5 +220,18 @@ namespace Sempi5.Controllers
 
             return Ok(staff);
         }
+
+        [HttpGet("email/{email}")]
+        public async Task<ActionResult<StaffDTO>> GetStaffMemberByEmail(string email)
+        {
+            var staff = await _service.GetStaffMemberByEmail(email);
+
+            if (staff == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(staff);
+        }
     }
 }
