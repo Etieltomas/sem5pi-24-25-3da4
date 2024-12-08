@@ -17,6 +17,20 @@ namespace Sempi5.Controllers
             _service = service;
         }
 
+        [HttpGet("{patientId}")]
+        [Authorize(Roles = "Patient")]
+        public async Task<ActionResult<List<MedicalRecordDTO>>> GetMedicalRecord(string patientId)
+        {
+            var result = await _service.GetMedicalRecord(patientId);
+            if (result == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(result);
+        }
+        
+
         [HttpGet]
         [Authorize(Roles = "Staff")]
         public async Task<ActionResult<List<MedicalRecordDTO>>> GetAllMedicalRecords()

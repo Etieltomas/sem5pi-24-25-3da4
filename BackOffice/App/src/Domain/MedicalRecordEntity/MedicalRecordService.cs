@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Sempi5.Domain.PatientEntity;
+using Sempi5.Infrastructure.PatientRepository;
 
 namespace Sempi5.Domain.MedicalRecordEntity
 {
@@ -11,15 +12,15 @@ namespace Sempi5.Domain.MedicalRecordEntity
         private readonly IConfiguration _configuration;
         private readonly string base_url;
         private readonly HttpClient _httpClient;
-        private PatientService _patientService;
+        private IPatientRepository _patientRepository;
 
         // Constructor with HttpClient dependency injection
-        public MedicalRecordService(PatientService patientService, IConfiguration configuration, HttpClient httpClient)
+        public MedicalRecordService(IPatientRepository patientRepository, IConfiguration configuration, HttpClient httpClient)
         {
             _configuration = configuration;
             _httpClient = httpClient;
             base_url = _configuration["IpAddresses:BackEnd2"] ?? "http://localhost:3000";
-            _patientService = patientService;
+            _patientRepository = patientRepository;
         }
 
         // Method to create a new medical record
@@ -28,7 +29,7 @@ namespace Sempi5.Domain.MedicalRecordEntity
             var medicalRecordDTO = new MedicalRecordDTO
             {
                 Patient = patientDTO.MedicalRecordNumber,
-                Allergies = new List<string>(),
+                Allergies = patientDTO.Allergies,
                 Conditions = patientDTO.Conditions
             };
             
@@ -46,7 +47,7 @@ namespace Sempi5.Domain.MedicalRecordEntity
         // Method to get all medical recorsd as a list of DTOs
         public async Task<List<MedicalRecordDTO>> GetAllMedicalRecords()
         {
-            var url = base_url;
+            var url = base_url+"/api/medicalRecord";
 
             // Make the GET request
             var response = await _httpClient.GetAsync(url);
@@ -91,7 +92,7 @@ namespace Sempi5.Domain.MedicalRecordEntity
             foreach (var medicalRecord in medicalRecords)
             {
                 // Get the patient details
-                var patient = await _patientService.GetPatientByMedicalRecordNumber(new PatientID(medicalRecord.Patient));
+                var patient = await _patientRepository.GetPatientById(new PatientID(medicalRecord.Patient));
                 if (patient != null)
                 {
                     medicalRecord.Patient = patient.Name + " ("+ patient.Email+ ")" ;
@@ -103,6 +104,66 @@ namespace Sempi5.Domain.MedicalRecordEntity
             return medicalRecords;
         }
 
+        public async Task<MedicalRecordDTO> GetMedicalRecord(string patientId)
+        {
+            var url = base_url+"/api/medicalRecord/"+patientId;
+
+            // Make the GET request
+            var response = await _httpClient.GetAsync(url);
+
+            // Deserialize the JSON response
+            if (!response.IsSuccessStatusCode)
+            {
+                return null;
+            }
+            
+            var json = await response.Content.ReadAsStringAsync();
+
+            var medicalRecord = JsonSerializer.Deserialize<MedicalRecordDTO>(json);
+
+            return medicalRecord;
+        }
+
+        public async Task<MedicalRecordDTO> UpdateRecord(string patientId, List<string> conditions, List<string> allergies)
+        {
+            var url = base_url+"/api/medicalRecord/edit/"+patientId;
+
+            MedicalRecordDTO record;
+
+            if (conditions == null && allergies == null)
+            {
+                return null;
+            } else if (conditions == null)
+            {
+                record = new MedicalRecordDTO
+                {
+                    Allergies = allergies
+                };
+            } else if (allergies == null)
+            {
+                record = new MedicalRecordDTO
+                {
+                    Conditions = conditions
+                };
+            } else
+            {
+                record = new MedicalRecordDTO
+                {
+                    Conditions = conditions,
+                    Allergies = allergies
+                };
+                
+            }
+
+            // Make the PATCH request
+            var response = await _httpClient.PutAsync(url, new StringContent(JsonSerializer.Serialize(record), Encoding.UTF8, "application/json"));
+
+            // Deserialize the JSON response
+            var json = await response.Content.ReadAsStringAsync();
+            var medicalRecord = JsonSerializer.Deserialize<MedicalRecordDTO>(json);
+
+            return medicalRecord;
+        }
 
         // Convert domain model to DTO
         private MedicalRecordDTO ConvertToDTO(MedicalRecord medicalRecord)

@@ -20,7 +20,6 @@ namespace Sempi5.Domain.PatientEntity
         public virtual Email Email { get; set; }
         public virtual Phone Phone { get; set; }
         public virtual Address Address { get; set; }
-        public virtual List<Condition> Conditions { get; set; }
         public virtual Phone EmergencyContact { get; set; }
         public virtual SystemUser? SystemUser { get; set; }
 

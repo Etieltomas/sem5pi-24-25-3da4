@@ -497,6 +497,7 @@ namespace Sempi5
             builder.Services.AddTransient<SpecializationService>();
 
             builder.Services.AddTransient<ITokenRepository, TokenRepository>();
+            builder.Services.AddHttpClient<MedicalRecordService>();
 
             builder.Services.AddTransient<EmailService>();
 
@@ -515,7 +516,6 @@ namespace Sempi5
 
             builder.Services.AddHttpClient<AllergyService>();
 
-            builder.Services.AddHttpClient<MedicalRecordService>();
 
             builder.Services.AddHostedService<AccountDeletionBackgroundService>();
 

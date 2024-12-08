@@ -44,10 +44,6 @@ namespace Sempi5.Infrastructure.PatientRepository
                 )
                 .IsRequired();
 
-            builder.Property(t => t.Conditions)
-                .HasConversion(new ConditionListConverter())
-                .IsRequired();
-
             builder.Property(t => t.EmergencyContact)
                 .HasConversion(
                     v => v.ToString(),

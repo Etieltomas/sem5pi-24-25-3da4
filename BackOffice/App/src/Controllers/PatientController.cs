@@ -54,8 +54,8 @@ namespace Sempi5.Controllers
         public async Task<ActionResult<PatientDTO>> RegisterPatient(PatientDTO PatientDTO)
         {
             var patient = await _service.AddPatient(PatientDTO);
-            
-            await _MRservice.AddMedicalRecord(patient);
+            PatientDTO.MedicalRecordNumber = patient.MedicalRecordNumber;
+            await _MRservice.AddMedicalRecord(PatientDTO);
 
             return CreatedAtAction(nameof(GetPatient), new { id = patient.MedicalRecordNumber }, patient);
         }

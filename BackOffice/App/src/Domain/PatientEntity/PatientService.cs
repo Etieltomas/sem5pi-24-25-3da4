@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.DotNet.Scaffolding.Shared;
+using Sempi5.Domain.MedicalRecordEntity;
 using Sempi5.Domain.Shared;
 using Sempi5.Domain.UserEntity;
 
@@ -17,8 +18,9 @@ namespace Sempi5.Domain.PatientEntity
         private readonly EmailService _emailService;
         private readonly Serilog.ILogger _logger;
         private readonly string base_url;
+        private readonly MedicalRecordService _medicalRecordService;
 
-        public PatientService(IConfiguration configuration, IPatientRepository repo, IUserRepository userRepo, IUnitOfWork unitOfWork, EmailService emailService, Serilog.ILogger logger)
+        public PatientService(MedicalRecordService medicalRecordService, IConfiguration configuration, IPatientRepository repo, IUserRepository userRepo, IUnitOfWork unitOfWork, EmailService emailService, Serilog.ILogger logger)
         {
             _configuration = configuration;
             _repo = repo;
@@ -27,6 +29,7 @@ namespace Sempi5.Domain.PatientEntity
             _emailService = emailService;
             _logger = logger;
             base_url = _configuration["IpAddresses:This"] ?? "http://localhost:5012";
+            _medicalRecordService = medicalRecordService;
         }
 
         public async Task<PatientDTO> AssociateAccount(string email, string cookieEmail)
@@ -71,7 +74,7 @@ namespace Sempi5.Domain.PatientEntity
 
             _emailService.sendEmail(user.Username, pat.Email.ToString(), subject, message);
 
-            return ConvertToDTO(pat);
+            return await ConvertToDTO(pat);
         }
 
 
@@ -84,7 +87,6 @@ namespace Sempi5.Domain.PatientEntity
                 Name = new Name(patientDTO.Name),
                 Email = new Email(patientDTO.Email),
                 Phone = new Phone(patientDTO.Phone),
-                Conditions = patientDTO.Conditions.Select(condition => new Condition(condition)).ToList(),
                 EmergencyContact = new Phone(patientDTO.EmergencyContact),
                 Address = new Address(address[0], address[1], address[2]),
                 DateOfBirth = DateTime.ParseExact(patientDTO.DateOfBirth, "dd-MM-yyyy", CultureInfo.InvariantCulture)
@@ -93,19 +95,19 @@ namespace Sempi5.Domain.PatientEntity
             await _repo.AddAsync(patient);
             await _unitOfWork.CommitAsync();
 
-            return ConvertToDTO(patient);
+            return await ConvertToDTO(patient);
         }
 
         public async Task<PatientDTO> GetPatientByMedicalRecordNumber(PatientID id)
         {
             var patient = await _repo.GetPatientById(id);
-            return patient == null ? null : ConvertToDTO(patient);
+            return patient == null ? null : await ConvertToDTO(patient);
         }
 
         public async Task<PatientDTO> GetPatientByEmail(string email)
         {
             var patient = await _repo.GetPatientByEmail(email);
-            return patient == null ? null : ConvertToDTO(patient);
+            return patient == null ? null : await ConvertToDTO(patient);
         }
 
         public async Task<SystemUserDTO> GetUserByID(long userID)
@@ -145,7 +147,8 @@ namespace Sempi5.Domain.PatientEntity
 
             if (updateDto.Conditions != null && updateDto.Conditions.Any())
             {
-                patient.Conditions = updateDto.Conditions.Select(c => new Condition(c)).ToList();
+                await this._medicalRecordService.UpdateRecord(patientId, updateDto.Conditions, null);
+                //patient.Conditions = updateDto.Conditions.Select(c => new Condition(c)).ToList();
             }
 
             //sensitive data 
@@ -170,7 +173,7 @@ namespace Sempi5.Domain.PatientEntity
 
             UpdateAsAdminLog(patientId, updateDto);
 
-            return ConvertToDTO(patient);
+            return await ConvertToDTO(patient);
         }
 
 
@@ -185,7 +188,11 @@ namespace Sempi5.Domain.PatientEntity
             }
 
 
-            List<PatientDTO> listDto = list.ConvertAll(pat => ConvertToDTO(pat));
+            List<PatientDTO> listDto = new List<PatientDTO>();
+            foreach (var pat in list)
+            {
+                listDto.Add(await ConvertToDTO(pat));
+            }
 
             return listDto;
         }
@@ -193,7 +200,7 @@ namespace Sempi5.Domain.PatientEntity
         public async Task<PatientDTO> GetPatientByName(string name)
         {
             var patient = await _repo.GetPatientByName(name);
-            return patient == null ? null : ConvertToDTO(patient);
+            return patient == null ? null : await ConvertToDTO(patient);
         }
 
         public async Task<List<PatientDTO>> SearchPatients(string name, string email, string dateOfBirth, string medicalRecordNumber, int page, int pageSize)
@@ -206,7 +213,11 @@ namespace Sempi5.Domain.PatientEntity
                 return null;
             }
 
-            List<PatientDTO> listDto = list.ConvertAll(pat => ConvertToDTO(pat));
+            List<PatientDTO> listDto = new List<PatientDTO>();
+            foreach (var pat in list)
+            {
+                listDto.Add(await ConvertToDTO(pat));
+            }
 
             return listDto;
         }
@@ -255,7 +266,8 @@ namespace Sempi5.Domain.PatientEntity
                     conditionsList.Add(new Condition(conditionBuilder.ToString().Trim()));
                 }
 
-                patient.Conditions = conditionsList;
+                //patient.Conditions = conditionsList;
+                await this._medicalRecordService.UpdateRecord(patient.Id.AsString(), conditionsList.Select(c => c.ToString()).ToList(), null);
             }
 
             if (patientDTO.Phone != null)
@@ -288,7 +300,7 @@ namespace Sempi5.Domain.PatientEntity
                 await _unitOfWork.CommitAsync();
             }
 
-            return ConvertToDTO(patient);
+            return await ConvertToDTO(patient);
         }
 
         public async Task<SystemUserDTO> UpdateUser(long userID, PatientDTO patientDTO, bool isEmailComfirmed)
@@ -332,8 +344,10 @@ namespace Sempi5.Domain.PatientEntity
             return true;
         }
 
-        private PatientDTO ConvertToDTO(Patient patient)
+        private async Task<PatientDTO> ConvertToDTO(Patient patient)
         {
+            var record = await _medicalRecordService.GetMedicalRecord(patient.Id.AsString());
+            Console.WriteLine("record="+record);
             return new PatientDTO
             {
                 Gender = patient.Gender.ToString(),
@@ -341,7 +355,8 @@ namespace Sempi5.Domain.PatientEntity
                 Name = patient.Name?.ToString(),
                 Email = patient.Email?.ToString(),
                 Phone = patient.Phone?.ToString(),
-                Conditions = patient.Conditions?.Select(condition => condition.ToString()).ToList(),
+                Conditions = record?.Conditions ?? new List<string>(),
+                Allergies =  record?.Allergies ?? new List<string>(),
                 EmergencyContact = patient.EmergencyContact?.ToString(),
                 Address = patient.Address?.ToString(),
                 DateOfBirth = patient.DateOfBirth.ToString("dd-MM-yyyy"),
