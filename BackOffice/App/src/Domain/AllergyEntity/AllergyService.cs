@@ -49,20 +49,10 @@ namespace Sempi5.Domain.AllergyEntity
 
             // Deserialize the JSON response
             var json = await response.Content.ReadAsStringAsync();
-            var allergies = JsonSerializer.Deserialize<List<Allergy>>(json);
+            var allergies = JsonSerializer.Deserialize<List<AllergyDTO>>(json);
 
             // Convert to a list of DTOs
-            return allergies.Select(a => ConvertToDTO(a)).ToList();
-        }
-
-        // Convert domain model to DTO
-        private AllergyDTO ConvertToDTO(Allergy allergy)
-        {
-            return new AllergyDTO
-            {
-                Code = allergy.Code.ToInt(),
-                Name = allergy.Name.ToString()
-            };
+            return allergies;
         }
     }
 }
