@@ -210,10 +210,6 @@ namespace Sempi5.Controllers
                 message += $"<p>Emergency Contact: {editPatientDto.EmergencyContact}</p>";
             }
 
-            if (editPatientDto.Conditions != null && editPatientDto.Conditions.Count > 0)
-            {
-                message += $"<p>Conditions: {string.Join(", ", editPatientDto.Conditions)}</p>";
-            }
 
             if (!string.IsNullOrEmpty(editPatientDto.Address))
             {
@@ -282,10 +278,6 @@ namespace Sempi5.Controllers
             if (editPatientDTO.EmergencyContact != null)
             {
                 text += $" Emergency Contact: {editPatientDTO.EmergencyContact},";
-            }
-            if (editPatientDTO.Conditions != null && editPatientDTO.Conditions.Count > 0)
-            {
-                text += $" Conditions: {string.Join(", ", editPatientDTO.Conditions)},";
             }
             if (editPatientDTO.Address != null)
             {
@@ -395,7 +387,6 @@ namespace Sempi5.Controllers
             if (!string.IsNullOrEmpty(editPatientDTO.Email)) logMessage += $"Email: {editPatientDTO.Email}, ";
             if (!string.IsNullOrEmpty(editPatientDTO.Phone)) logMessage += $"Phone: {editPatientDTO.Phone}, ";
             if (!string.IsNullOrEmpty(editPatientDTO.Address)) logMessage += $"Address: {editPatientDTO.Address}, ";
-            if (editPatientDTO.Conditions != null) logMessage += $"Conditions: {string.Join(", ", editPatientDTO.Conditions)}, ";
             _logger.ForContext("CustomLogLevel", "CustomLevel")
                 .Information(logMessage.TrimEnd(',', ' '));
         }

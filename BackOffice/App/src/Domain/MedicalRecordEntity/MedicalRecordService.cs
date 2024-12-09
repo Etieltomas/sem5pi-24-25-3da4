@@ -29,8 +29,7 @@ namespace Sempi5.Domain.MedicalRecordEntity
             var medicalRecordDTO = new MedicalRecordDTO
             {
                 Patient = patientDTO.MedicalRecordNumber,
-                Allergies = patientDTO.Allergies,
-                Conditions = patientDTO.Conditions
+                RecordLine = new List<RecordLineDTO>()
             };
             
             var url = base_url+"/api/medicalRecord";
@@ -52,20 +51,38 @@ namespace Sempi5.Domain.MedicalRecordEntity
             // Make the GET request
             var response = await _httpClient.GetAsync(url);
 
+            if (!response.IsSuccessStatusCode)
+            {
+                // Return null if the request was not successful
+                return null;
+            }
+
             // Deserialize the JSON response
             var json = await response.Content.ReadAsStringAsync();
-            var medicalRecords = JsonSerializer.Deserialize<List<MedicalRecordDTO>>(json);
 
-            return medicalRecords;
+            return GetMedicalRecordsFromJson(json);
         }
 
-        public async Task<List<MedicalRecordDTO>> Search(string? allergy, string? condition, int page, int pageSize)
+        private List<MedicalRecordDTO> GetMedicalRecordsFromJson(string json)
+        {
+            using (JsonDocument doc = JsonDocument.Parse(json))
+            {
+                // Extract the `_value` property
+                var valueElement = doc.RootElement.GetProperty("_value");
+
+                // Deserialize `_value` into a list of MedicalRecordDTO
+                var medicalRecords = JsonSerializer.Deserialize<List<MedicalRecordDTO>>(valueElement.GetRawText());
+
+                return medicalRecords;
+            }
+        }
+
+        public async Task<List<MedicalRecordDTO>> Search(string? filter, int page, int pageSize)
         {
             var queryParams = new List<string>();
 
             // Add query parameters only if they are not null or empty
-            if (!string.IsNullOrEmpty(allergy)) queryParams.Add($"allergy={Uri.EscapeDataString(allergy)}");
-            if (!string.IsNullOrEmpty(condition)) queryParams.Add($"condition={Uri.EscapeDataString(condition)}");
+            if (!string.IsNullOrEmpty(filter)) queryParams.Add($"filter={Uri.EscapeDataString(filter)}");
             queryParams.Add($"page={page}");
             queryParams.Add($"pageSize={pageSize}");
 
@@ -124,56 +141,18 @@ namespace Sempi5.Domain.MedicalRecordEntity
             return medicalRecord;
         }
 
-        public async Task<MedicalRecordDTO> UpdateRecord(string patientId, List<string> conditions, List<string> allergies)
+        public async Task<MedicalRecordDTO> UpdateRecord(string patientId, List<RecordLineDTO> recordLines)
         {
             var url = base_url+"/api/medicalRecord/edit/"+patientId;
 
-            MedicalRecordDTO record;
-
-            if (conditions == null && allergies == null)
-            {
-                return null;
-            } else if (conditions == null)
-            {
-                record = new MedicalRecordDTO
-                {
-                    Allergies = allergies
-                };
-            } else if (allergies == null)
-            {
-                record = new MedicalRecordDTO
-                {
-                    Conditions = conditions
-                };
-            } else
-            {
-                record = new MedicalRecordDTO
-                {
-                    Conditions = conditions,
-                    Allergies = allergies
-                };
-                
-            }
-
             // Make the PATCH request
-            var response = await _httpClient.PutAsync(url, new StringContent(JsonSerializer.Serialize(record), Encoding.UTF8, "application/json"));
+            var response = await _httpClient.PutAsync(url, new StringContent(JsonSerializer.Serialize(recordLines), Encoding.UTF8, "application/json"));
 
             // Deserialize the JSON response
             var json = await response.Content.ReadAsStringAsync();
             var medicalRecord = JsonSerializer.Deserialize<MedicalRecordDTO>(json);
 
             return medicalRecord;
-        }
-
-        // Convert domain model to DTO
-        private MedicalRecordDTO ConvertToDTO(MedicalRecord medicalRecord)
-        {
-            return new MedicalRecordDTO
-            {
-                Patient = medicalRecord.Patient.ToString(),
-                Allergies = medicalRecord.Allergies.Select(a => a.ToString()).ToList(),
-                Conditions = medicalRecord.Conditions.Select(c => c.ToString()).ToList()
-            };
         }
     }
 }

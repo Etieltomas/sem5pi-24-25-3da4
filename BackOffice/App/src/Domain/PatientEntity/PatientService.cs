@@ -145,12 +145,6 @@ namespace Sempi5.Domain.PatientEntity
                 patient.Address = new Address(addressParts[0], addressParts[1], addressParts[2]);
             }
 
-            if (updateDto.Conditions != null && updateDto.Conditions.Any())
-            {
-                await this._medicalRecordService.UpdateRecord(patientId, updateDto.Conditions, null);
-                //patient.Conditions = updateDto.Conditions.Select(c => new Condition(c)).ToList();
-            }
-
             //sensitive data 
             bool isSensitiveDataChanged = (originalEmail != patient.Email.ToString()) ||
                                           (originalPhone != patient.Phone.ToString()) ||
@@ -239,37 +233,6 @@ namespace Sempi5.Domain.PatientEntity
                 patient.Name = new Name(patientDTO.Name);
             }
 
-            if (patientDTO.Conditions.Count > 0)
-            {
-                var conditionsList = new List<Condition>();
-                var conditionBuilder = new StringBuilder();
-
-                foreach (var ch in patientDTO.Conditions)
-                {
-                    if (ch.Equals(',')) 
-                    {
-                        if (conditionBuilder.Length > 0)
-                        {
-                            conditionsList.Add(new Condition(conditionBuilder.ToString().Trim()));
-                            conditionBuilder.Clear();
-                        }
-                    }
-                    else
-                    {
-                        conditionBuilder.Append(ch + ", ");
-                    }
-                }
-                conditionBuilder.Remove(conditionBuilder.Length - 2, 2);
-
-                if (conditionBuilder.Length > 0)
-                {
-                    conditionsList.Add(new Condition(conditionBuilder.ToString().Trim()));
-                }
-
-                //patient.Conditions = conditionsList;
-                await this._medicalRecordService.UpdateRecord(patient.Id.AsString(), conditionsList.Select(c => c.ToString()).ToList(), null);
-            }
-
             if (patientDTO.Phone != null)
             {
                 patient.Phone = new Phone(patientDTO.Phone);
@@ -355,8 +318,6 @@ namespace Sempi5.Domain.PatientEntity
                 Name = patient.Name?.ToString(),
                 Email = patient.Email?.ToString(),
                 Phone = patient.Phone?.ToString(),
-                Conditions = record?.Conditions ?? new List<string>(),
-                Allergies =  record?.Allergies ?? new List<string>(),
                 EmergencyContact = patient.EmergencyContact?.ToString(),
                 Address = patient.Address?.ToString(),
                 DateOfBirth = patient.DateOfBirth.ToString("dd-MM-yyyy"),
@@ -456,10 +417,6 @@ namespace Sempi5.Domain.PatientEntity
             if (patientDTO.Address != null)
             {
                 text += $" Address: {patientDTO.Address},";
-            }
-            if (patientDTO.Conditions != null)
-            {
-                text += $" Conditions: {patientDTO.Conditions},";
             }
             if (patientDTO.EmergencyContact != null)
             {

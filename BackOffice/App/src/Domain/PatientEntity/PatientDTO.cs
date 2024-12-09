@@ -11,8 +11,6 @@ namespace Sempi5.Domain.PatientEntity
         public string? Email { get; set; }
         public string? Phone { get; set; }  
         public string? Address { get; set; }
-        public List<string>? Conditions { get; set; }  
-        public List<string>? Allergies { get; set; }
         public string? EmergencyContact { get; set; }
         public string? DeletePatientDate { get; set; }
         public long? UserID { get; set; }
