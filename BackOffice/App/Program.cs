@@ -95,18 +95,23 @@ namespace Sempi5
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
             })
-            .AddCookie(options =>
+            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
             {
+                options.LoginPath = "/api/Login/login";
+                options.ExpireTimeSpan = TimeSpan.FromHours(2);
                 options.Cookie.HttpOnly = false;
                 options.Cookie.Domain = ".sarm.com";
                 options.Cookie.SameSite = SameSiteMode.None;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                options.ExpireTimeSpan = TimeSpan.FromHours(2);
+                options.SlidingExpiration = true;
             })
             .AddGoogle(options => 
             {
                 options.ClientId = builder.Configuration["GoogleKeys:ClientId"];
                 options.ClientSecret = builder.Configuration["GoogleKeys:ClientSecret"];
+                options.CallbackPath = "/signin-google";
+                options.SaveTokens = true;
+
                 options.Events.OnCreatingTicket = async context =>
                 {
                     await HandleGoogleLoginAsync(context);
@@ -227,6 +232,7 @@ namespace Sempi5
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseCors("AllowSpecificOrigin");
 
             app.UseHttpsRedirection();
             app.UseAuthentication();

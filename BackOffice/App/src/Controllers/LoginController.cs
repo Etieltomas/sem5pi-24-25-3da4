@@ -41,8 +41,9 @@ namespace Sempi5.Controllers
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = false, 
-                SameSite = SameSiteMode.Unspecified,
-                Expires = DateTime.UtcNow.AddMinutes(30)
+                SameSite = SameSiteMode.None,
+                Expires = DateTime.UtcNow.AddMinutes(30),
+                Domain = ".sarm.com"
             };
 
             // Set user info in cookies
@@ -73,7 +74,11 @@ namespace Sempi5.Controllers
         public IActionResult Logout()
         {
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            Response.Cookies.Delete("UserInfo");
+            Request.Cookies.TryGetValue("UserInfo", out var userInfo);
+            if (userInfo != null)
+            {
+                Response.Cookies.Delete("UserInfo");
+            }
             return Ok(new { success = true });
         }
     }
