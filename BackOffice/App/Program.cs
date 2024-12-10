@@ -71,7 +71,19 @@ namespace Sempi5
 
         private static void ConfigureIAM(WebApplicationBuilder builder)
         {
-            builder.Services.AddAuthorization(options =>
+            builder.Services.AddCors(options => 
+            {
+                options.AddPolicy("AllowSpecificOrigin",
+                    policy =>
+                    {
+                        policy
+                            .WithOrigins(builder.Configuration["IpAddresses:FrontEnd"]) // Make sure to use correct protocol (https/http)
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowCredentials();
+                    });
+            })
+            .AddAuthorization(options =>
             {
                 options.AddPolicy("Staff", policy => 
                     policy.RequireRole("Doctor", "Nurse", "Admin", "Other"));
@@ -86,8 +98,10 @@ namespace Sempi5
             .AddCookie(options =>
             {
                 options.Cookie.HttpOnly = false;
+                options.Cookie.Domain = ".sarm.com";
                 options.Cookie.SameSite = SameSiteMode.None;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;                
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.ExpireTimeSpan = TimeSpan.FromHours(2);
             })
             .AddGoogle(options => 
             {
@@ -176,9 +190,11 @@ namespace Sempi5
 
                         var tokenValue = await tokenRepo.GetTokenByEmail(newUser.Email.ToString());
 
+                        var _configuration = services.GetRequiredService<IConfiguration>();
+
                         var message = "<b>Hello,</b><br>" +
                         "Thank you for signing up! Please confirm your account by clicking the link below:<br><br>" +
-                        "<a href='http://localhost:5012/api/SystemUser/confirm/" + tokenValue.Id.AsString() + "/true'>Click here to confirm your account</a><br><br>" +
+                        "<a href='"+_configuration["IpAddresses:This"]+"/api/SystemUser/confirm/" + tokenValue.Id.AsString() + "/true'>Click here to confirm your account</a><br><br>" +
                         "If you didn't sign up, please ignore this email.";
 
                         var subject = "Confirmation of Account";
