@@ -309,8 +309,6 @@ namespace Sempi5.Domain.PatientEntity
 
         private async Task<PatientDTO> ConvertToDTO(Patient patient)
         {
-            var record = await _medicalRecordService.GetMedicalRecord(patient.Id.AsString());
-            Console.WriteLine("record="+record);
             return new PatientDTO
             {
                 Gender = patient.Gender.ToString(),
