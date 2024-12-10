@@ -28,7 +28,7 @@ namespace Sempi5.Domain.MedicalRecordEntity
         {
             var medicalRecordDTO = new MedicalRecordDTO
             {
-                Patient = patientDTO.MedicalRecordNumber,
+                Patient = patientDTO.Email,
                 RecordLine = new List<RecordLineDTO>()
             };
             
@@ -109,7 +109,7 @@ namespace Sempi5.Domain.MedicalRecordEntity
             foreach (var medicalRecord in medicalRecords)
             {
                 // Get the patient details
-                var patient = await _patientRepository.GetPatientById(new PatientID(medicalRecord.Patient));
+                var patient = await _patientRepository.GetPatientByEmail(medicalRecord.Patient);
                 if (patient != null)
                 {
                     medicalRecord.Patient = patient.Name + " ("+ patient.Email+ ")" ;
@@ -121,9 +121,9 @@ namespace Sempi5.Domain.MedicalRecordEntity
             return medicalRecords;
         }
 
-        public async Task<MedicalRecordDTO> GetMedicalRecord(string patientId)
+        public async Task<MedicalRecordDTO> GetMedicalRecord(string patientEmail)
         {
-            var url = base_url+"/api/medicalRecord/"+patientId;
+            var url = base_url+"/api/medicalRecord/"+patientEmail;
 
             // Make the GET request
             var response = await _httpClient.GetAsync(url);
@@ -141,9 +141,9 @@ namespace Sempi5.Domain.MedicalRecordEntity
             return medicalRecord;
         }
 
-        public async Task<MedicalRecordDTO> UpdateRecord(string patientId, List<RecordLineDTO> recordLines)
+        public async Task<MedicalRecordDTO> UpdateRecord(string patientEmail, List<RecordLineDTO> recordLines)
         {
-            var url = base_url+"/api/medicalRecord/edit/"+patientId;
+            var url = base_url+"/api/medicalRecord/edit/"+patientEmail;
 
             // Make the PATCH request
             var response = await _httpClient.PutAsync(url, new StringContent(JsonSerializer.Serialize(recordLines), Encoding.UTF8, "application/json"));
