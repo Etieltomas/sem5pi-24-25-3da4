@@ -77,7 +77,10 @@ namespace Sempi5
                     policy =>
                     {
                         policy
-                            .WithOrigins(builder.Configuration["IpAddresses:FrontEnd"]) // Make sure to use correct protocol (https/http)
+                            .WithOrigins(
+                                builder.Configuration["IpAddresses:FrontEnd"], 
+                                builder.Configuration["IpAddresses:3D"]
+                            ) // Make sure to use correct protocol (https/http)
                             .AllowAnyHeader()
                             .AllowAnyMethod()
                             .AllowCredentials();
