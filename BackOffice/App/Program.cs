@@ -522,7 +522,11 @@ namespace Sempi5
             builder.Services.AddTransient<SpecializationService>();
 
             builder.Services.AddTransient<ITokenRepository, TokenRepository>();
-            builder.Services.AddHttpClient<MedicalRecordService>();
+            builder.Services.AddHttpClient<MedicalRecordService>()
+                .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true
+                });
 
             builder.Services.AddTransient<EmailService>();
 
@@ -539,7 +543,11 @@ namespace Sempi5
             builder.Services.AddTransient<IRoomRepository, RoomRepository>();
             builder.Services.AddTransient<RoomService>();
 
-            builder.Services.AddHttpClient<AllergyService>();
+            builder.Services.AddHttpClient<AllergyService>()
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true
+                });
 
 
             builder.Services.AddHostedService<AccountDeletionBackgroundService>();
