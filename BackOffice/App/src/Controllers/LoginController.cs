@@ -41,7 +41,7 @@ namespace Sempi5.Controllers
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = false, 
-                SameSite = SameSiteMode.None,
+                SameSite = SameSiteMode.Unspecified,
                 Expires = DateTime.UtcNow.AddMinutes(30),
                 Domain = ".sarm.com"
             };
