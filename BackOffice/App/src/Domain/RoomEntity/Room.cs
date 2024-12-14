@@ -7,7 +7,7 @@ namespace Sempi5.Domain.RoomEntity {
         public Capacity Capacity  { get; set; }
         public AssignedEquipment AssignedEquipment  { get; set; }
         public RoomStatus RoomStatus  { get; set; }
-        public List<MaintenanceSlot> MaintenanceSlot  { get; set; }
+        public List<Slot> Slots  { get; set; }
         public RoomType Type  { get; set; }
     }
 }

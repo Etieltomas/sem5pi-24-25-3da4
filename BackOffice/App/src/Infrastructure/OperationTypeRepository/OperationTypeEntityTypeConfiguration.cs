@@ -28,5 +28,14 @@ public class OperationTypeEntityTypeConfiguration : IEntityTypeConfiguration<Ope
 
         builder.HasIndex(t => t.Name)
             .IsUnique();
+
+        builder.Property(t => t.Anesthesia_Duration)
+            .IsRequired();
+
+        builder.Property(t => t.Surgery_Duration)
+            .IsRequired();
+
+        builder.Property(t => t.Cleaning_Duration)
+            .IsRequired();
     }
 }

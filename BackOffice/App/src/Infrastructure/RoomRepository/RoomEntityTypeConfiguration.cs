@@ -46,7 +46,7 @@ namespace Sempi5.Infrastructure.RoomRepository
                 )
                 .IsRequired();
 
-            builder.Property(t => t.MaintenanceSlot)
+            builder.Property(t => t.Slots)
                 .HasConversion(new MaintenanceSlotConverter())
                 .IsRequired();
 

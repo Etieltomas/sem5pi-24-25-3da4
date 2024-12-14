@@ -49,7 +49,7 @@ namespace Sempi5.Domain.RoomEntity
                 Capacity = room.Capacity.AsInt(),  
                 AssignedEquipment = room.AssignedEquipment.equipment.Select(e => e.ToString()).ToList(), 
                 RoomStatus = room.RoomStatus.ToString(),  
-                MaintenanceSlot = room.MaintenanceSlot.Select(slot => slot.ToString()).ToList(), 
+                Slots = room.Slots.Select(slot => slot.ToString()).ToList(), 
                 Type = room.Type.ToString() 
             };
         }

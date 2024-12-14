@@ -4,7 +4,7 @@ namespace Sempi5.Domain.RoomEntity {
         public int Capacity { get; set; }
         public List<string> AssignedEquipment { get; set; }
         public string RoomStatus { get; set; }
-        public List<string> MaintenanceSlot { get; set; }
+        public List<string> Slots { get; set; }
         public string Type { get; set; }
     }
 }

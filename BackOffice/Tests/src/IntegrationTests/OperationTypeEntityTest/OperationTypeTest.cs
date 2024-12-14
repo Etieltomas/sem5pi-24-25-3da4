@@ -17,6 +17,9 @@ namespace Sempi5Test.IntegrationTests.OperationTypeEntityTest
             var operationType = new OperationType
             {
                 Name = operationTypeName,
+                Anesthesia_Duration = 2,
+                Surgery_Duration = 4,
+                Cleaning_Duration = 1,
                 Specialization = specialization
             };
 

@@ -6,6 +6,9 @@ namespace Sempi5.Domain.OperationRequestEntity
     public class OperationType : Entity<OperationTypeID>, IAggregateRoot
     {
         public virtual string Name { get; set; }
+        public virtual int Anesthesia_Duration { get; set; }
+        public virtual int Surgery_Duration { get; set; }
+        public virtual int Cleaning_Duration { get; set; }
         public virtual Specialization Specialization { get; set; }
 
     }
