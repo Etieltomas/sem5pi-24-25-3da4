@@ -279,11 +279,106 @@ namespace Sempi5
                 await SeedUsersAsync(services);
                 await SeedOperationTypeAsync(services);
                 await SeedRooms(services);
+                await SeedPlanning(services);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred while seeding the database: {ex.Message}");
             }
+        }
+
+        private static async Task SeedPlanning(IServiceProvider services)
+        {
+            var roomRep = services.GetRequiredService<IRoomRepository>();
+            var staffRep = services.GetRequiredService<IStaffRepository>();
+            var request = services.GetRequiredService<IOperationRequestRepository>();
+            var specRepo = services.GetRequiredService<ISpecializationRepository>();
+            var patientRep = services.GetRequiredService<IPatientRepository>();
+            var operationTypeRep = services.GetRequiredService<IOperationTypeRepository>();
+
+            var unitOfWork = services.GetRequiredService<IUnitOfWork>();
+
+            if (
+                ((await roomRep.GetAllAsync()).Count() == 0) && 
+                ((await request.GetAllAsync()).Count() == 0) &&
+                ((await staffRep.GetAllAsync()).Count() == 0) &&
+                ((await operationTypeRep.GetAllAsync()).Count() == 0)
+            )
+            {
+                return;
+            }
+
+            var room9 = new Room {
+                Capacity = new Capacity(2),
+                AssignedEquipment = new AssignedEquipment(new List<string> { "Bisturi", "Scalpels" }),
+                RoomStatus = RoomStatus.Available,
+                Slots = new List<Slot> { 
+                    new Slot("10-10-2025T09:00:00 - 10-10-2025T10:00:00"),
+                    new Slot("10-10-2025T18:00:00 - 10-10-2025T20:00:00")
+                },
+                Type = RoomType.OperatingRoom
+            };
+            await roomRep.AddAsync(room9);
+            await unitOfWork.CommitAsync();
+
+
+            var staff1 = new Staff {
+                Name = new Name("Tomás Leite"),
+                Email = new Email("tomasandreleite@gmail.com"),
+                Specialization = await specRepo.GetByIdAsync(new SpecializationID("Cardiology")),
+                LicenseNumber = new LicenseNumber("123456"),
+                Phone = new Phone("912345678"),
+                Address = new Address("Rua do ISEP", "Porto", "Portugal"),
+                AvailabilitySlots = new List<AvailabilitySlot> { 
+                    new AvailabilitySlot("10-10-2025T07:00:00 - 10-10-2025T10:00:00"),
+                    new AvailabilitySlot("10-10-2025T11:30:00 - 10-10-2025T12:00:00"),
+                    new AvailabilitySlot("10-10-2025T13:00:00 - 10-10-2025T15:00:00"),
+                    new AvailabilitySlot("10-10-2025T16:00:00 - 10-10-2025T18:00:00")
+                }
+            };
+            var staff2 = new Staff {
+                Name = new Name("Simão Lopes"),
+                Email = new Email("sblsimaolopes@gmail.com"),
+                Specialization = await specRepo.GetByIdAsync(new SpecializationID("Neurology")),
+                LicenseNumber = new LicenseNumber("654321"),
+                Phone = new Phone("987654321"),
+                Address = new Address("Rua do ISEP", "Porto", "Portugal"),
+                AvailabilitySlots = new List<AvailabilitySlot> { 
+                    new AvailabilitySlot("10-10-2025T07:00:00 - 10-10-2025T10:00:00"),
+                    new AvailabilitySlot("10-10-2025T11:30:00 - 10-10-2025T12:00:00"),
+                    new AvailabilitySlot("10-10-2025T14:00:00 - 10-10-2025T16:00:00"),
+                    new AvailabilitySlot("10-10-2025T16:00:00 - 10-10-2025T18:00:00")
+                }
+            };
+            await staffRep.AddAsync(staff1);
+            await staffRep.AddAsync(staff2);
+            await unitOfWork.CommitAsync();
+
+            Patient pat = new Patient {
+                    Name = new Name("Simão Lopes"),
+                    Email = new Email("teste@gmail.com"),
+                    Phone = new Phone("912345678"),
+                    Address = new Address("Rua do ISEP", "Porto", "Portugal"),
+                    DateOfBirth = new DateTime(1998, 10, 10),
+                    Gender = Gender.Male,
+                    EmergencyContact = new Phone("912345678"),
+            };
+            await patientRep.AddAsync(pat);
+            await unitOfWork.CommitAsync();
+
+
+            var operationRequest1 = new OperationRequest {
+                
+                Staff = await staffRep.GetStaffMemberByEmail(staff1.Email.ToString()),
+                OperationType = await operationTypeRep.GetByIdAsync(new OperationTypeID(1)),
+                Priority = Priority.High,
+                Deadline = new Deadline(new DateTime(2025, 10, 10, 10, 0, 0)),
+                Status = Status.Pending,
+                Staffs = new List<Staff> { await staffRep.GetStaffMemberByEmail(staff1.Email.ToString()),
+                 await staffRep.GetStaffMemberByEmail(staff2.Email.ToString()) }
+            };
+            await request.AddAsync(operationRequest1);
+            await unitOfWork.CommitAsync();
         }
 
         private static async Task SeedRooms(IServiceProvider services)
@@ -300,10 +395,10 @@ namespace Sempi5
                 Capacity = new Capacity(2),
                 AssignedEquipment = new AssignedEquipment(new List<string> { "Bisturi", "Scalpels" }),
                 RoomStatus = RoomStatus.Available,
-                MaintenanceSlot = new List<MaintenanceSlot> { 
-                    new MaintenanceSlot("21-10-2025T09:00:00 - 21-10-2025T11:00:00"),
-                    new MaintenanceSlot("21-10-2025T14:00:00 - 21-10-2025T16:00:00"),
-                    new MaintenanceSlot("21-10-2025T18:00:00 - 21-10-2025T20:00:00")
+                Slots = new List<Slot> { 
+                    new Slot("21-10-2025T09:00:00 - 21-10-2025T11:00:00"),
+                    new Slot("21-10-2025T14:00:00 - 21-10-2025T16:00:00"),
+                    new Slot("21-10-2025T18:00:00 - 21-10-2025T20:00:00")
                 },
                 Type = RoomType.OperatingRoom
             };
@@ -312,9 +407,9 @@ namespace Sempi5
                 Capacity = new Capacity(4),
                 AssignedEquipment = new AssignedEquipment(new List<string> { "Monitor", "Defibrillator" }),
                 RoomStatus = RoomStatus.Occupied,
-                MaintenanceSlot = new List<MaintenanceSlot> { 
-                    new MaintenanceSlot("22-10-2025T09:00:00 - 22-10-2025T11:00:00"),
-                    new MaintenanceSlot("22-10-2025T14:00:00 - 22-10-2025T16:00:00")
+                Slots = new List<Slot> { 
+                    new Slot("22-10-2025T09:00:00 - 22-10-2025T11:00:00"),
+                    new Slot("22-10-2025T14:00:00 - 22-10-2025T16:00:00")
                 },
                 Type = RoomType.OperatingRoom
             };
@@ -323,9 +418,9 @@ namespace Sempi5
                 Capacity = new Capacity(1),
                 AssignedEquipment = new AssignedEquipment(new List<string> { "Ultrasound", "ECG" }),
                 RoomStatus = RoomStatus.Available,
-                MaintenanceSlot = new List<MaintenanceSlot> { 
-                    new MaintenanceSlot("23-10-2025T09:00:00 - 23-10-2025T11:00:00"),
-                    new MaintenanceSlot("23-10-2025T14:00:00 - 23-10-2025T16:00:00")
+                Slots = new List<Slot> { 
+                    new Slot("23-10-2025T09:00:00 - 23-10-2025T11:00:00"),
+                    new Slot("23-10-2025T14:00:00 - 23-10-2025T16:00:00")
                 },
                 Type = RoomType.OperatingRoom
             };
@@ -334,9 +429,9 @@ namespace Sempi5
                 Capacity = new Capacity(3),
                 AssignedEquipment = new AssignedEquipment(new List<string> { "X-Ray", "MRI" }),
                 RoomStatus = RoomStatus.UnderMaintenance,
-                MaintenanceSlot = new List<MaintenanceSlot> { 
-                    new MaintenanceSlot("24-10-2025T09:00:00 - 24-10-2025T11:00:00"),
-                    new MaintenanceSlot("24-10-2025T14:00:00 - 24-10-2025T16:00:00")
+                Slots = new List<Slot> { 
+                    new Slot("24-10-2025T09:00:00 - 24-10-2025T11:00:00"),
+                    new Slot("24-10-2025T14:00:00 - 24-10-2025T16:00:00")
                 },
                 Type = RoomType.OperatingRoom
             };
@@ -345,9 +440,9 @@ namespace Sempi5
                 Capacity = new Capacity(2),
                 AssignedEquipment = new AssignedEquipment(new List<string> { "Ventilator", "Suction Machine" }),
                 RoomStatus = RoomStatus.Available,
-                MaintenanceSlot = new List<MaintenanceSlot> { 
-                    new MaintenanceSlot("25-10-2025T09:00:00 - 25-10-2025T11:00:00"),
-                    new MaintenanceSlot("25-10-2025T14:00:00 - 25-10-2025T16:00:00")
+                Slots = new List<Slot> { 
+                    new Slot("25-10-2025T09:00:00 - 25-10-2025T11:00:00"),
+                    new Slot("25-10-2025T14:00:00 - 25-10-2025T16:00:00")
                 },
                 Type = RoomType.OperatingRoom
             };
@@ -356,9 +451,9 @@ namespace Sempi5
                 Capacity = new Capacity(5),
                 AssignedEquipment = new AssignedEquipment(new List<string> { "Infusion Pump", "Patient Monitor" }),
                 RoomStatus = RoomStatus.Occupied,
-                MaintenanceSlot = new List<MaintenanceSlot> { 
-                    new MaintenanceSlot("26-10-2025T09:00:00 - 26-10-2025T11:00:00"),
-                    new MaintenanceSlot("26-10-2025T14:00:00 - 26-10-2025T16:00:00")
+                Slots = new List<Slot> { 
+                    new Slot("26-10-2025T09:00:00 - 26-10-2025T11:00:00"),
+                    new Slot("26-10-2025T14:00:00 - 26-10-2025T16:00:00")
                 },
                 Type = RoomType.OperatingRoom
             };
@@ -367,9 +462,9 @@ namespace Sempi5
                 Capacity = new Capacity(1),
                 AssignedEquipment = new AssignedEquipment(new List<string> { "Oxygen Cylinder", "Nebulizer" }),
                 RoomStatus = RoomStatus.Available,
-                MaintenanceSlot = new List<MaintenanceSlot> { 
-                    new MaintenanceSlot("27-10-2025T09:00:00 - 27-10-2025T11:00:00"),
-                    new MaintenanceSlot("27-10-2025T14:00:00 - 27-10-2025T16:00:00")
+                Slots = new List<Slot> { 
+                    new Slot("27-10-2025T09:00:00 - 27-10-2025T11:00:00"),
+                    new Slot("27-10-2025T14:00:00 - 27-10-2025T16:00:00")
                 },
                 Type = RoomType.OperatingRoom
             };
@@ -378,9 +473,9 @@ namespace Sempi5
                 Capacity = new Capacity(3),
                 AssignedEquipment = new AssignedEquipment(new List<string> { "Dialysis Machine", "Blood Warmer" }),
                 RoomStatus = RoomStatus.UnderMaintenance,
-                MaintenanceSlot = new List<MaintenanceSlot> { 
-                    new MaintenanceSlot("28-10-2025T09:00:00 - 28-10-2025T11:00:00"),
-                    new MaintenanceSlot("28-10-2025T14:00:00 - 28-10-2025T16:00:00")
+                Slots = new List<Slot> { 
+                    new Slot("28-10-2025T09:00:00 - 28-10-2025T11:00:00"),
+                    new Slot("28-10-2025T14:00:00 - 28-10-2025T16:00:00")
                 },
                 Type = RoomType.OperatingRoom
             };
@@ -489,10 +584,16 @@ namespace Sempi5
             }
                 var operationType1 = new OperationType{
                     Name = "Cardiology Operation",
+                    Anesthesia_Duration = 10,
+                    Surgery_Duration = 15,
+                    Cleaning_Duration = 10,
                     Specialization = await specsRep.GetByIdAsync(new SpecializationID("Cardiology"))
                 };
                 var operationType2 = new OperationType{
                     Name = "Neurology Operation",
+                    Anesthesia_Duration = 15,
+                    Surgery_Duration = 20,
+                    Cleaning_Duration = 15,
                     Specialization = await specsRep.GetByIdAsync(new SpecializationID("Neurology"))
                 };
 
