@@ -18,7 +18,7 @@ namespace Sempi5.Domain.SpecializationEntity
 
         public async Task<string> AddSpecialization(string name){
 
-            var specialization = new Specialization(new SpecializationID(name));
+            var specialization = new Specialization{Name=name};
 
             await _repo.AddAsync(specialization);
             
@@ -27,12 +27,30 @@ namespace Sempi5.Domain.SpecializationEntity
             return specialization.Id.AsString();
         }
 
-        public async Task<List<string>> GetAllSpecialization(){
+        // Listar todas as especializações
+        public async Task<List<string>> GetAllSpecialization()
+        {
             var result = await _repo.GetAllAsync();
+            return result.ConvertAll(cat => cat.Id.AsString());
+        }
 
-            List<string> listDto = result.ConvertAll(cat => cat.Id.AsString());
+        // Buscar especialização por ID
+        public async Task<string?> GetSpecializationById(string id)
+        {
+            var specialization = await _repo.GetByIdAsync(new SpecializationID(id));
+            return specialization?.Id.AsString();
+        }
 
-            return listDto;
+        // Atualizar uma especialização
+        public async Task<bool> UpdateSpecialization(string id, string newName)
+        {
+            var specialization = await _repo.GetByIdAsync(new SpecializationID(id));
+            if (specialization == null) return false;
+
+            specialization.UpdateName(newName); 
+            await _repo.UpdateAsync(specialization);
+            await _unitOfWork.CommitAsync();
+            return true;
         }
     }
 }
