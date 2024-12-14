@@ -24,21 +24,21 @@ namespace Sempi5.Domain.SpecializationEntity
             
             await _unitOfWork.CommitAsync();
 
-            return specialization.Id.AsString();
+            return specialization.Name;
         }
 
         // Listar todas as especializações
         public async Task<List<string>> GetAllSpecialization()
         {
             var result = await _repo.GetAllAsync();
-            return result.ConvertAll(cat => cat.Id.AsString());
+            return result.ConvertAll(cat => cat.Name);
         }
 
         // Buscar especialização por ID
         public async Task<string?> GetSpecializationById(long id)
         {
             var specialization = await _repo.GetByIdAsync(new SpecializationID(id));
-            return specialization?.Id.AsString();
+            return specialization?.Name;
         }
 
         // Atualizar uma especialização

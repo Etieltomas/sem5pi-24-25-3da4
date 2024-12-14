@@ -141,7 +141,7 @@ namespace Sempi5.Domain.StaffEntity
                 Phone = staff.Phone?.ToString(),
                 Address = staff.Address?.ToString(),
                 AvailabilitySlots = availabilitySlotsDTO,
-                Specialization = staff.Specialization?.Id.AsString()
+                Specialization = staff.Specialization?.Name
             };
         }
 
