@@ -505,9 +505,9 @@ namespace Sempi5
                 return; 
             }
 
-            // TODO: Add more specializations if needed
-            var specialization = new Specialization(new SpecializationID("Cardiology"));
-            var specialization1 = new Specialization(new SpecializationID("Neurology"));
+            // Adicionar especializações com nome e ID
+            var specialization = new Specialization{Name = "Cardiology"};
+            var specialization1 = new Specialization{Name = "Neurology"};
             
             await specRep.AddAsync(specialization);
             await specRep.AddAsync(specialization1);
