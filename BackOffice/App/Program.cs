@@ -327,7 +327,7 @@ namespace Sempi5
             var staff1 = new Staff {
                 Name = new Name("Tomás Leite"),
                 Email = new Email("tomasandreleite@gmail.com"),
-                Specialization = await specRepo.GetByIdAsync(new SpecializationID("Cardiology")),
+                Specialization = await specRepo.GetByName("Cardiology"),
                 LicenseNumber = new LicenseNumber("123456"),
                 Phone = new Phone("912345678"),
                 Address = new Address("Rua do ISEP", "Porto", "Portugal"),
@@ -341,7 +341,7 @@ namespace Sempi5
             var staff2 = new Staff {
                 Name = new Name("Simão Lopes"),
                 Email = new Email("sblsimaolopes@gmail.com"),
-                Specialization = await specRepo.GetByIdAsync(new SpecializationID("Neurology")),
+                Specialization = await specRepo.GetByName("Neurology"),
                 LicenseNumber = new LicenseNumber("654321"),
                 Phone = new Phone("987654321"),
                 Address = new Address("Rua do ISEP", "Porto", "Portugal"),
@@ -370,16 +370,19 @@ namespace Sempi5
 
 
             var operationRequest1 = new OperationRequest {
-                
+                Patient = await patientRep.GetPatientByEmail(pat.Email.ToString()),
                 Staff = await staffRep.GetStaffMemberByEmail(staff1.Email.ToString()),
                 OperationType = await operationTypeRep.GetByIdAsync(new OperationTypeID(1)),
                 Priority = Priority.High,
                 Deadline = new Deadline(new DateTime(2025, 10, 10, 10, 0, 0)),
                 Status = Status.Pending,
-                Staffs = new List<Staff> { await staffRep.GetStaffMemberByEmail(staff1.Email.ToString()),
-                 await staffRep.GetStaffMemberByEmail(staff2.Email.ToString()) }
+                Staffs = new List<Staff> { 
+                    await staffRep.GetStaffMemberByEmail(staff1.Email.ToString()),
+                    await staffRep.GetStaffMemberByEmail(staff2.Email.ToString()) 
+                }
             };
-           // await request.AddAsync(operationRequest1);
+            await request.AddAsync(operationRequest1);
+
             await unitOfWork.CommitAsync();
         }
 
@@ -589,14 +592,14 @@ namespace Sempi5
                     Anesthesia_Duration = 10,
                     Surgery_Duration = 15,
                     Cleaning_Duration = 10,
-                    Specialization = await specsRep.GetByIdAsync(new SpecializationID("Cardiology"))
+                    Specialization = await specsRep.GetByName("Cardiology")
                 };
                 var operationType2 = new OperationType{
                     Name = "Neurology Operation",
                     Anesthesia_Duration = 15,
                     Surgery_Duration = 20,
                     Cleaning_Duration = 15,
-                    Specialization = await specsRep.GetByIdAsync(new SpecializationID("Neurology"))
+                    Specialization = await specsRep.GetByName("Neurology")
                 };
 
             await operationTypeRep.AddAsync(operationType1);

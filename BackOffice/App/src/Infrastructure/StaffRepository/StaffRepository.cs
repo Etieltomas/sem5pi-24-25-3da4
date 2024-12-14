@@ -75,7 +75,7 @@ namespace Sempi5.Infrastructure.StaffRepository
 
             if (!string.IsNullOrEmpty(specialization))
             {
-                query = query.Where(s => s.Specialization.Id.Equals(new SpecializationID(specialization)));
+                query = query.Where(s => s.Specialization.Name.Equals(specialization));
             }
 
             query = query.Skip((page - 1) * pageSize).Take(pageSize);

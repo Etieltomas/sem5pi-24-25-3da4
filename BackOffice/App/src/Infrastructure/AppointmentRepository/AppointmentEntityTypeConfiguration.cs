@@ -46,7 +46,7 @@ namespace Sempi5.Infrastructure.AppointmentRepository
 
             builder.HasOne(a => a.OperationRequest)
             	.WithOne() 
-                .HasForeignKey<OperationRequest>("OperationRequestId") 
+                .HasForeignKey<Appointment>("OperationRequestId") 
                 .IsRequired();
 
             builder.HasOne(a => a.Room)

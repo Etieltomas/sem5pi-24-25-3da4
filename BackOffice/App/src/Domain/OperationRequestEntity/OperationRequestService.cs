@@ -78,7 +78,7 @@ public class OperationRequestService
     public async Task<OperationRequestCreateDTO> UpdateOperationRequest(OperationRequestUpdateDTO dto)
     {
         //get request by id
-        var operationRequest = await _operationRequestRepository.GetOperationRequestById(new OperationRequestID(dto.OperationRequestId.ToString()));
+        var operationRequest = await _operationRequestRepository.GetOperationRequestById(new OperationRequestID(long.Parse(dto.OperationRequestId.ToString())));
         if (operationRequest == null)
         {
             throw new Exception("Operation request not found.");
@@ -108,7 +108,7 @@ public class OperationRequestService
     public async void DeleteOperationRequest(string requestId, string staffId)
     {
         //get request by id
-        var operationRequest = await _operationRequestRepository.GetOperationRequestById(new OperationRequestID(requestId.ToString()));
+        var operationRequest = await _operationRequestRepository.GetOperationRequestById(new OperationRequestID(long.Parse(requestId)));
         if (operationRequest == null)
         {
             throw new BusinessRuleValidationException("Operation request not found.");

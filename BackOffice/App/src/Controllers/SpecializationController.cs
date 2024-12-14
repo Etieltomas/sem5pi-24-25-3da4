@@ -40,7 +40,7 @@ namespace Sempi5.Controllers
 
         // 7.2.12: Buscar especialização por ID
         [HttpGet("{id}")]
-        public async Task<ActionResult<string>> GetSpecializationById(string id)
+        public async Task<ActionResult<string>> GetSpecializationById(long id)
         {
             var specialization = await _service.GetSpecializationById(id);
             if (specialization == null)
@@ -52,7 +52,7 @@ namespace Sempi5.Controllers
 
         // 7.2.13: Atualizar uma especialização
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateSpecialization(string id, [FromBody] SpecializationUpdateDTO dto)
+        public async Task<IActionResult> UpdateSpecialization(long id, [FromBody] SpecializationUpdateDTO dto)
         {
             if (string.IsNullOrEmpty(dto.Name))
             {

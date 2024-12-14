@@ -7,7 +7,7 @@ namespace Sempi5.Domain.SpecializationEntity
     public class SpecializationID : EntityId
     {
         
-        public SpecializationID(string value) : base(value)
+        public SpecializationID(long value) : base(value)
         {
         }
         
@@ -16,11 +16,16 @@ namespace Sempi5.Domain.SpecializationEntity
             return text;
         }
 
-        override
-        public string AsString()
+        public override string AsString()
         {
-            return (string)ObjValue;
+            return (string)base.ObjValue.ToString();
         }
+        
+        public long AsLong()
+        {
+            return (long)base.ObjValue;
+        }
+
 
         public bool Equals(SpecializationID other)
         {

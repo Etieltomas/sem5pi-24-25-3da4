@@ -14,10 +14,12 @@ public class OperationRequestEntityTypeConfiguration : IEntityTypeConfiguration<
 
         //id
         builder.Property(t => t.Id)
+            .HasColumnName("Id")
             .HasConversion(
-                v => v.AsString(),
+                v => v.AsLong(),
                 v => new OperationRequestID(v)
             )
+            .IsRequired()
             .ValueGeneratedOnAdd();
 
         //patientId foreign key

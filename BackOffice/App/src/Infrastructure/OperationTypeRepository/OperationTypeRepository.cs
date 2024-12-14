@@ -31,11 +31,11 @@ namespace Sempi5.Infrastructure
 
         public async Task<OperationType> GetOperationTypeByName(string name)
         {
-            var test = new SpecializationID(name);
+            var test = new Specialization{ Name = name};
 
             var pat = await _context.OperationTypes
                 .Include(p => p.Specialization)
-                .FirstOrDefaultAsync(p => p.Specialization.Id.Equals(test));
+                .FirstOrDefaultAsync(p => p.Specialization.Name.Equals(test.Name));
 
             return pat;
         }

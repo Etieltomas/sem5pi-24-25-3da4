@@ -26,7 +26,7 @@ namespace Sempi5.Domain.StaffEntity
                 .ToList();
 
    
-            var specialization = await _specRepo.GetByIdAsync(new SpecializationID(staffDTO.Specialization.ToLower()));
+            var specialization = await _specRepo.GetByName(staffDTO.Specialization.ToLower());
 
             var staff = new Staff
             {
@@ -92,7 +92,7 @@ namespace Sempi5.Domain.StaffEntity
             }
             
             if (staffDTO.Specialization != null) {
-                var specialization = await _specRepo.GetByIdAsync(new SpecializationID(staffDTO.Specialization.ToLower()));
+                var specialization = await _specRepo.GetByName(staffDTO.Specialization.ToLower());
                 staff.Specialization = specialization;
             }
          

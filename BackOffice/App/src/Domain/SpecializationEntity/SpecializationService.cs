@@ -35,14 +35,14 @@ namespace Sempi5.Domain.SpecializationEntity
         }
 
         // Buscar especialização por ID
-        public async Task<string?> GetSpecializationById(string id)
+        public async Task<string?> GetSpecializationById(long id)
         {
             var specialization = await _repo.GetByIdAsync(new SpecializationID(id));
             return specialization?.Id.AsString();
         }
 
         // Atualizar uma especialização
-        public async Task<bool> UpdateSpecialization(string id, string newName)
+        public async Task<bool> UpdateSpecialization(long id, string newName)
         {
             var specialization = await _repo.GetByIdAsync(new SpecializationID(id));
             if (specialization == null) return false;

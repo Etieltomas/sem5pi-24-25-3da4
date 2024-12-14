@@ -14,7 +14,7 @@ namespace Sempi5.Infrastructure.SpecializationRepository
             builder.Property(t => t.Id)
                 .HasColumnName("Id")
                 .HasConversion(
-                    v => v.AsString(),
+                    v => v.AsLong(),
                     v => new SpecializationID(v)
                 )
                 .IsRequired()

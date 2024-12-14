@@ -4,7 +4,7 @@ namespace Sempi5.Domain.OperationRequestEntity
 {
     public class OperationRequestID : EntityId
     {
-        public OperationRequestID(string value) : base(value) { }
+        public OperationRequestID(long value) : base(value) { }
 
         protected override object createFromString(string text)
         {
@@ -13,7 +13,12 @@ namespace Sempi5.Domain.OperationRequestEntity
 
         public override string AsString()
         {
-            return (string)ObjValue;
+            return (string)base.ObjValue.ToString();
+        }
+
+        public long AsLong()
+        {
+            return (long)base.ObjValue;
         }
     }
 }
