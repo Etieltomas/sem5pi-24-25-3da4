@@ -43,7 +43,7 @@ namespace Sempi5.Controllers
                 HttpOnly = false, 
                 SameSite = SameSiteMode.Unspecified,
                 Expires = DateTime.UtcNow.AddMinutes(30),
-                Domain = ".sarm.com"
+                Domain = frontEndUrl.Contains("localhost") ? null : ".sarm.com"
             };
 
             // Set user info in cookies

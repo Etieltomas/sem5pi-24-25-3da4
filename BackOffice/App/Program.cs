@@ -105,7 +105,7 @@ namespace Sempi5
                 options.LoginPath = "/api/Login/login";
                 options.ExpireTimeSpan = TimeSpan.FromHours(2);
                 options.Cookie.HttpOnly = false;
-                options.Cookie.Domain = ".sarm.com";
+                options.Cookie.Domain = builder.Configuration["IpAddresses:FrontEnd"].Contains("localhost") ? null : ".sarm.com";
                 options.Cookie.SameSite = SameSiteMode.None;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.SlidingExpiration = true;
@@ -301,10 +301,10 @@ namespace Sempi5
             var unitOfWork = services.GetRequiredService<IUnitOfWork>();
 
             if (
-                ((await roomRep.GetAllAsync()).Count() == 0) && 
-                ((await request.GetAllAsync()).Count() == 0) &&
-                ((await staffRep.GetAllAsync()).Count() == 0) &&
-                ((await operationTypeRep.GetAllAsync()).Count() == 0)
+                ((await roomRep.GetAllAsync()).Count() > 0) && 
+                ((await request.GetAllAsync()).Count() > 0) &&
+                ((await staffRep.GetAllAsync()).Count() > 0) &&
+                ((await operationTypeRep.GetAllAsync()).Count() > 0)
             )
             {
                 return;
