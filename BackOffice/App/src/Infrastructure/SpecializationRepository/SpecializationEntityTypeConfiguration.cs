@@ -17,7 +17,13 @@ namespace Sempi5.Infrastructure.SpecializationRepository
                     v => v.AsString(),
                     v => new SpecializationID(v)
                 )
-                .ValueGeneratedNever();
+                .IsRequired()
+                .ValueGeneratedOnAdd();
+
+            builder.Property(t => t.Name)
+                .HasColumnName("Name")
+                .IsRequired()
+                .HasMaxLength(200);
         }
     }
 }
