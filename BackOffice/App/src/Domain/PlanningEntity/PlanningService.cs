@@ -34,7 +34,8 @@ public class PlanningService
         string json = await GetJson(day, room, operationRequests);
 
         var content = new StringContent(json, Encoding.UTF8, "application/json");
-
+        
+        return json;
         var response = await _httpClient.PostAsync($"{_baseUrl}/obtain_better", content);
 
         if (!response.IsSuccessStatusCode)
@@ -81,7 +82,7 @@ public class PlanningService
         foreach (var staffMember in staff)
         {
             List<Appointment> appointments = await _appointmentRepository.GetAppointmentsByStaff(staffMember);
-            agenda.Append($"agenda_staff({staffMember.Id},{day},[");
+            agenda.Append($"agenda_staff({staffMember.Id.AsString()},{day},[");
             foreach (var appointment in appointments)
             {
                 var startMinutes = appointment.DateOperation.Value.Hour * 60 + appointment.DateOperation.Value.Minute;
@@ -91,7 +92,7 @@ public class PlanningService
 
                 agenda.Append($"({startMinutes},{endMinutes},{appointment.Id}),");
             }
-            agenda.Append("]).");
+            agenda.Append("]).\n");
         }
 
         return agenda.ToString();
@@ -115,13 +116,13 @@ public class PlanningService
                 }
             }
 
-            DateTime startShift = DateTime.ParseExact(slotDay.First().ToString(), "dd-MM-yyyy", CultureInfo.InvariantCulture);
-            DateTime endShift = DateTime.ParseExact(slotDay.Last().ToString(), "dd-MM-yyyy", CultureInfo.InvariantCulture);
+            DateTime startShift = DateTime.ParseExact(slotDay.First().ToString().Split(" - ")[0], "dd-MM-yyyyTHH:mm:ss", CultureInfo.InvariantCulture);
+            DateTime endShift = DateTime.ParseExact(slotDay.Last().ToString().Split(" - ")[1], "dd-MM-yyyyTHH:mm:ss", CultureInfo.InvariantCulture);
 
             int startMinutes = startShift.Hour * 60 + startShift.Minute;
             int endMinutes = endShift.Hour * 60 + endShift.Minute;
 
-            timetable.Append($"timetable({staffMember.Id},{day},({startMinutes},{endMinutes})).");
+            timetable.Append($"timetable({staffMember.Id.AsString()},{day},({startMinutes},{endMinutes})).\n");
         }
 
         return timetable.ToString();
@@ -135,7 +136,9 @@ public class PlanningService
         foreach (var staffMember in staff)
         {
             // TODO - CHECK THE SPECIALIZATION
-            staffJson.Append($"staff({staffMember.Id},{staffMember.SystemUser.Role},{staffMember.Specialization.ToString()}).");
+            staffJson.Append($"staff({staffMember.Id.AsString()},teste,{staffMember.Specialization.Id.AsString()}).\n");
+          //staffJson.Append($"staff({staffMember.Id},{staffMember.SystemUser.Role},{staffMember.Specialization.Id.ToString()}).\n");
+
         }
 
         return staffJson.ToString();
@@ -147,7 +150,7 @@ public class PlanningService
         StringBuilder surgeryJson = new StringBuilder();
         foreach (var operationRequest in operationRequests)
         {
-            surgeryJson.Append($"surgery({operationRequest.Id},{operationRequest.OperationType.Anesthesia_Duration},{operationRequest.OperationType.Surgery_Duration},{operationRequest.OperationType.Cleaning_Duration}).");
+            surgeryJson.Append($"surgery({operationRequest.OperationType.Id.AsLong()},{operationRequest.OperationType.Anesthesia_Duration},{operationRequest.OperationType.Surgery_Duration},{operationRequest.OperationType.Cleaning_Duration}).\n");
         }
 
         return surgeryJson.ToString();
@@ -159,7 +162,8 @@ public class PlanningService
         StringBuilder surgeryIdJson = new StringBuilder();
         foreach (var operationRequest in operationRequests)
         {
-            surgeryIdJson.Append($"surgery_id({operationRequest.Id},{operationRequest.OperationType.Id}).");
+            surgeryIdJson.Append($"surgery_id(null,{operationRequest.OperationType.Id.AsLong()}).\n");
+            //surgeryIdJson.Append($"surgery_id({operationRequest.Id.AsString()},{operationRequest.OperationType.Id.AsLong()}).\n");
         }
         return surgeryIdJson.ToString();
     }
@@ -172,7 +176,8 @@ public class PlanningService
         {
             foreach (var staffMember in operationRequest.Staffs)
             {
-                assignmentJson.Append($"assignment_surgery({operationRequest.Id},{staffMember.Id}).");
+                assignmentJson.Append($"assignment_surgery(null,{staffMember.Id.AsString()}).\n");
+                //assignmentJson.Append($"assignment_surgery({operationRequest.Id.AsString() ?? "null"},{staffMember.Id.AsString()}).\n");
             }
         }
 
@@ -194,7 +199,7 @@ public class PlanningService
             var endMinutes = end.Hour * 60 + end.Minute; 
             roomJson.Append($"({startMinutes},{endMinutes}),");
         }
-        roomJson.Append("]).");
+        roomJson.Append("]).\n");
 
         return roomJson.ToString();
     }*/
@@ -204,7 +209,7 @@ public class PlanningService
         //agenda_operation_room(or1,20241028,[(520,579,so100000),(1000,1059,so099999)]).
         StringBuilder roomJson = new StringBuilder();
         List<Slot> slots = room.Slots;
-        roomJson.Append($"agenda_operation_room({room.Id},{day},[");
+        roomJson.Append($"agenda_operation_room({room.Id.AsLong()},{day},[");
         foreach (var appointent in await _appointmentRepository.GetAppointmentsByRoom(room))
         {
             DateTime start = appointent.DateOperation.Value;
@@ -214,9 +219,9 @@ public class PlanningService
 
             var startMinutes = start.Hour * 60 + start.Minute;
             var endMinutes = end.Hour * 60 + end.Minute;
-            roomJson.Append($"({startMinutes},{endMinutes},{appointent.Id}),");
+            roomJson.Append($"({startMinutes},{endMinutes},{appointent.Id.AsString()}),");
         }
-        roomJson.Append("]).");
+        roomJson.Append("]).\n");
 
         return roomJson.ToString();
     }

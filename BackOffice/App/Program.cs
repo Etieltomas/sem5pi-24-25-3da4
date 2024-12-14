@@ -23,6 +23,8 @@ using Sempi5.Domain.RoomEntity;
 using Sempi5.Infrastructure.RoomRepository;
 using Sempi5.Domain.AllergyEntity;
 using Sempi5.Domain.MedicalRecordEntity;
+using Sempi5.Domain.AppointmentEntity;
+using Sempi5.Infrastructure.AppointmentRepository;
 
 namespace Sempi5
 {
@@ -377,7 +379,7 @@ namespace Sempi5
                 Staffs = new List<Staff> { await staffRep.GetStaffMemberByEmail(staff1.Email.ToString()),
                  await staffRep.GetStaffMemberByEmail(staff2.Email.ToString()) }
             };
-            await request.AddAsync(operationRequest1);
+           // await request.AddAsync(operationRequest1);
             await unitOfWork.CommitAsync();
         }
 
@@ -652,6 +654,10 @@ namespace Sempi5
 
 
             builder.Services.AddHostedService<AccountDeletionBackgroundService>();
+
+            builder.Services.AddTransient<IAppointmentRepository, AppointmentRepository>();
+            builder.Services.AddTransient<AppointmentService>();
+            builder.Services.AddTransient<PlanningService>();
 
             builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
         }

@@ -18,15 +18,27 @@ namespace Sempi5.Infrastructure.AppointmentRepository
 
         public async Task<List<Appointment>> GetAppointmentsByStaff(Staff staff)
         {
-            return await _context.Appointments.Where(a => a.OperationRequest.Staffs.Contains(staff) &&
-                                                          a.AppointmentStatus != AppointmentStatus.Scheduled).ToListAsync();
+            var appointments = await _context.Appointments
+                .Where(a => a.AppointmentStatus != AppointmentStatus.Scheduled)
+                .ToListAsync(); // Fetch data from the database first
+
+            return appointments
+                .Where(a => a.OperationRequest.Staffs.Contains(staff)) // Perform in-memory filtering
+                .ToList();
+            
         }
 
         public async Task<List<Appointment>> GetAppointmentsByRoom(Room room)
         {
-            return await _context.Appointments.Where(a => a.Room.Id.AsLong() == room.Id.AsLong() &&
-                                                a.AppointmentStatus != AppointmentStatus.Scheduled).ToListAsync();
+            var appointments = await _context.Appointments
+                .Where(a => a.AppointmentStatus != AppointmentStatus.Scheduled)
+                .ToListAsync(); // Fetch data from the database first
+
+            return appointments
+                .Where(a => a.Room.Id.AsLong() == room.Id.AsLong()) // Perform in-memory filtering
+                .ToList();
         }
+
     }
 
 }

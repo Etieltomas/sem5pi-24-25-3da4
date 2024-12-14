@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Sempi5.Domain.OperationRequestEntity;
 using Sempi5.Domain.RoomEntity;
+using Sempi5.Domain.StaffEntity;
 using System.Threading.Tasks;
 
 [ApiController]
@@ -8,10 +9,15 @@ using System.Threading.Tasks;
 public class PlanningController : ControllerBase
 {
     private readonly PlanningService _planningService;
+    private readonly IStaffRepository staffRep;
+    private readonly IOperationTypeRepository operationTypeRep;
+    
 
-    public PlanningController(PlanningService planningService)
+    public PlanningController(PlanningService planningService, IStaffRepository staffRep, IOperationTypeRepository operationTypeRep)
     {
         _planningService = planningService;
+        this.staffRep = staffRep;
+        this.operationTypeRep = operationTypeRep;
     }
 
     [HttpGet("obtain_better")]
@@ -21,7 +27,19 @@ public class PlanningController : ControllerBase
         {
             string day = "20251010";
             long roomId = 9;
-            List<OperationRequest> operationRequests = new List<OperationRequest>();
+            List<OperationRequest> operationRequests =
+            [
+                new OperationRequest {
+                
+                    Staff = await staffRep.GetStaffMemberByEmail("tomasandreleite@gmail.com"),
+                    OperationType = await operationTypeRep.GetByIdAsync(new OperationTypeID(1)),
+                    Priority = Priority.High,
+                    Deadline = new Deadline(new DateTime(2025, 10, 10, 10, 0, 0)),
+                    Status = Status.Pending,
+                    Staffs = new List<Staff> { await staffRep.GetStaffMemberByEmail("tomasandreleite@gmail.com"),
+                     await staffRep.GetStaffMemberByEmail("sblsimaolopes@gmail.com") }
+                },
+            ];
             var planning = await _planningService.ScheduleOperations(day, roomId, operationRequests);
             return Ok(planning);
         }
