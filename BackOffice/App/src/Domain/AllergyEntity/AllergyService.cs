@@ -2,6 +2,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json.Serialization;
 
 namespace Sempi5.Domain.AllergyEntity
 {
@@ -16,7 +17,7 @@ namespace Sempi5.Domain.AllergyEntity
         {
             _configuration = configuration;
             _httpClient = httpClient;
-            base_url = _configuration["IpAddresses:BackEnd2"] ?? "http://localhost:3000";
+            base_url = _configuration["IpAddresses:BackEnd2"] ?? "http://localhost:3001";
         }
 
         // Method to add a new allergy using DTO
@@ -24,8 +25,13 @@ namespace Sempi5.Domain.AllergyEntity
         {
             var url = base_url+"/api/allergies";
 
+            var options = new JsonSerializerOptions
+            {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            };
+
             // Create the JSON payload
-            var content = new StringContent(JsonSerializer.Serialize(allergyDTO), Encoding.UTF8, "application/json");
+            var content = new StringContent(JsonSerializer.Serialize(allergyDTO, options), Encoding.UTF8, "application/json");
 
             // Make the POST request
             var response = await _httpClient.PostAsync(url, content);
