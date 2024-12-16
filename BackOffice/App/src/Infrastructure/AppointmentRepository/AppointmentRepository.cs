@@ -23,7 +23,7 @@ namespace Sempi5.Infrastructure.AppointmentRepository
                 .ToListAsync(); // Fetch data from the database first
 
             return appointments
-                .Where(a => a.OperationRequest.Staffs.Contains(staff)) // Perform in-memory filtering
+                .Where(a => a.OperationRequest.Staffs.Contains(staff.Id)) // Perform in-memory filtering
                 .ToList();
             
         }

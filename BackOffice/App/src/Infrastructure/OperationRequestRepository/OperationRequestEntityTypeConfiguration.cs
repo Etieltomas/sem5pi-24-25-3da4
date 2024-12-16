@@ -60,6 +60,16 @@ public class OperationRequestEntityTypeConfiguration : IEntityTypeConfiguration<
                 v => Status.FromString(v)
             )
             .IsRequired();
+
+        // staff list
+        builder.Property(t => t.Staffs)
+            .HasColumnName("Staffs")
+            .HasConversion(
+                v => string.Join(",", v.Select(x => x.AsString())),
+                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(x => new StaffID(x)).ToList()
+            )
+            .IsRequired();
+
     }
     
 }

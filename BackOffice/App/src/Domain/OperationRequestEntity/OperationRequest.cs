@@ -16,7 +16,7 @@ namespace Sempi5.Domain.OperationRequestEntity
 
         public virtual DateTime? StartDate { get; set; }
         public virtual DateTime? EndDate { get; set; }
-        public virtual List<Staff>? Staffs { get; set; }
+        public virtual List<StaffID>? Staffs { get; set; }
 
         public void UpdatePriority(Priority newPriority)
         {
@@ -28,6 +28,9 @@ namespace Sempi5.Domain.OperationRequestEntity
             Deadline = newDeadline;
         }
 
+        public void UpdateStatus(Status status){
+            Status = status;
+        }
         public void MarkAsDeleted()
         {
         Status = Status.Cancelled;

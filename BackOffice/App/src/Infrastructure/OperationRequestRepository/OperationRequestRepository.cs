@@ -16,6 +16,14 @@ namespace Sempi5.Infrastructure
         {
             _context = context;
         }
+        
+        public async Task<List<OperationRequest>> GetAllOperationRequests()
+        {
+            return await _context.OperationRequests
+            .Include(r => r.Staff)
+            .Include(r => r.Patient)
+            .Include(r => r.OperationType).ToListAsync();
+        }
 
         public async Task<OperationRequest> GetOperationRequestById(OperationRequestID id)
         {

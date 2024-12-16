@@ -297,6 +297,8 @@ namespace Sempi5
             var specRepo = services.GetRequiredService<ISpecializationRepository>();
             var patientRep = services.GetRequiredService<IPatientRepository>();
             var operationTypeRep = services.GetRequiredService<IOperationTypeRepository>();
+            var SystemUserRep = services.GetRequiredService<IUserRepository>();
+
 
             var unitOfWork = services.GetRequiredService<IUnitOfWork>();
 
@@ -314,56 +316,92 @@ namespace Sempi5
                 Capacity = new Capacity(2),
                 AssignedEquipment = new AssignedEquipment(new List<string> { "Bisturi", "Scalpels" }),
                 RoomStatus = RoomStatus.Available,
-                Slots = new List<Slot> { 
-                    new Slot("10-10-2025T09:00:00 - 10-10-2025T10:00:00"),
-                    new Slot("10-10-2025T18:00:00 - 10-10-2025T20:00:00")
-                },
+                Slots = new List<Slot>(),
                 Type = RoomType.OperatingRoom
             };
             await roomRep.AddAsync(room9);
             await unitOfWork.CommitAsync();
 
+            var specialization = new Specialization{Name = "Orthopaedist"};
+            var specialization1 = new Specialization{Name = "anaesthetist"};
+            await specRepo.AddAsync(specialization);
+            await specRepo.AddAsync(specialization1);
+            await unitOfWork.CommitAsync();
+
+            var user1 = new SystemUser{
+                Username = "laura",
+                Email = new Email("lauramurias@gmail.com"),
+                Role = "Doctor",
+                Active = true
+            };
+            var user2 = new SystemUser{
+                Username = "sara",
+                Email = new Email("saramacedo@gmail.com"),
+                Role = "Doctor",
+                Active = true
+            };
+            var user3 = new SystemUser{
+                Username = "sofia",
+                Email = new Email("sofiacardoso@gmail.com"),
+                Role = "Assistant",
+                Active = true
+            };
+            await SystemUserRep.AddAsync(user1);
+            await SystemUserRep.AddAsync(user2);
+            await SystemUserRep.AddAsync(user3);
+            await unitOfWork.CommitAsync();
 
             var staff1 = new Staff {
-                Name = new Name("Tomás Leite"),
-                Email = new Email("tomasandreleite@gmail.com"),
-                Specialization = await specRepo.GetByName("Cardiology"),
+                Name = new Name("Laura Múrias"),
+                Email = new Email("lauramurias@gmail.com"),
+                Specialization = await specRepo.GetByName("Orthopaedist"),
                 LicenseNumber = new LicenseNumber("123456"),
                 Phone = new Phone("912345678"),
                 Address = new Address("Rua do ISEP", "Porto", "Portugal"),
                 AvailabilitySlots = new List<AvailabilitySlot> { 
-                    new AvailabilitySlot("10-10-2025T07:00:00 - 10-10-2025T10:00:00"),
-                    new AvailabilitySlot("10-10-2025T11:30:00 - 10-10-2025T12:00:00"),
-                    new AvailabilitySlot("10-10-2025T13:00:00 - 10-10-2025T15:00:00"),
-                    new AvailabilitySlot("10-10-2025T16:00:00 - 10-10-2025T18:00:00")
-                }
+                    new AvailabilitySlot("10-10-2025T08:00:00 - 10-10-2025T20:00:00")
+                },
+                SystemUser = user1
             };
             var staff2 = new Staff {
-                Name = new Name("Simão Lopes"),
-                Email = new Email("sblsimaolopes@gmail.com"),
-                Specialization = await specRepo.GetByName("Neurology"),
+                Name = new Name("Sara Macedo"),
+                Email = new Email("saramacedo@gmail.com"),
+                Specialization = await specRepo.GetByName("Anaesthetist"),
                 LicenseNumber = new LicenseNumber("654321"),
                 Phone = new Phone("987654321"),
                 Address = new Address("Rua do ISEP", "Porto", "Portugal"),
                 AvailabilitySlots = new List<AvailabilitySlot> { 
-                    new AvailabilitySlot("10-10-2025T07:00:00 - 10-10-2025T10:00:00"),
-                    new AvailabilitySlot("10-10-2025T11:30:00 - 10-10-2025T12:00:00"),
-                    new AvailabilitySlot("10-10-2025T14:00:00 - 10-10-2025T16:00:00"),
-                    new AvailabilitySlot("10-10-2025T16:00:00 - 10-10-2025T18:00:00")
-                }
+                    new AvailabilitySlot("10-10-2025T08:00:00 - 10-10-2025T20:00:00")
+                },
+                SystemUser = user2
+            };
+            var staff3 = new Staff {
+                Name = new Name("Sofia Cardoso"),
+                Email = new Email("sofiacardoso@gmail.com"),
+                Specialization = await specRepo.GetByName("Neurology"),
+                LicenseNumber = new LicenseNumber("154321"),
+                Phone = new Phone("187654321"),
+                Address = new Address("Rua do ISEP", "Porto", "Portugal"),
+                AvailabilitySlots = new List<AvailabilitySlot> { 
+                    new AvailabilitySlot("10-10-2025T08:00:00 - 10-10-2025T20:00:00")
+                },
+                SystemUser = user3
             };
             await staffRep.AddAsync(staff1);
+            await unitOfWork.CommitAsync();
             await staffRep.AddAsync(staff2);
+            await unitOfWork.CommitAsync();
+            await staffRep.AddAsync(staff3);
             await unitOfWork.CommitAsync();
 
             Patient pat = new Patient {
-                    Name = new Name("Simão Lopes"),
-                    Email = new Email("teste@gmail.com"),
-                    Phone = new Phone("912345678"),
-                    Address = new Address("Rua do ISEP", "Porto", "Portugal"),
-                    DateOfBirth = new DateTime(1998, 10, 10),
-                    Gender = Gender.Male,
-                    EmergencyContact = new Phone("912345678"),
+                Name = new Name("Matilde Gonçalves"),
+                Email = new Email("matilde@gmail.com"),
+                Phone = new Phone("912345678"),
+                Address = new Address("Rua do ISEP", "Porto", "Portugal"),
+                DateOfBirth = new DateTime(1998, 10, 10),
+                Gender = Gender.Male,
+                EmergencyContact = new Phone("912345678"),
             };
             await patientRep.AddAsync(pat);
             await unitOfWork.CommitAsync();
@@ -376,13 +414,27 @@ namespace Sempi5
                 Priority = Priority.High,
                 Deadline = new Deadline(new DateTime(2025, 10, 10, 10, 0, 0)),
                 Status = Status.Pending,
-                Staffs = new List<Staff> { 
-                    await staffRep.GetStaffMemberByEmail(staff1.Email.ToString()),
-                    await staffRep.GetStaffMemberByEmail(staff2.Email.ToString()) 
+                Staffs = new List<StaffID> { 
+                    (await staffRep.GetStaffMemberByEmail(staff1.Email.ToString())).Id,
+                    (await staffRep.GetStaffMemberByEmail(staff2.Email.ToString())).Id,
+                    (await staffRep.GetStaffMemberByEmail(staff3.Email.ToString())).Id 
+                }
+            };
+            var operationRequest2 = new OperationRequest {
+                Patient = await patientRep.GetPatientByEmail(pat.Email.ToString()),
+                Staff = await staffRep.GetStaffMemberByEmail(staff1.Email.ToString()),
+                OperationType = await operationTypeRep.GetByIdAsync(new OperationTypeID(1)),
+                Priority = Priority.High,
+                Deadline = new Deadline(new DateTime(2025, 10, 10, 10, 0, 0)),
+                Status = Status.Pending,
+                Staffs = new List<StaffID> { 
+                    (await staffRep.GetStaffMemberByEmail(staff1.Email.ToString())).Id,
+                    (await staffRep.GetStaffMemberByEmail(staff2.Email.ToString())).Id,
+                    (await staffRep.GetStaffMemberByEmail(staff3.Email.ToString())).Id 
                 }
             };
             await request.AddAsync(operationRequest1);
-
+            await request.AddAsync(operationRequest2);
             await unitOfWork.CommitAsync();
         }
 

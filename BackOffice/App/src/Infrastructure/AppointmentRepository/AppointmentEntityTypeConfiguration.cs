@@ -39,8 +39,8 @@ namespace Sempi5.Infrastructure.AppointmentRepository
 
             builder.Property(a => a.DateOperation)
                 .HasConversion(
-                    v => v.Value.ToString("dd-MM-yyyy"),
-                    v => new DateOperation(DateTime.ParseExact(v, "dd-MM-yyyy", CultureInfo.InvariantCulture))
+                    v => v.Value.ToString("dd-MM-yyyy HH:mm", CultureInfo.InvariantCulture),
+                    v => new DateOperation(DateTime.ParseExact(v, "dd-MM-yyyy HH:mm", CultureInfo.InvariantCulture))
                 )
                 .IsRequired();
 
