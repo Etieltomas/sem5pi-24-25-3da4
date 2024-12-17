@@ -18,7 +18,7 @@ namespace Sempi5.Controllers
         }
 
         [HttpGet("{patientEmail}")]
-        //[Authorize(Roles = "Patient")]
+        [Authorize(Roles = "Patient")]
         public async Task<ActionResult<List<MedicalRecordDTO>>> GetMedicalRecord(string patientEmail)
         {
             var result = await _service.GetMedicalRecord(patientEmail);
@@ -32,21 +32,22 @@ namespace Sempi5.Controllers
         
 
         [HttpGet]
-        //[Authorize(Roles = "Staff")]
+        [Authorize(Roles = "Staff")]
         public async Task<ActionResult<List<MedicalRecordDTO>>> GetAllMedicalRecords()
         {
             return Ok(await _service.GetAllMedicalRecords());
         }
 
         [HttpGet("search")]
-        //[Authorize(Roles = "Staff")]
+        [Authorize(Roles = "Staff")]
         public async Task<ActionResult<List<MedicalRecordDTO>>> Search(
             [FromQuery] string? filter,
+            [FromQuery] string patient,
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10
         )
         {
-            var result = await _service.Search(filter, page, pageSize);
+            var result = await _service.Search(filter, patient, page, pageSize);
             if (result == null)
             {
                 return BadRequest();

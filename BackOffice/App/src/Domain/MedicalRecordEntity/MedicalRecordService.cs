@@ -77,12 +77,15 @@ namespace Sempi5.Domain.MedicalRecordEntity
             }
         }
 
-        public async Task<List<MedicalRecordDTO>> Search(string? filter, int page, int pageSize)
+        public async Task<List<MedicalRecordDTO>> Search(string? filter, string patientEmail, 
+                                            int page, int pageSize)
         {
             var queryParams = new List<string>();
 
             // Add query parameters only if they are not null or empty
             if (!string.IsNullOrEmpty(filter)) queryParams.Add($"filter={Uri.EscapeDataString(filter)}");
+            
+            queryParams.Add($"patientEmail={Uri.EscapeDataString(patientEmail)}");
             queryParams.Add($"page={page}");
             queryParams.Add($"pageSize={pageSize}");
 
@@ -106,18 +109,6 @@ namespace Sempi5.Domain.MedicalRecordEntity
 
             var medicalRecords = JsonSerializer.Deserialize<List<MedicalRecordDTO>>(json);
 
-            foreach (var medicalRecord in medicalRecords)
-            {
-                // Get the patient details
-                var patient = await _patientRepository.GetPatientByEmail(medicalRecord.Patient);
-                if (patient != null)
-                {
-                    medicalRecord.Patient = patient.Name + " ("+ patient.Email+ ")" ;
-                } else
-                {
-                    medicalRecord.Patient = "Unknown";
-                }
-            }
             return medicalRecords;
         }
 
