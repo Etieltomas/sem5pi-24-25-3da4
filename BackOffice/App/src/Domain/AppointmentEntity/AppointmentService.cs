@@ -77,10 +77,6 @@ namespace Sempi5.Domain.AppointmentEntity
                         staffs.Add(await _staffRepo.GetStaffMemberById(staffID));
                     }               
                 }
-                if (appointment.Room == null)
-                {
-                    appointment.Room = oldRoom;
-                }
                 
                 RemoveOldSlots(appointment, staffs, appointment.Room);
                 appointment.DateOperation = new DateOperation(DateTime.ParseExact(appointmentDTO.DateOperation, "dd-MM-yyyy HH:mm", CultureInfo.InvariantCulture));
@@ -125,7 +121,7 @@ namespace Sempi5.Domain.AppointmentEntity
                     if (staffMember.Specialization.Name.ToLower().Equals("anaesthetist")) {
                         slotToRemove = surgeryStart.ToString("dd-MM-yyyyTHH:mm");
                     } else if (staffMember.SystemUser.Role.ToLower().Equals("assistant")) {
-                        slotToRemove = surgeryStart.AddMinutes(appointment.OperationRequest.OperationType.Anesthesia_Duration+appointment.OperationRequest.OperationType.Surgery_Duration).ToString("dd-MM-yyyyTHH:mm");
+                        slotToRemove = surgeryStart.AddMinutes(appointment.OperationRequest.OperationType.Anesthesia_Duration+appointment.OperationRequest.OperationType.Surgery_Duration-1).ToString("dd-MM-yyyyTHH:mm");
                     } else {
                         slotToRemove = surgeryStart.AddMinutes(appointment.OperationRequest.OperationType.Anesthesia_Duration).ToString("dd-MM-yyyyTHH:mm");
                     }
@@ -186,15 +182,18 @@ namespace Sempi5.Domain.AppointmentEntity
             // Check the availability of each staff member
             foreach (var staffMember in staffs)
             {
+                DateTime staffStart = surgeryStart;
+                DateTime staffEnd = surgeryEnd;
+
                 var busySlots = staffMember.AvailabilitySlots.Where(s => s.ToString().StartsWith(appointment.DateOperation.Value.ToString("dd-MM-yyyyT"))).ToList();
 
                 if (staffMember.Specialization.Name.ToLower().Equals("anaesthetist")) {
-                    surgeryEnd = surgeryEnd.AddMinutes(-appointment.OperationRequest.OperationType.Cleaning_Duration);
+                    staffEnd = surgeryEnd.AddMinutes(-appointment.OperationRequest.OperationType.Cleaning_Duration);
                 } else if (staffMember.SystemUser.Role.ToLower().Equals("assistant")) {
-                    surgeryStart = surgeryEnd.AddMinutes(-appointment.OperationRequest.OperationType.Cleaning_Duration);
+                    staffStart = surgeryEnd.AddMinutes(-appointment.OperationRequest.OperationType.Cleaning_Duration);
                 } else {
-                    surgeryStart = surgeryStart.AddMinutes(appointment.OperationRequest.OperationType.Anesthesia_Duration);
-                    surgeryEnd = surgeryEnd.AddMinutes(-appointment.OperationRequest.OperationType.Cleaning_Duration);
+                    staffStart = surgeryStart.AddMinutes(appointment.OperationRequest.OperationType.Anesthesia_Duration);
+                    staffEnd = surgeryEnd.AddMinutes(-appointment.OperationRequest.OperationType.Cleaning_Duration);
                 }
 
                 foreach (var slot in busySlots)
@@ -203,14 +202,14 @@ namespace Sempi5.Domain.AppointmentEntity
                     DateTime startSlot = DateTime.ParseExact(busySlotParts[0], "dd-MM-yyyyTHH:mm:ss", CultureInfo.InvariantCulture);
                     DateTime endSlot = DateTime.ParseExact(busySlotParts[1], "dd-MM-yyyyTHH:mm:ss", CultureInfo.InvariantCulture);
 
-                    if (!((startSlot < surgeryStart && endSlot < surgeryStart) ||
-                        (startSlot > surgeryEnd && endSlot > surgeryEnd)))
+                    if (!((startSlot < staffStart && endSlot < staffStart) ||
+                        (startSlot > staffEnd && endSlot > staffEnd)))
                     {
                         return false;  
                     }
                 }
 
-                var newStaffSlotString = appointment.DateOperation.Value.ToString("dd-MM-yyyyTHH:mm:ss") + " - " + surgeryEnd.ToString("dd-MM-yyyyTHH:mm:ss");
+                var newStaffSlotString = staffStart.ToString("dd-MM-yyyyTHH:mm:ss") + " - " + staffEnd.ToString("dd-MM-yyyyTHH:mm:ss");
                 //staffSlotsToAdd.Add(new AvailabilitySlot(newStaffSlotString));
                 staffMember.AvailabilitySlots.Add(new AvailabilitySlot(newStaffSlotString));
             }
