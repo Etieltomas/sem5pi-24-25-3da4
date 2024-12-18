@@ -139,7 +139,7 @@ namespace Sempi5.Domain.AppointmentEntity
             }
         }
 
-        private async Task<bool> CheckAppointmentAvailability(Appointment appointment, List<Staff> staffs, Room room)
+        public async Task<bool> CheckAppointmentAvailability(Appointment appointment, List<Staff> staffs, Room room)
         {
             // Calculate the total duration of the surgery
             int surgeryDuration = appointment.OperationRequest.OperationType.Anesthesia_Duration +
@@ -188,9 +188,9 @@ namespace Sempi5.Domain.AppointmentEntity
             {
                 var busySlots = staffMember.AvailabilitySlots.Where(s => s.ToString().StartsWith(appointment.DateOperation.Value.ToString("dd-MM-yyyyT"))).ToList();
 
-                if (staffMember.Specialization.Name.Equals("Anaesthetist")) {
+                if (staffMember.Specialization.Name.ToLower().Equals("anaesthetist")) {
                     surgeryEnd = surgeryEnd.AddMinutes(-appointment.OperationRequest.OperationType.Cleaning_Duration);
-                } else if (staffMember.SystemUser.Role.Equals("Assistant")) {
+                } else if (staffMember.SystemUser.Role.ToLower().Equals("assistant")) {
                     surgeryStart = surgeryEnd.AddMinutes(-appointment.OperationRequest.OperationType.Cleaning_Duration);
                 } else {
                     surgeryStart = surgeryStart.AddMinutes(appointment.OperationRequest.OperationType.Anesthesia_Duration);
