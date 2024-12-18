@@ -353,7 +353,7 @@ namespace Sempi5
 
             var staff1 = new Staff {
                 Name = new Name("Laura Múrias"),
-                Email = new Email("lauramurias@gmail.com"),
+                Email = new Email("left4deadgame2@gmail.com"),
                 Specialization = await specRepo.GetByName("Orthopaedist"),
                 LicenseNumber = new LicenseNumber("123456"),
                 Phone = new Phone("912345678"),

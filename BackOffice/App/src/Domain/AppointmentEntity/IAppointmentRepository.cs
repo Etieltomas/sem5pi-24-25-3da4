@@ -9,5 +9,7 @@ namespace Sempi5.Domain.AppointmentEntity
     {
         Task<List<Appointment>> GetAppointmentsByStaff(Staff staff);
         Task<List<Appointment>> GetAppointmentsByRoom(Room room);
+        Task<List<Appointment>> GetAppointmentsByDoctor(string doctorEmail);
+        Task<Appointment> GetAppointmentsByID(AppointmentID id);
     }
 }

@@ -19,7 +19,9 @@ namespace Sempi5.Infrastructure.AppointmentRepository
         public async Task<List<Appointment>> GetAppointmentsByStaff(Staff staff)
         {
             var appointments = await _context.Appointments
-                .Where(a => a.AppointmentStatus != AppointmentStatus.Scheduled)
+                .Include(a => a.Room)
+                .Include(a => a.OperationRequest)
+                .Where(a => a.AppointmentStatus == AppointmentStatus.Scheduled)
                 .ToListAsync(); // Fetch data from the database first
 
             return appointments
@@ -31,7 +33,9 @@ namespace Sempi5.Infrastructure.AppointmentRepository
         public async Task<List<Appointment>> GetAppointmentsByRoom(Room room)
         {
             var appointments = await _context.Appointments
-                .Where(a => a.AppointmentStatus != AppointmentStatus.Scheduled)
+                .Include(a => a.Room)
+                .Include(a => a.OperationRequest)
+                .Where(a => a.AppointmentStatus == AppointmentStatus.Scheduled)
                 .ToListAsync(); // Fetch data from the database first
 
             return appointments
@@ -39,6 +43,29 @@ namespace Sempi5.Infrastructure.AppointmentRepository
                 .ToList();
         }
 
+        public async Task<List<Appointment>> GetAppointmentsByDoctor(string doctorEmail)
+        {
+            var list = await _context.Appointments
+                .Include(a => a.Room)
+                .Include(a => a.OperationRequest)
+                .ThenInclude(o => o.Staff)
+                .Where(a => a.AppointmentStatus == AppointmentStatus.Scheduled && a.OperationRequest.Staff.Email.Equals(new Email(doctorEmail)))
+                .ToListAsync();
+
+            return list;
+        }
+
+        public async Task<Appointment> GetAppointmentsByID(AppointmentID id)
+        {
+            return await _context.Appointments
+            .Include(a => a.Room)
+            .Include(a => a.OperationRequest)
+                .ThenInclude(o => o.Staff)
+            .Include(a => a.OperationRequest)
+                .ThenInclude(o => o.OperationType)
+            .FirstOrDefaultAsync(a => a.Id == id);
+
+        }
     }
 
 }
