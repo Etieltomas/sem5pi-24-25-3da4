@@ -32,13 +32,6 @@ namespace Sempi5.Infrastructure.RoomRepository
                 )
                 .IsRequired();
 
-            builder.Property(t => t.Type)
-                .HasConversion(
-                    v => v.ToString(),
-                    v => RoomTypeExtensions.FromString(v)
-                )
-                .IsRequired();
-
             builder.Property(t => t.RoomStatus)
                 .HasConversion(
                     v => v.ToString(),
@@ -52,6 +45,11 @@ namespace Sempi5.Infrastructure.RoomRepository
 
             builder.Property(t => t.AssignedEquipment)
                 .HasConversion(new EquipmentConverter())
+                .IsRequired();
+
+            builder.HasOne(t => t.Type)
+                .WithMany() 
+                .HasForeignKey("TypeId")
                 .IsRequired();
 
         }
