@@ -24,6 +24,25 @@ namespace Sempi5.Infrastructure.SpecializationRepository
                 .HasColumnName("Name")
                 .IsRequired()
                 .HasMaxLength(200);
+            
+            builder.Property(t => t.Code)
+                .HasColumnName("Code")
+                .IsRequired()
+                .HasMaxLength(50);
+            
+            // Description Configuration (optional)
+            builder.Property(t => t.Description)
+                .HasColumnName("Description")
+                .HasMaxLength(500)
+                .IsRequired(false);
+
+            // Ensure Code is Unique
+            builder.HasIndex(t => t.Code)
+                .IsUnique();
+
+                builder.HasIndex(t => t.Name)
+                .IsUnique();
+           
         }
     }
 }
