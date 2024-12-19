@@ -342,8 +342,8 @@ namespace Sempi5
             await roomRep.AddAsync(room9);
             await unitOfWork.CommitAsync();
 
-            var specialization = new Specialization{Name = "Orthopaedist"};
-            var specialization1 = new Specialization{Name = "anaesthetist"};
+            var specialization = new Specialization{Code = "0000", Name = "Orthopaedist"};
+            var specialization1 = new Specialization{Code = "0001", Name = "anaesthetist"};
             await specRepo.AddAsync(specialization);
             await specRepo.AddAsync(specialization1);
             await unitOfWork.CommitAsync();
@@ -582,8 +582,8 @@ namespace Sempi5
             }
 
             // Adicionar especializações com nome e ID
-            var specialization = new Specialization{Name = "Cardiology"};
-            var specialization1 = new Specialization{Name = "Neurology"};
+            var specialization = new Specialization{Code = "1212", Name = "Cardiology"};
+            var specialization1 = new Specialization{Code = "1213", Name = "Neurology"};
             
             await specRep.AddAsync(specialization);
             await specRep.AddAsync(specialization1);

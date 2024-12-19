@@ -26,12 +26,12 @@ namespace Sempi5.Domain.RoomEntity
 
         public override string AsString()
         {
-            throw new NotImplementedException();
+            return (string)base.ObjValue.ToString();
         }
 
         protected override object createFromString(string text)
         {
-            throw new NotImplementedException();
+            return long.Parse(text);
         }
 
         public long AsLong()
