@@ -25,6 +25,8 @@ using Sempi5.Domain.AllergyEntity;
 using Sempi5.Domain.MedicalRecordEntity;
 using Sempi5.Domain.AppointmentEntity;
 using Sempi5.Infrastructure.AppointmentRepository;
+using Sempi5.Domain.RoomTypeEntity;
+using Sempi5.Infrastructure.RoomTypeRepository;
 
 namespace Sempi5
 {
@@ -278,6 +280,7 @@ namespace Sempi5
             try
             {
                 await SeedSpecializationsAsync(services);
+                await SeedRoomTypes(services);
                 await SeedUsersAsync(services);
                 await SeedOperationTypeAsync(services);
                 await SeedRooms(services);
@@ -289,6 +292,23 @@ namespace Sempi5
             }
         }
 
+        private static async Task SeedRoomTypes(IServiceProvider services)
+        {
+            var roomTypeRep = services.GetRequiredService<IRoomTypeRepository>();
+            var unitOfWork = services.GetRequiredService<IUnitOfWork>();
+            if ((await roomTypeRep.GetAllAsync()).Count > 0)
+            {
+                return;
+            }
+            var roomType1 = new RoomType ("Operating Room");
+            var roomType2 = new RoomType ("Intensive Care Unit");
+            var roomType3 = new RoomType ("Consultation Room");
+            await roomTypeRep.AddAsync(roomType1);
+            await roomTypeRep.AddAsync(roomType2);
+            await roomTypeRep.AddAsync(roomType3);
+            await unitOfWork.CommitAsync();
+        }
+
         private static async Task SeedPlanning(IServiceProvider services)
         {
             var roomRep = services.GetRequiredService<IRoomRepository>();
@@ -298,7 +318,7 @@ namespace Sempi5
             var patientRep = services.GetRequiredService<IPatientRepository>();
             var operationTypeRep = services.GetRequiredService<IOperationTypeRepository>();
             var SystemUserRep = services.GetRequiredService<IUserRepository>();
-
+            var roomTypeRep = services.GetRequiredService<IRoomTypeRepository>();
 
             var unitOfWork = services.GetRequiredService<IUnitOfWork>();
 
@@ -317,7 +337,7 @@ namespace Sempi5
                 AssignedEquipment = new AssignedEquipment(new List<string> { "Bisturi", "Scalpels" }),
                 RoomStatus = RoomStatus.Available,
                 Slots = new List<Slot>(),
-                Type = RoomType.OperatingRoom
+                Type = await roomTypeRep.GetByNameAsync("Operating Room")
             };
             await roomRep.AddAsync(room9);
             await unitOfWork.CommitAsync();
@@ -441,6 +461,7 @@ namespace Sempi5
         private static async Task SeedRooms(IServiceProvider services)
         {
             var roomRep = services.GetRequiredService<IRoomRepository>();
+            var roomTypeRep = services.GetRequiredService<IRoomTypeRepository>();
             var unitOfWork = services.GetRequiredService<IUnitOfWork>();
 
             if ((await roomRep.GetAllAsync()).Count > 0)
@@ -457,7 +478,7 @@ namespace Sempi5
                     new Slot("21-10-2025T14:00:00 - 21-10-2025T16:00:00"),
                     new Slot("21-10-2025T18:00:00 - 21-10-2025T20:00:00")
                 },
-                Type = RoomType.OperatingRoom
+                Type = await roomTypeRep.GetByNameAsync("Operating Room")
             };
 
             var room2 = new Room {
@@ -468,7 +489,7 @@ namespace Sempi5
                     new Slot("22-10-2025T09:00:00 - 22-10-2025T11:00:00"),
                     new Slot("22-10-2025T14:00:00 - 22-10-2025T16:00:00")
                 },
-                Type = RoomType.OperatingRoom
+                Type = await roomTypeRep.GetByNameAsync("Operating Room")
             };
 
             var room3 = new Room {
@@ -479,7 +500,7 @@ namespace Sempi5
                     new Slot("23-10-2025T09:00:00 - 23-10-2025T11:00:00"),
                     new Slot("23-10-2025T14:00:00 - 23-10-2025T16:00:00")
                 },
-                Type = RoomType.OperatingRoom
+                Type = await roomTypeRep.GetByNameAsync("Operating Room")
             };
 
             var room4 = new Room {
@@ -490,7 +511,7 @@ namespace Sempi5
                     new Slot("24-10-2025T09:00:00 - 24-10-2025T11:00:00"),
                     new Slot("24-10-2025T14:00:00 - 24-10-2025T16:00:00")
                 },
-                Type = RoomType.OperatingRoom
+                Type = await roomTypeRep.GetByNameAsync("Operating Room")
             };
 
             var room5 = new Room {
@@ -501,7 +522,7 @@ namespace Sempi5
                     new Slot("25-10-2025T09:00:00 - 25-10-2025T11:00:00"),
                     new Slot("25-10-2025T14:00:00 - 25-10-2025T16:00:00")
                 },
-                Type = RoomType.OperatingRoom
+                Type = await roomTypeRep.GetByNameAsync("Operating Room")
             };
 
             var room6 = new Room {
@@ -512,7 +533,7 @@ namespace Sempi5
                     new Slot("26-10-2025T09:00:00 - 26-10-2025T11:00:00"),
                     new Slot("26-10-2025T14:00:00 - 26-10-2025T16:00:00")
                 },
-                Type = RoomType.OperatingRoom
+                Type = await roomTypeRep.GetByNameAsync("Operating Room")
             };
 
             var room7 = new Room {
@@ -523,7 +544,7 @@ namespace Sempi5
                     new Slot("27-10-2025T09:00:00 - 27-10-2025T11:00:00"),
                     new Slot("27-10-2025T14:00:00 - 27-10-2025T16:00:00")
                 },
-                Type = RoomType.OperatingRoom
+                Type = await roomTypeRep.GetByNameAsync("Operating Room")
             };
 
             var room8 = new Room {
@@ -534,7 +555,7 @@ namespace Sempi5
                     new Slot("28-10-2025T09:00:00 - 28-10-2025T11:00:00"),
                     new Slot("28-10-2025T14:00:00 - 28-10-2025T16:00:00")
                 },
-                Type = RoomType.OperatingRoom
+                Type = await roomTypeRep.GetByNameAsync("Operating Room")
             };
             
             await roomRep.AddAsync(room1);
@@ -697,6 +718,9 @@ namespace Sempi5
 
             builder.Services.AddTransient<IOperationTypeRepository, OperationTypeRepository>();
             //services.AddTransient<OperationTypeService>();
+
+            builder.Services.AddTransient<IRoomTypeRepository, RoomTypeRepository>();
+            builder.Services.AddTransient<RoomTypeService>();
 
             builder.Services.AddTransient<IRoomRepository, RoomRepository>();
             builder.Services.AddTransient<RoomService>();
