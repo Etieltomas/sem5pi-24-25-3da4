@@ -89,7 +89,10 @@ namespace Sempi5.Domain.AppointmentEntity
                 {
                     _unitOfWork.MarkAsModified(staff);
                 }
-               
+                
+                if (appointmentDTO.Room != null)
+                    _unitOfWork.MarkAsModified(oldRoom);
+
                _unitOfWork.MarkAsModified(appointment.Room);
 
                 await _unitOfWork.CommitAsync();
