@@ -22,11 +22,37 @@
 :- http_handler('/obtain_better', obtain_better, [method(post)]).
 
 % Inicia o servidor na porta especificada
-start_server(Port) :-
-    http_server(http_dispatch, [port(Port)]).
+start_server :-
+    [config],
+    
+    % Read configuration values
+    server_protocol(Protocol),
+    server_port(Port),
+    
+    % Determine whether to start HTTP or HTTPS based on the protocol in the config file
+    (   Protocol = https
+    ->  start_https_server(Port)
+    ;   http_server(http_dispatch, [port(Port)])
+    ).
+
+% HTTPS server setup
+start_https_server(Port) :-
+    % Start HTTPS server with SSL configuration
+    certificate_file(CertFile),
+    key_file(KeyFile),
+    http_server(http_dispatch, 
+                [ port(Port),
+                  ssl([
+                      certificate_file(CertFile),
+                      key_file(KeyFile),
+                      password(''),
+                      cipher_list('DEFAULT')
+                  ])
+                ]).
 
 % Para o servidor
-stop_server(Port) :-
+stop_server :-
+    server_port(Port),
     http_stop_server(Port, []).
 
 % Handler para a rota "/obtain_better"
