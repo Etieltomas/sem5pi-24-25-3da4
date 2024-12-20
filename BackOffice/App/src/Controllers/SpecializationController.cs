@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sempi5.Domain.SpecializationEntity;
 
@@ -48,6 +49,7 @@ namespace Sempi5.Controllers
 
         // 7.2.13: Atualizar uma especialização
         [HttpPatch("update/{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateSpecialization(long id, [FromBody] SpecializationUpdateDTO dto)
         {
             if (id <= 0)
