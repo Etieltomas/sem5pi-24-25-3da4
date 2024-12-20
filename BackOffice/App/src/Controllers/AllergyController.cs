@@ -18,6 +18,7 @@ namespace Sempi5.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<AllergyDTO>> AddAllergy([FromBody] AllergyDTO allergy)
         {
             var result = await _service.AddAllergy(allergy);
