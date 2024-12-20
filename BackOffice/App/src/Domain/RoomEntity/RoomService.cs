@@ -17,7 +17,7 @@ namespace Sempi5.Domain.RoomEntity
 
         public async Task<List<RoomDTO>> GetAllRooms()
         {
-            var list = await _repo.GetAllAsync();  
+            var list = await _repo.GetAllRooms();  
 
             if (list == null)
             {
@@ -32,13 +32,13 @@ namespace Sempi5.Domain.RoomEntity
 
         public async Task<RoomDTO> GetRoomByID(RoomID roomID)
         {
-           var room = await _repo.GetByIdAsync(roomID);
+           var room = await _repo.GetRoomByID(roomID);
            return ConvertToDTO(room);
         }
 
         public async Task<string> GetRoomOperatingStatus(RoomID roomID)
         {
-            var room = await _repo.GetByIdAsync(roomID);
+            var room = await _repo.GetRoomByID(roomID);
             return room.RoomStatus.ToString();
         }
 
