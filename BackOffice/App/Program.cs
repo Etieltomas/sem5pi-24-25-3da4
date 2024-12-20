@@ -343,7 +343,7 @@ namespace Sempi5
             await unitOfWork.CommitAsync();
 
             var specialization = new Specialization{Code = "0000", Name = "Orthopaedist"};
-            var specialization1 = new Specialization{Code = "0001", Name = "anaesthetist"};
+            var specialization1 = new Specialization{Code = "0001", Name = "Anaesthetist"};
             await specRepo.AddAsync(specialization);
             await specRepo.AddAsync(specialization1);
             await unitOfWork.CommitAsync();

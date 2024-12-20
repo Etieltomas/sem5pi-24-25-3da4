@@ -46,16 +46,42 @@ namespace Sempi5.Domain.SpecializationEntity
             return specialization?.Name;
         }
 
+        // Obtter especialização por Nome
+        public async Task<List<SpecializationDTO>> SearchSpecializations(string? name, string? code,
+                                                                string? description, int page, int pageSize)
+        {
+            var result = await _repo.SearchSpecializations(name, code, description, page, pageSize);
+            return result.ConvertAll(MapToDTO);
+        }
+
         // Atualizar uma especialização
-        public async Task<bool> UpdateSpecialization(long id, string newName, string newCode, string? newDescription)
+        public async Task<bool> UpdateSpecialization(long id, SpecializationUpdateDTO dto)
         {
             var specialization = await _repo.GetByIdAsync(new SpecializationID(id));
             if (specialization == null) return false;
 
-            specialization.Update(newName, newCode, newDescription);
+            if (!string.IsNullOrEmpty(dto.Name))
+            {
+                specialization.Name = dto.Name;
+            }
+            if (!string.IsNullOrEmpty(dto.Description))
+            {
+                specialization.Description = dto.Description;
+            }
 
             await _unitOfWork.CommitAsync();
             return true;
+        }
+
+        private SpecializationDTO MapToDTO(Specialization specialization)
+        {
+            return new SpecializationDTO
+            {
+                Id = specialization.Id.AsLong(),
+                Name = specialization.Name,
+                Code = specialization.Code,
+                Description = specialization.Description
+            };
         }
     }
 }

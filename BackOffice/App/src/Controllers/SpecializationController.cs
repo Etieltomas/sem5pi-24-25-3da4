@@ -47,21 +47,41 @@ namespace Sempi5.Controllers
         }
 
         // 7.2.13: Atualizar uma especialização
-        [HttpPut("{id:long}")]
+        [HttpPatch("update/{id}")]
         public async Task<IActionResult> UpdateSpecialization(long id, [FromBody] SpecializationUpdateDTO dto)
         {
-            if (string.IsNullOrEmpty(dto.Name) || string.IsNullOrEmpty(dto.Code))
+            if (id <= 0)
             {
-                return BadRequest("Specialization name and code are required.");
+                return BadRequest("Invalid specialization ID.");
             }
 
-            var updated = await _service.UpdateSpecialization(id, dto.Name, dto.Code, dto.Description);
+            var updated = await _service.UpdateSpecialization(id, dto);
             if (!updated)
             {
                 return NotFound("Specialization not found.");
             }
 
             return NoContent();
+        }
+
+        // 7.2.15: Obter lista de especializações
+        [HttpGet("list")]
+        public async Task<IActionResult> SearchSpecializations(
+            [FromQuery] string? name,
+            [FromQuery] string? code,
+            [FromQuery] string? description,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10
+        )
+        {
+            var spec = await _service.SearchSpecializations(name, code, description, page, pageSize);
+
+            if (spec == null || spec.Count == 0)
+            {
+                return NotFound("No specializations found with the given criteria.");
+            }
+
+            return Ok(spec);
         }
     }
 }

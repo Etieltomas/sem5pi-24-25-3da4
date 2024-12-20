@@ -19,5 +19,27 @@ namespace Sempi5.Infrastructure.SpecializationRepository
 
             return await _context.Specializations.FirstOrDefaultAsync(rt => rt.Name.Equals(name));
         }
+
+        public Task<List<Specialization>> SearchSpecializations(string? name, string? code, string? description, int page, int pageSize)
+        {
+            var query = _context.Specializations.AsQueryable();
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                query = query.Where(rt => rt.Name.Contains(name));
+            }
+
+            if (!string.IsNullOrEmpty(code))
+            {
+                query = query.Where(rt => rt.Code.Equals(code));
+            }
+
+            if (!string.IsNullOrEmpty(description) )
+            {
+                query = query.Where(rt => rt.Description != null && rt.Description.Contains(description));
+            }
+
+            return query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+        }
     }
 }
