@@ -18,7 +18,19 @@ namespace Sempi5.Infrastructure.RoomRepository
             _context = context;
         }
 
-        
+        public async Task<List<Room>> GetAllRooms()
+        {
+            return await _context.Rooms
+                .Include(room => room.Type)
+                .ToListAsync();
+        }        
+
+        public async Task<Room> GetRoomByID(RoomID room)
+        {
+            return await _context.Rooms
+                .Include(room => room.Type)
+                .FirstOrDefaultAsync(room => room.Id == room.Id);
+        }
     }
 
 }
