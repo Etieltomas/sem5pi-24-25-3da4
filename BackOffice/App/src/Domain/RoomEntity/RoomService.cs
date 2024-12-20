@@ -50,7 +50,7 @@ namespace Sempi5.Domain.RoomEntity
                 AssignedEquipment = room.AssignedEquipment.equipment.Select(e => e.ToString()).ToList(), 
                 RoomStatus = room.RoomStatus.ToString(),  
                 Slots = room.Slots.Select(slot => slot.ToString()).ToList(), 
-                Type = room.Type.ToString() 
+                Type = room.Type.Name
             };
         }
     }
