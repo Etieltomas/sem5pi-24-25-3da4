@@ -25,11 +25,11 @@ namespace Sempi5.Infrastructure.RoomRepository
                 .ToListAsync();
         }        
 
-        public async Task<Room> GetRoomByID(RoomID room)
+        public async Task<Room> GetRoomByID(RoomID roomId)
         {
             return await _context.Rooms
                 .Include(room => room.Type)
-                .FirstOrDefaultAsync(room => room.Id == room.Id);
+                .FirstOrDefaultAsync(r => r.Id.Equals(roomId));
         }
     }
 
