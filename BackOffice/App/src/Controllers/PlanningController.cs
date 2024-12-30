@@ -30,6 +30,11 @@ public class PlanningController : ControllerBase
             
             var operationRequests = await _operationRequestRepository.GetAllOperationRequestsNotScheduled();
 
+            if (operationRequests.Count == 0)
+            {
+                return StatusCode(500, "No operations to schedule");
+            }
+
             var planning = await _planningService.ScheduleOperations(day, roomId, operationRequests);
             
             await UpdateScheduleRoom(planning.AgendaRoom, roomId, day);
