@@ -25,6 +25,16 @@ namespace Sempi5.Infrastructure
             .Include(r => r.OperationType).ToListAsync();
         }
 
+        public async Task<List<OperationRequest>> GetAllOperationRequestsNotScheduled()
+        {
+            return await _context.OperationRequests
+            .Include(r => r.Staff)
+            .Include(r => r.Patient)
+            .Include(r => r.OperationType)
+            .Where(r => !r.Status.Value.ToLower().Equals("scheduled"))
+            .ToListAsync();
+        }
+
         public async Task<OperationRequest> GetOperationRequestById(OperationRequestID id)
         {
             

@@ -20,7 +20,7 @@ public class PlanningController : ControllerBase
     }
 
     [HttpGet("obtain_better")]
-    //[Authorize(Roles = "doctor")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> ObtainBetter()
     {
         try
@@ -28,7 +28,7 @@ public class PlanningController : ControllerBase
             string day = "20251010";
             long roomId = 9;
             
-            var operationRequests = await _operationRequestRepository.GetAllOperationRequests();
+            var operationRequests = await _operationRequestRepository.GetAllOperationRequestsNotScheduled();
 
             var planning = await _planningService.ScheduleOperations(day, roomId, operationRequests);
             
