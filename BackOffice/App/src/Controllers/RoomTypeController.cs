@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sempi5.Domain.RoomEntity;
 using Sempi5.Domain.RoomTypeEntity;
@@ -16,6 +17,7 @@ namespace Sempi5.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]  
         public async Task<ActionResult<RoomTypeDTO>> AddRoomType([FromBody] RoomTypeDTO newRoomTypeDto)
         {
             if (newRoomTypeDto == null || string.IsNullOrWhiteSpace(newRoomTypeDto.Name))
@@ -34,6 +36,7 @@ namespace Sempi5.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]  
         public async Task<ActionResult<IEnumerable<RoomTypeDTO>>> GetAllRoomTypes()
         {
             var roomTypes = await _service.GetAllRoomTypes();
