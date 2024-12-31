@@ -27,6 +27,7 @@ using Sempi5.Domain.AppointmentEntity;
 using Sempi5.Infrastructure.AppointmentRepository;
 using Sempi5.Domain.RoomTypeEntity;
 using Sempi5.Infrastructure.RoomTypeRepository;
+using Sempi5.Domain.MedicalConditionEntity;
 
 namespace Sempi5
 {
@@ -726,6 +727,12 @@ namespace Sempi5
             builder.Services.AddTransient<RoomService>();
 
             builder.Services.AddHttpClient<AllergyService>()
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true
+                });
+
+            builder.Services.AddHttpClient<MedicalConditionService>()
             .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
                 {
                     ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true
