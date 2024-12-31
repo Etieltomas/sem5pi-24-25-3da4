@@ -17,6 +17,7 @@ namespace Sempi5.Controllers
 
         // 7.2.12: Listar todas as especializações
         [HttpGet]
+        [Authorize(Roles = "Admin")]  
         public async Task<ActionResult<IEnumerable<string>>> GetAllSpecializations()
         {
             return Ok(await _service.GetAllSpecializations());
@@ -24,6 +25,7 @@ namespace Sempi5.Controllers
 
         // 7.2.11: Adicionar nova especialização
         [HttpPost]
+        [Authorize(Roles = "Admin")]  
         public async Task<ActionResult<string>> AddSpecialization([FromBody] SpecializationCreateDTO dto)
         {
             if (string.IsNullOrEmpty(dto.Name) || string.IsNullOrEmpty(dto.Code))
@@ -37,6 +39,7 @@ namespace Sempi5.Controllers
 
         // 7.2.12: Buscar especialização por ID
         [HttpGet("{id:long}")]
+        [Authorize(Roles = "Admin")]  
         public async Task<ActionResult<string>> GetSpecializationById(long id)
         {
             var specialization = await _service.GetSpecializationById(id);
@@ -68,6 +71,7 @@ namespace Sempi5.Controllers
 
         // 7.2.15: Obter lista de especializações
         [HttpGet("list")]
+        [Authorize(Roles = "Admin")]  
         public async Task<IActionResult> SearchSpecializations(
             [FromQuery] string? name,
             [FromQuery] string? code,
