@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Sempi5.Domain.PatientEntity;
 using Sempi5.Infrastructure.PatientRepository;
+using System.Text.Json.Serialization;
 
 namespace Sempi5.Domain.MedicalRecordEntity
 {
@@ -13,29 +14,30 @@ namespace Sempi5.Domain.MedicalRecordEntity
         private readonly string base_url;
         private readonly HttpClient _httpClient;
         private IPatientRepository _patientRepository;
+        private readonly ILogger<MedicalRecordService> _logger;
 
         // Constructor with HttpClient dependency injection
-        public MedicalRecordService(IPatientRepository patientRepository, IConfiguration configuration, HttpClient httpClient)
+        public MedicalRecordService(IPatientRepository patientRepository, IConfiguration configuration, HttpClient httpClient, ILogger<MedicalRecordService> logger)
         {
             _configuration = configuration;
             _httpClient = httpClient;
             base_url = _configuration["IpAddresses:BackEnd2"] ?? "http://localhost:3000";
             _patientRepository = patientRepository;
+            _logger = logger;
         }
 
         // Method to create a new medical record
-        public async Task<MedicalRecordDTO> AddMedicalRecord(PatientDTO patientDTO)
-        {
-            var medicalRecordDTO = new MedicalRecordDTO
-            {
-                Patient = patientDTO.Email,
-                RecordLine = new List<RecordLineDTO>()
-            };
-            
+        public async Task<MedicalRecordDTO> AddMedicalRecord(MedicalRecordDTO medicalRecordDTO)
+        {      
             var url = base_url+"/api/medicalRecord";
 
+            var options = new JsonSerializerOptions
+            {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            };
+
             // Make the POST request
-            var response = await _httpClient.PostAsync(url, new StringContent(JsonSerializer.Serialize(medicalRecordDTO), Encoding.UTF8, "application/json"));
+            var response = await _httpClient.PostAsync(url, new StringContent(JsonSerializer.Serialize(medicalRecordDTO, options), Encoding.UTF8, "application/json"));
 
             // Deserialize the JSON response
             var json = await response.Content.ReadAsStringAsync();
@@ -43,7 +45,7 @@ namespace Sempi5.Domain.MedicalRecordEntity
             return JsonSerializer.Deserialize<MedicalRecordDTO>(json);
         }
 
-        // Method to get all medical recorsd as a list of DTOs
+        // Method to get all medical records as a list of DTOs
         public async Task<List<MedicalRecordDTO>> GetAllMedicalRecords()
         {
             var url = base_url+"/api/medicalRecord";
@@ -131,19 +133,98 @@ namespace Sempi5.Domain.MedicalRecordEntity
 
             return medicalRecord;
         }
-
-        public async Task<MedicalRecordDTO> UpdateRecord(string patientEmail, List<RecordLineDTO> recordLines)
+        public async Task<RecordLineDTO> GetEntryMedicalRecord(string idMedicalRecordLine)
         {
-            var url = base_url+"/api/medicalRecord/edit/"+patientEmail;
+            var url = base_url + "/api/medicalRecord/entry/"+idMedicalRecordLine;
 
-            // Make the PATCH request
-            var response = await _httpClient.PutAsync(url, new StringContent(JsonSerializer.Serialize(recordLines), Encoding.UTF8, "application/json"));
+            // Fazer a requisição GET
+            var response = await _httpClient.GetAsync(url);
+
+            // Verificar se a resposta foi bem-sucedida
+            if (!response.IsSuccessStatusCode)
+            {
+                return null;
+            }
+
+            // Deserializar a resposta JSON
+            var json = await response.Content.ReadAsStringAsync();
+
+            // Deserializar o objeto RecordLineDTO
+            var medicalRecordLine = JsonSerializer.Deserialize<RecordLineDTO>(json);
+
+            return medicalRecordLine;
+        }
+
+        /*public async Task<RecordLineDTO> Update(RecordLineDTO recordLineDTO, string idMedicalRecordLine)
+        {
+            var url = base_url + "/api/medicalRecord/entry/" + idMedicalRecordLine + "/update";
+
+            var options = new JsonSerializerOptions
+            {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            };
+
+            _logger.LogInformation(recordLineDTO.ToString());
+
+            // Criar um objeto anônimo com o campo RecordLine como um array
+            var payload = new
+            {
+                RecordLine = new[] { recordLineDTO }
+            };
+
+            _logger.LogInformation("----------------" + payload.ToString());
+
+            var content = new StringContent(JsonSerializer.Serialize(payload, options), Encoding.UTF8, "application/json");
+
+            _logger.LogInformation("Sending PATCH request to URL: {url}", url);
+            _logger.LogInformation("Request content: {content}", content);
+
+            try
+            {
+                var response = await _httpClient.PatchAsync(url, content);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    _logger.LogError("PATCH request failed with status code: {statusCode}", response.StatusCode);
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    _logger.LogError("Error response content: {errorContent}", errorContent);
+                    return null;
+                }
+
+                // Deserializar a resposta JSON
+                var json = await response.Content.ReadAsStringAsync();
+
+                _logger.LogInformation("Response content: {json}", json);
+
+                // Deserializar o objeto RecordLineDTO
+                var recordLine = JsonSerializer.Deserialize<RecordLineDTO>(json);
+
+                return recordLine;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Exception occurred while sending PATCH request: {message}", ex.Message);
+                _logger.LogError("Stack Trace: {stackTrace}", ex.StackTrace);
+                return null;
+            }
+        }*/
+
+        public async Task<MedicalRecordDTO> Update(MedicalRecordDTO medicalRecordDTO, string idMedicalRecordLine)
+        {
+            var url = base_url + "/api/medicalRecord/entry/" + idMedicalRecordLine + "/update";
+
+            var options = new JsonSerializerOptions
+            {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            };
+
+            // Make the POST request
+            var response = await _httpClient.PatchAsync(url, new StringContent(JsonSerializer.Serialize(medicalRecordDTO, options), Encoding.UTF8, "application/json"));
 
             // Deserialize the JSON response
             var json = await response.Content.ReadAsStringAsync();
-            var medicalRecord = JsonSerializer.Deserialize<MedicalRecordDTO>(json);
-
-            return medicalRecord;
+ 
+            return JsonSerializer.Deserialize<MedicalRecordDTO>(json);
         }
     }
 }
