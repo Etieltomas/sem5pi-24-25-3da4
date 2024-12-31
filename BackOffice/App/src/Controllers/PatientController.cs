@@ -55,7 +55,7 @@ namespace Sempi5.Controllers
         {
             var patient = await _service.AddPatient(PatientDTO);
 
-            await _MRservice.AddMedicalRecord(PatientDTO);
+            //await _MRservice.AddMedicalRecord(PatientDTO);
 
             return CreatedAtAction(nameof(GetPatient), new { id = patient.MedicalRecordNumber }, patient);
         }
@@ -106,7 +106,7 @@ namespace Sempi5.Controllers
         }
 
         [HttpGet("search")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Doctor,Admin")]
         public async Task<ActionResult<List<PatientDTO>>> SearchPatients(
             [FromQuery] string? name,
             [FromQuery] string? email,
@@ -114,7 +114,7 @@ namespace Sempi5.Controllers
             [FromQuery] string? medicalRecordNumber,
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10
-        )
+        )        
         {
             var patients = await _service.SearchPatients(name, email, dateOfBirth, medicalRecordNumber, page, pageSize);
 
