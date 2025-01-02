@@ -130,6 +130,7 @@ namespace Sempi5.Domain.AppointmentEntity
             if (available)
             {
                 await _repo.AddAsync(appointment);
+                appointment.OperationRequest.Staffs = staffs.Select(s => s.Id).ToList();
                 await _unitOfWork.CommitAsync();
                 return await MapToDTO(appointment);
             }
@@ -213,6 +214,10 @@ namespace Sempi5.Domain.AppointmentEntity
                 room.Slots.Add(slot);  
             }
 
+            if (room.Slots.Any(s => s.ToString() == newSlotString))
+            {
+                _unitOfWork.MarkAsModified(room);
+            }
 
             // Create lists to store new staff member slots and old slots to remove
             List<AvailabilitySlot> staffSlotsToAdd = new List<AvailabilitySlot>();
@@ -250,8 +255,14 @@ namespace Sempi5.Domain.AppointmentEntity
                 var newStaffSlotString = staffStart.ToString("dd-MM-yyyyTHH:mm:ss") + " - " + staffEnd.ToString("dd-MM-yyyyTHH:mm:ss");
                 //staffSlotsToAdd.Add(new AvailabilitySlot(newStaffSlotString));
                 staffMember.AvailabilitySlots.Add(new AvailabilitySlot(newStaffSlotString));
+
+                if (staffMember.AvailabilitySlots.Any(s => s.ToString() == newStaffSlotString))
+                {
+                    _unitOfWork.MarkAsModified(staffMember);
+                }
             }
 
+            await _unitOfWork.CommitAsync();
             return true;
         }
 
@@ -283,15 +294,15 @@ namespace Sempi5.Domain.AppointmentEntity
 
             _logger.Information("Mapping appointmentDTO to Appointment {@AppointmentDTO}", appointmentDTO);
 
-    DateTime dateOperation;
-    // Corrigir o formato da string de data/hora
-    string correctedDateOperation = appointmentDTO.DateOperation.Replace("T:", ":");
+            DateTime dateOperation;
+            // Corrigir o formato da string de data/hora
+            string correctedDateOperation = appointmentDTO.DateOperation.Replace("T:", ":");
 
-    if (!DateTime.TryParseExact(correctedDateOperation, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out dateOperation))
-    {
-        _logger.Error("Invalid date format for DateOperation: {DateOperation}", appointmentDTO.DateOperation);
-        throw new FormatException($"Invalid date format for DateOperation: {appointmentDTO.DateOperation}");
-    }
+            if (!DateTime.TryParseExact(correctedDateOperation, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out dateOperation))
+            {
+                _logger.Error("Invalid date format for DateOperation: {DateOperation}", appointmentDTO.DateOperation);
+                throw new FormatException($"Invalid date format for DateOperation: {appointmentDTO.DateOperation}");
+            }
 
             return new Appointment
             {
