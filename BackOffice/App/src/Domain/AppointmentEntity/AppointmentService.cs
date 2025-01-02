@@ -129,8 +129,16 @@ namespace Sempi5.Domain.AppointmentEntity
 
             if (available)
             {
-                await _repo.AddAsync(appointment);
+                foreach (var staff in staffs)
+                {
+                    _unitOfWork.MarkAsModified(staff);
+                }
+                _unitOfWork.MarkAsModified(appointment.Room);
+
                 appointment.OperationRequest.Staffs = staffs.Select(s => s.Id).ToList();
+
+                await _repo.AddAsync(appointment);
+            
                 await _unitOfWork.CommitAsync();
                 return await MapToDTO(appointment);
             }
@@ -214,9 +222,9 @@ namespace Sempi5.Domain.AppointmentEntity
                 room.Slots.Add(slot);  
             }
 
-            if (room.Slots.Any(s => s.ToString() == newSlotString))
+            if (!room.Slots.Any(s => s.ToString() == newSlotString))
             {
-                _unitOfWork.MarkAsModified(room);
+                return false;
             }
 
             // Create lists to store new staff member slots and old slots to remove
@@ -256,9 +264,9 @@ namespace Sempi5.Domain.AppointmentEntity
                 //staffSlotsToAdd.Add(new AvailabilitySlot(newStaffSlotString));
                 staffMember.AvailabilitySlots.Add(new AvailabilitySlot(newStaffSlotString));
 
-                if (staffMember.AvailabilitySlots.Any(s => s.ToString() == newStaffSlotString))
+                if (!staffMember.AvailabilitySlots.Any(s => s.ToString() == newStaffSlotString))
                 {
-                    _unitOfWork.MarkAsModified(staffMember);
+                    return false;
                 }
             }
 
