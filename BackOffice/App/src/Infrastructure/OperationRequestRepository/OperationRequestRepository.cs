@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Mono.TextTemplating;
 using Sempi5.Domain.OperationRequestEntity;
+using Sempi5.Domain.StaffEntity;
 using Sempi5.Infrastructure.Databases;
 using Sempi5.Infrastructure.Shared;
 using System.Collections.Generic;
@@ -11,10 +13,12 @@ namespace Sempi5.Infrastructure
     {
 
         private readonly DataBaseContext _context;
+        private readonly Serilog.ILogger _logger;
         
-        public OperationRequestRepository(DataBaseContext context) : base(context.OperationRequests)
+        public OperationRequestRepository(DataBaseContext context, Serilog.ILogger logger) : base(context.OperationRequests)
         {
             _context = context;
+            _logger = logger;
         }
         
         public async Task<List<OperationRequest>> GetAllOperationRequests()
@@ -73,8 +77,16 @@ namespace Sempi5.Infrastructure
             ).Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
         }
 
-    
-        
+public async Task<List<OperationRequest>> SearchOperationRequestsByStaff(StaffID id)
+{
+    return await _context.OperationRequests
+        .Include(r => r.Staff)
+        .Include(r => r.Patient)
+        .Include(r => r.OperationType)
+        .Where(r => r.Staff.Id.Equals(id)) // Filtra pelo ID do Staff
+        .ToListAsync(); // Obtém a lista assincronamente
+}
+
         /*
         public async Task RemoveAsync(OperationRequest operationRequest)
         {
