@@ -11,10 +11,12 @@ namespace Sempi5.Controllers
     {
 
         private readonly AppointmentService _service;
+        private readonly ILogger<OperationRequestController> _logger;
 
-        public AppointmentController(AppointmentService service)
+        public AppointmentController(AppointmentService service, ILogger<OperationRequestController> logger)
         {
             _service = service;
+            _logger = logger;
         }
 
         [HttpGet("doctor/{doctorEmail}")]
@@ -37,6 +39,20 @@ namespace Sempi5.Controllers
         {
 
             var appointment = await _service.EditAppointment(appointmentDTO, id);
+            if (appointment == null)
+            {
+                return StatusCode(501);
+            }
+
+            return Ok(appointment);
+        }
+
+        [HttpPost("create")]
+        [Authorize(Roles = "Staff, Doctor")]
+        public async Task<IActionResult> CreateAppointment([FromBody] AppointmentDTO appointmentDTO)
+        {
+
+            var appointment = await _service.CreateAppointment(appointmentDTO);
             if (appointment == null)
             {
                 return StatusCode(501);
