@@ -5,6 +5,8 @@ using Sempi5.Domain.RoomEntity;
 using Sempi5.Domain.Shared;
 using Sempi5.Domain.StaffEntity;
 using Sempi5.Infrastructure.Shared;
+using Sempi5.Domain.OperationRequestEntity;
+using Mono.TextTemplating;
 
 
 namespace Sempi5.Domain.AppointmentEntity
@@ -13,15 +15,20 @@ namespace Sempi5.Domain.AppointmentEntity
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IAppointmentRepository _repo;
+        private readonly IOperationRequestRepository _operationRequestRepo;
         private readonly IStaffRepository _staffRepo;
         private readonly IRoomRepository _roomRepo;
+        private readonly Serilog.ILogger _logger;
 
-        public AppointmentService(IAppointmentRepository repo, IUnitOfWork unitOfWork, IStaffRepository staffRepo, IRoomRepository roomRepo)
+
+        public AppointmentService(IAppointmentRepository repo, IUnitOfWork unitOfWork, IStaffRepository staffRepo, IRoomRepository roomRepo, IOperationRequestRepository operationRequestRepository, Serilog.ILogger logger)
         {
             this._unitOfWork = unitOfWork;
             this._repo = repo;
             this._staffRepo = staffRepo;
             this._roomRepo = roomRepo;
+            this._operationRequestRepo = operationRequestRepository;
+            _logger = logger;
         }
 
         public async Task<List<AppointmentDTO>> GetAppointmentsByDoctor(string doctorEmail)
@@ -95,6 +102,34 @@ namespace Sempi5.Domain.AppointmentEntity
 
                _unitOfWork.MarkAsModified(appointment.Room);
 
+                await _unitOfWork.CommitAsync();
+                return await MapToDTO(appointment);
+            }
+
+            return null;
+        }
+
+        public async Task<AppointmentDTO> CreateAppointment(AppointmentDTO appointmentDTO)
+        {
+
+            _logger.Information("Creating appointment {@AppointmentDTO}", appointmentDTO);
+
+            List<Staff> staffs = new List<Staff>();
+            if(appointmentDTO.Team != null)
+            {
+                foreach (var staffEmail in appointmentDTO.Team)
+                {
+                    staffs.Add(await _staffRepo.GetStaffMemberByEmail(staffEmail));
+                }
+            }
+
+            Appointment appointment = MapFromDTO(appointmentDTO);
+
+            bool available = await CheckAppointmentAvailability(appointment, staffs, appointment.Room);
+
+            if (available)
+            {
+                await _repo.AddAsync(appointment);
                 await _unitOfWork.CommitAsync();
                 return await MapToDTO(appointment);
             }
@@ -238,6 +273,33 @@ namespace Sempi5.Domain.AppointmentEntity
                 OperationRequest = appointment.OperationRequest.Id.AsLong(),
                 Room = appointment.Room.Id.AsLong(),
                 Team = staffs.Select(s => s.Email.ToString()).ToList()
+            };
+        }
+
+        private Appointment MapFromDTO(AppointmentDTO appointmentDTO)
+        {
+            var operationRequest = _operationRequestRepo.GetOperationRequestById(new OperationRequestID(appointmentDTO.OperationRequest.Value)).Result;
+            var room = _roomRepo.GetByIdAsync(new RoomID(appointmentDTO.Room.Value)).Result;
+
+            _logger.Information("Mapping appointmentDTO to Appointment {@AppointmentDTO}", appointmentDTO);
+
+    DateTime dateOperation;
+    // Corrigir o formato da string de data/hora
+    string correctedDateOperation = appointmentDTO.DateOperation.Replace("T:", ":");
+
+    if (!DateTime.TryParseExact(correctedDateOperation, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out dateOperation))
+    {
+        _logger.Error("Invalid date format for DateOperation: {DateOperation}", appointmentDTO.DateOperation);
+        throw new FormatException($"Invalid date format for DateOperation: {appointmentDTO.DateOperation}");
+    }
+
+            return new Appointment
+            {
+                AppointmentStatus = AppointmentStatusExtensions.FromString(appointmentDTO.AppointmentStatus),
+                DateOperation = new DateOperation(dateOperation), 
+                AppointmentType = AppointmentTypeExtensions.FromString(appointmentDTO.AppointmentType),
+                OperationRequest = operationRequest,
+                Room = room
             };
         }
     }
