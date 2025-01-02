@@ -5,10 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 public class OperationRequestController : ControllerBase
 {
     private readonly OperationRequestService _operationRequestService;
+    private readonly ILogger<OperationRequestController> _logger;
 
-    public OperationRequestController(OperationRequestService operationRequestService)
+    public OperationRequestController(OperationRequestService operationRequestService, ILogger<OperationRequestController> logger)
     {
         _operationRequestService = operationRequestService;
+        _logger = logger;
     }
 
     [HttpPost]
@@ -56,6 +58,25 @@ public class OperationRequestController : ControllerBase
         }
     }
     
+    [HttpGet]
+    [Route("staff/{email}")]
+    public async Task<ActionResult<List<OperationRequestDto>>> GetOperationRequestByStaff(string email)
+    {
+
+        try
+        {
+            var result =  await _operationRequestService.GetOperationRequestByStaff(email);
+            
+            _logger.LogInformation("Operation requests retrieved successfully.");
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
     [HttpGet]
     [Route("list")]
     public async Task<ActionResult> SearchOperationRequests([FromQuery] string? patientName, 
