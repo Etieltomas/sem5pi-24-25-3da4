@@ -140,7 +140,34 @@ public class OperationRequestService
         return operationRequests.Select(ConvertToDTO).ToList();
     }
 
+    public async Task<List<OperationRequestDto>> GetOperationRequestByStaff(string staffEmail)
+{
+    var staff = await _staffRepository.GetStaffMemberByEmail(staffEmail);
 
+    var staffId = staff.Id.Value;
+
+    var result = await _operationRequestRepository.SearchOperationRequestsByStaff(new StaffID(staffId));
+
+    var operationRequestDtos = new List<OperationRequestDto>();
+
+    try
+    {
+        foreach (var request in result)
+        {
+            // Convert each request to DTO and add to the list
+            var dto = ConvertToOperationRequestDto(request);
+            operationRequestDtos.Add(dto);
+        }
+
+        _logger.Information("Converted operation requests to DTOs: {@OperationRequestDtos}", operationRequestDtos);
+        return operationRequestDtos;
+    }
+    catch (Exception ex)
+    {
+        _logger.Error("Error converting operation requests to DTOs: {message}", ex.Message);
+        throw;
+    }
+}
 
     private OperationRequestCreateDTO ConvertToDTO(OperationRequest newOperationRequest)
     {
@@ -151,6 +178,21 @@ public class OperationRequestService
             OperationTypeId = newOperationRequest.OperationType.Id.Value,
             Priority = newOperationRequest.Priority.Value,
             Deadline = newOperationRequest.Deadline.Value.ToString("dd-MM-yyyy")
+        };
+    }
+
+    private OperationRequestDto ConvertToOperationRequestDto(OperationRequest operationRequest)
+    {
+        return new OperationRequestDto
+        {
+            Id = int.Parse(operationRequest.Id.Value),
+        PatientName = operationRequest.Patient?.Name?.ToString() ?? null, 
+        OperationType = operationRequest.OperationType?.Name?.ToString() ?? null, 
+        Priority = operationRequest.Priority?.ToString() ?? null, 
+        Deadline = operationRequest.Deadline?.Value ?? null, 
+        StartDate = operationRequest.StartDate ?? null, 
+        EndDate = operationRequest.EndDate ?? null, 
+        Status = operationRequest.Status?.Value ?? null 
         };
     }
 
