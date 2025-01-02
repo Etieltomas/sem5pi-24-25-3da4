@@ -189,9 +189,9 @@ public class OperationRequestService
         PatientName = operationRequest.Patient?.Name?.ToString() ?? null, 
         OperationType = operationRequest.OperationType?.Name?.ToString() ?? null, 
         Priority = operationRequest.Priority?.ToString() ?? null, 
-        Deadline = operationRequest.Deadline?.Value ?? null, 
-        StartDate = operationRequest.StartDate ?? null, 
-        EndDate = operationRequest.EndDate ?? null, 
+        Deadline = operationRequest.Deadline?.Value.ToString("dd-MM-yyyy") ?? null, 
+        StartDate = operationRequest.Deadline?.Value.ToString("dd-MM-yyyy") ?? null, 
+        EndDate = operationRequest.Deadline?.Value.ToString("dd-MM-yyyy") ?? null, 
         Status = operationRequest.Status?.Value ?? null 
         };
     }
