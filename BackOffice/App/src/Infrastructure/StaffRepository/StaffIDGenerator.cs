@@ -5,6 +5,13 @@ using Sempi5.Infrastructure.Databases;
 
 public class StaffIDGenerator : ValueGenerator<StaffID>
 {
+    /// <summary>
+    /// Generates the next StaffID based on the staff's email and current year, ensuring sequential numbering.
+    /// @actor: Tomás Leite
+    /// @date: 30/11/2024
+    /// </summary>
+    /// <param name="entry">The entry of the staff entity for which the ID is being generated.</param>
+    /// <returns>The newly generated StaffID.</returns>
     public override StaffID Next(EntityEntry entry)
     {
         var context = (DataBaseContext)entry.Context;
@@ -29,5 +36,10 @@ public class StaffIDGenerator : ValueGenerator<StaffID>
         return new StaffID(newNumber);
     }
 
+    /// <summary>
+    /// Indicates whether temporary values are generated for the StaffID.
+    /// @actor: Tomás Leite
+    /// @date: 30/11/2024
+    /// </summary>
     public override bool GeneratesTemporaryValues => false;
 }

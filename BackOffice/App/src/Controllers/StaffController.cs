@@ -27,6 +27,13 @@ namespace Sempi5.Controllers
             base_url = _configuration["IpAddresses:This"] ?? "http://localhost:5012";
         }
 
+        /// <summary>
+        /// Registers a new staff member.
+        /// @actor: Tomás Leite
+        /// @date: 30/11/2024
+        /// </summary>
+        /// <param name="staffDTO">Staff member data to be registered.</param>
+        /// <returns>The registered staff member with a CreatedAtAction response.</returns>
         [HttpPost("register")] 
         [Authorize(Roles = "Admin")]  
         public async Task<ActionResult<StaffDTO>> RegisterStaff(StaffDTO staffDTO)
@@ -35,12 +42,29 @@ namespace Sempi5.Controllers
             return CreatedAtAction(nameof(GetStaffMember), new { id = staff.Id }, staff);
         }
 
+        /// <summary>
+        /// Retrieves all staff members.
+        /// @actor: Tomás Leite
+        /// @date: 30/11/2024
+        /// </summary>
+        /// <returns>A list of all staff members.</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<StaffDTO>>> GetAllStaffMembers()
         {
             return await _service.GetAllStaffMembers();
         }
 
+        /// <summary>
+        /// Searches for staff members based on given parameters.
+        /// @actor: Tomás Leite
+        /// @date: 30/11/2024
+        /// </summary>
+        /// <param name="name">The name of the staff member.</param>
+        /// <param name="email">The email of the staff member.</param>
+        /// <param name="specialization">The specialization of the staff member.</param>
+        /// <param name="page">The page number for pagination.</param>
+        /// <param name="pageSize">The number of results per page.</param>
+        /// <returns>A list of staff members matching the search criteria.</returns>
         [HttpGet("search")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<List<StaffDTO>>> Search(
@@ -61,6 +85,14 @@ namespace Sempi5.Controllers
             return Ok(staff);
         }
 
+        /// <summary>
+        /// Confirms staff profile changes.
+        /// @actor: Tomás Leite
+        /// @date: 30/11/2024
+        /// </summary>
+        /// <param name="email">The encrypted email of the staff member.</param>
+        /// <param name="json">The encrypted staff member data in JSON format.</param>
+        /// <returns>A confirmation message if changes are processed successfully, otherwise a BadRequest result.</returns>
         [HttpGet("update/confirm-changes")]
         public async Task<ActionResult> EditStaffProfile(
             [FromQuery] string email,
@@ -83,16 +115,23 @@ namespace Sempi5.Controllers
                 var newStaff = await _service.EditStaff(formerEmail.ToString(), editStaffDto, true);
 
                 CreateLog(formerEmail, editStaffDto);
-                
-                
+
                 return Ok(new { message = "Changes confirmed." });
             }
             catch (Exception ex)
             {
-                return BadRequest("An error occurred while processing your request."+ex.Message);
+                return BadRequest("An error occurred while processing your request." + ex.Message);
             }
         }
 
+        /// <summary>
+        /// Requests to edit a staff profile.
+        /// @actor: Tomás Leite
+        /// @date: 30/11/2024
+        /// </summary>
+        /// <param name="email">The email of the staff member to edit.</param>
+        /// <param name="editStaffDto">The staff data to update.</param>
+        /// <returns>A confirmation message if the edit is requested successfully, otherwise an error response.</returns>
         [HttpPut("update/{email}")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> AskEditStaffProfile(string email, [FromBody] StaffDTO editStaffDto)
@@ -118,7 +157,7 @@ namespace Sempi5.Controllers
                 !originalPhone.Equals(newStaff.Phone) ||
                 !originalAddress.Equals(newStaff.Address))
             {
-                var confirmationLink = base_url+"/api/Staff/update/confirm-changes?email=" +
+                var confirmationLink = base_url + "/api/Staff/update/confirm-changes?email=" +
                                         Uri.EscapeDataString(_cryptography.EncryptString(JsonSerializer.Serialize(email))) + 
                                         "&json=" +
                                         Uri.EscapeDataString(_cryptography.EncryptString(JsonSerializer.Serialize(editStaffDto)));
@@ -126,7 +165,9 @@ namespace Sempi5.Controllers
                 var message = CreateStaffUpdateEmail(staff.Name, editStaffDto, confirmationLink);
 
                 _emailService.sendEmail(newStaff.Name, originalEmail, "Contact Information Updated", message);
-            } else {
+            } 
+            else 
+            {
                 CreateLog(email, editStaffDto);
             }
 
@@ -178,14 +219,13 @@ namespace Sempi5.Controllers
             return message;
         }
 
-
         private void CreateLog(string email, StaffDTO editStaffDTO)
         {
             var text = $"Staff member {email} has been updated with the following information:";
 
             if (editStaffDTO.AvailabilitySlots != null)
             {
-                text += $" Availabilty Slots: {editStaffDTO.AvailabilitySlots},";
+                text += $" Availability Slots: {editStaffDTO.AvailabilitySlots},";
             }
             if (editStaffDTO.Specialization != null)
             {
@@ -208,6 +248,13 @@ namespace Sempi5.Controllers
                     .Information(text.Remove(text.Length - 1));
         }
 
+        /// <summary>
+        /// Retrieves a specific staff member by their ID.
+        /// @actor: Tomás Leite
+        /// @date: 30/11/2024
+        /// </summary>
+        /// <param name="id">The ID of the staff member to retrieve.</param>
+        /// <returns>The staff member with the given ID or a NotFound result.</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<StaffDTO>> GetStaffMember(string id)
         {
@@ -221,6 +268,13 @@ namespace Sempi5.Controllers
             return Ok(staff);
         }
 
+        /// <summary>
+        /// Retrieves a specific staff member by their email.
+        /// @actor: Tomás Leite
+        /// @date: 30/11/2024
+        /// </summary>
+        /// <param name="email">The email of the staff member to retrieve.</param>
+        /// <returns>The staff member with the given email or a NotFound result.</returns>
         [HttpGet("email/{email}")]
         public async Task<ActionResult<StaffDTO>> GetStaffMemberByEmail(string email)
         {

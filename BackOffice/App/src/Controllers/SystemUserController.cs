@@ -22,7 +22,14 @@ namespace Sempi5.Controllers
             _logger = logger;
         }
 
-
+        /// <summary>
+        /// Updates the active status of a user by token.
+        /// @actor: Tomás Leite
+        /// @date: 30/11/2024
+        /// </summary>
+        /// <param name="token">The token used to identify the user.</param>
+        /// <param name="active">The active status to set.</param>
+        /// <returns>Returns the updated active status or NotFound if the user does not exist.</returns>
         [HttpGet("confirm/{token}/{active}")]
         public async Task<IActionResult> Update(Guid token, bool active)
         {
@@ -36,7 +43,14 @@ namespace Sempi5.Controllers
             return Ok(new { active = user.Active });
         }
 
-
+        /// <summary>
+        /// Updates the active status of a user by email. Only accessible by Admin.
+        /// @actor: Tomás Leite
+        /// @date: 30/11/2024
+        /// </summary>
+        /// <param name="email">The email of the user.</param>
+        /// <param name="active">The active status to set.</param>
+        /// <returns>Returns the updated active status or NotFound if the user does not exist.</returns>
         [HttpPut("active/{email}/{active}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateActive(string email, bool active)
@@ -53,8 +67,13 @@ namespace Sempi5.Controllers
             return Ok(new { active = user.Active });
         }
 
-
-        // Function to create SystemUser
+        /// <summary>
+        /// Registers a new system user.
+        /// @actor: Tomás Leite
+        /// @date: 30/11/2024
+        /// </summary>
+        /// <param name="SystemUserDTO">The data transfer object representing the system user.</param>
+        /// <returns>Returns the created system user.</returns>
         [HttpPost("register")]
         public async Task<ActionResult<SystemUserDTO>> RegisterUser(SystemUserDTO SystemUserDTO)
         {
@@ -63,12 +82,25 @@ namespace Sempi5.Controllers
             return CreatedAtAction(nameof(GetUser), new { id = SystemUser.Id }, SystemUser);
         }
 
+        /// <summary>
+        /// Retrieves all system users.
+        /// @actor: Tomás Leite
+        /// @date: 30/11/2024
+        /// </summary>
+        /// <returns>A list of all system users.</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SystemUserDTO>>> GetAllUsers()
         {
             return Ok(await _service.GetAllSystemUsers());
         }
 
+        /// <summary>
+        /// Retrieves a system user by ID.
+        /// @actor: Tomás Leite
+        /// @date: 30/11/2024
+        /// </summary>
+        /// <param name="id">The ID of the system user.</param>
+        /// <returns>The system user or NotFound if the user does not exist.</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<SystemUserDTO>> GetUser(long id)
         {
@@ -82,6 +114,13 @@ namespace Sempi5.Controllers
             return Ok(SystemUser);
         }
 
+        /// <summary>
+        /// Retrieves a system user by their email.
+        /// @actor: Tomás Leite
+        /// @date: 30/11/2024
+        /// </summary>
+        /// <param name="email">The email of the system user.</param>
+        /// <returns>The system user or NotFound if the user does not exist.</returns>
         [HttpGet("email/{email}")]
         public async Task<ActionResult<SystemUserDTO>> GetUserByEmail(string email)
         {

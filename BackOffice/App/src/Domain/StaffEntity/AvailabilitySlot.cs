@@ -6,7 +6,14 @@ public class AvailabilitySlot : IValueObject
 {
     private string _value;
 
-    // Example: 21-10-2024T09:00:00 - 21-10-2024T11:00:00,
+    /// <summary>
+    /// Initializes a new instance of the AvailabilitySlot class.
+    /// The value should represent a time slot in the format "dd-MM-yyyyTHH:mm:ss - dd-MM-yyyyTHH:mm:ss".
+    /// </summary>
+    /// <param name="value">The availability slot in the format "start date - end date".</param>
+    /// <example>
+    /// Example: "21-10-2024T09:00:00 - 21-10-2024T11:00:00"
+    /// </example>
     public AvailabilitySlot(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
@@ -33,10 +40,13 @@ public class AvailabilitySlot : IValueObject
             throw new BusinessRuleValidationException("AvailabilitySlot start and end date must be in the future.");
         }
 
-
         _value = value;
     }
 
+    /// <summary>
+    /// Returns the string representation of the AvailabilitySlot.
+    /// </summary>
+    /// <returns>The availability slot in string format.</returns>
     public override string ToString()
     {
         return _value;

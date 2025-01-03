@@ -1,4 +1,3 @@
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Sempi5.Domain.SpecializationEntity;
@@ -17,6 +16,13 @@ namespace Sempi5.Infrastructure.StaffRepository
             _context = context;
         }
 
+        /// <summary>
+        /// Retrieves a staff member by their email.
+        /// @actor: Tomás Leite
+        /// @date: 30/11/2024
+        /// </summary>
+        /// <param name="email">The email of the staff member.</param>
+        /// <returns>The staff member or null if not found.</returns>
         public async Task<Staff> GetStaffMemberByEmail(string email)
         {
             if (string.IsNullOrEmpty(email))
@@ -32,6 +38,12 @@ namespace Sempi5.Infrastructure.StaffRepository
             return staff;
         }
 
+        /// <summary>
+        /// Retrieves all staff members.
+        /// @actor: Tomás Leite
+        /// @date: 30/11/2024
+        /// </summary>
+        /// <returns>A list of all staff members.</returns>
         public async Task<List<Staff>> GetAllStaffMembers()
         {
             return await _context.Staff
@@ -40,6 +52,13 @@ namespace Sempi5.Infrastructure.StaffRepository
                 .ToListAsync();
         }
 
+        /// <summary>
+        /// Retrieves a staff member by their ID.
+        /// @actor: Tomás Leite
+        /// @date: 30/11/2024
+        /// </summary>
+        /// <param name="id">The ID of the staff member.</param>
+        /// <returns>The staff member or null if not found.</returns>
         public async Task<Staff> GetStaffMemberById(StaffID id)
         {
             if (id == null)
@@ -55,6 +74,17 @@ namespace Sempi5.Infrastructure.StaffRepository
             return staff;
         }
 
+        /// <summary>
+        /// Searches for staff members based on the given criteria.
+        /// @actor: Tomás Leite
+        /// @date: 30/11/2024
+        /// </summary>
+        /// <param name="name">The name of the staff member to search for.</param>
+        /// <param name="email">The email of the staff member to search for.</param>
+        /// <param name="specialization">The specialization of the staff member to search for.</param>
+        /// <param name="page">The page number for pagination.</param>
+        /// <param name="pageSize">The number of results per page.</param>
+        /// <returns>A list of staff members matching the criteria.</returns>
         public async Task<List<Staff>> SearchStaff(string? name, string? email, string? specialization,
                              int page, int pageSize)
         {
@@ -80,9 +110,7 @@ namespace Sempi5.Infrastructure.StaffRepository
 
             query = query.Skip((page - 1) * pageSize).Take(pageSize);
 
-
             return await query.ToListAsync();
         }
     }
-
 }

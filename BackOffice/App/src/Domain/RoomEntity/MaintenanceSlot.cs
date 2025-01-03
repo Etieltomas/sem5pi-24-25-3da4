@@ -1,11 +1,17 @@
 using System.Globalization;
 using Sempi5.Domain.Shared;
 
-public class Slot: IValueObject
+public class Slot : IValueObject
 {
     private string _value;
 
-    // Example: 21-10-2024T09:00:00 - 21-10-2024T11:00:00,
+    /// <summary>
+    /// Constructor for the Slot class.
+    /// Validates the input string for proper slot format and future dates.
+    /// @author Tomás Leite
+    /// @date 30/11/2024
+    /// </summary>
+    /// <param name="value">The slot value in the format "dd-MM-yyyyTHH:mm:ss - dd-MM-yyyyTHH:mm:ss".</param>
     public Slot(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
@@ -32,10 +38,15 @@ public class Slot: IValueObject
             throw new BusinessRuleValidationException("Slot start and end date must be in the future.");
         }
 
-
         _value = value;
     }
 
+    /// <summary>
+    /// Returns the string representation of the slot.
+    /// @author Tomás Leite
+    /// @date 30/11/2024
+    /// </summary>
+    /// <returns>The slot value as a string.</returns>
     public override string ToString()
     {
         return _value;
