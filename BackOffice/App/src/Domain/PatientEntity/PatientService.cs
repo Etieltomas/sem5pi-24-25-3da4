@@ -344,6 +344,7 @@ namespace Sempi5.Domain.PatientEntity
             {
                 var warningEmailBackup = patient.Email.ToString();
                 var warningNameBackup = patient.Name.ToString();
+                string idSuffix = patient.Id.AsString();
 
                 try
                 {
@@ -359,16 +360,26 @@ namespace Sempi5.Domain.PatientEntity
                     throw new InvalidOperationException("Fail to exclude SystemUser of Patient.", ex);
                 }
 
-                string emailSuffix = patient.Id.AsString();
+                try
+                {
+                    var medicalRecord = await _medicalRecordService.GetMedicalRecord(patient.Email.ToString());
 
-                var phoneFirstSuffix = patient.Id.AsString().Substring(patient.Id.AsString().Length - 9, 2);
-                var phoneMiddleSuffix = patient.Id.AsString().Substring(patient.Id.AsString().Length - 7, 3);
-                var phoneLastSuffix = patient.Id.AsString().Substring(patient.Id.AsString().Length - 4);
+                    if(medicalRecord != null)
+                    {
+                        medicalRecord.Patient = "anonymous_" + idSuffix + "@anonymous.anonymous";
+                        await _medicalRecordService.Anonymization(medicalRecord, patient.Email.ToString());
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException("Fail to anonimize Medical Record.", ex);
+                }
 
                 patient.Name = new Name("anonymous");
-                patient.Email = new Email("anonymous_" + emailSuffix + "@anonymous.anonymous");
-                patient.Phone = new Phone("000-" + phoneMiddleSuffix + "-" + phoneLastSuffix);
-                patient.EmergencyContact = new Phone("0" + phoneFirstSuffix + "-" + phoneMiddleSuffix + "-" + phoneLastSuffix);
+                patient.Email = new Email("anonymous_" + idSuffix + "@anonymous.anonymous");
+                patient.Phone = new Phone("anonymous-" + idSuffix);
+                patient.EmergencyContact = new Phone("anonymous-" + idSuffix);
                 var address = patient.Address.ToString().Split(", ");
                 patient.Address = new Address("anonymos", "anonymos", address[2]);
                 patient.SystemUser = null;
