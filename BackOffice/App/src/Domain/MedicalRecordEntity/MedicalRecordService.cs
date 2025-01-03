@@ -226,5 +226,23 @@ namespace Sempi5.Domain.MedicalRecordEntity
  
             return JsonSerializer.Deserialize<MedicalRecordDTO>(json);
         }
+
+        public async Task<MedicalRecordDTO> Anonymization(MedicalRecordDTO medicalRecordDTO, string patientEmail)
+        {
+            var url = base_url + "/api/medicalRecord/"+ patientEmail + "/anonimize";
+
+            var options = new JsonSerializerOptions
+            {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            };
+
+            // Make the POST request
+            var response = await _httpClient.PatchAsync(url, new StringContent(JsonSerializer.Serialize(medicalRecordDTO, options), Encoding.UTF8, "application/json"));
+
+            // Deserialize the JSON response
+            var json = await response.Content.ReadAsStringAsync();
+ 
+            return JsonSerializer.Deserialize<MedicalRecordDTO>(json);
+        }
     }
 }
