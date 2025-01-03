@@ -13,6 +13,7 @@
 :-dynamic room/1.
 
 :-consult('schedule.pl').
+:-consult('base_schedule.pl').
 
 % parameters initialization
 initialize:-
