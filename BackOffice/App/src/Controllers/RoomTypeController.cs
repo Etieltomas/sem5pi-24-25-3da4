@@ -16,6 +16,13 @@ namespace Sempi5.Controllers
             _service = service;
         }
 
+        /**
+         * Handles POST request to add a new room type.
+         * @param newRoomTypeDto RoomTypeDTO - The data transfer object containing the details of the new room type.
+         * @return Task<ActionResult<RoomTypeDTO>> - The result of the add operation, either a BadRequest if the data is invalid, a Conflict if the room type already exists, or an Ok with the added room type.
+         * @author Ricardo Guimarães
+         * @date 10/12/2024
+         */
         [HttpPost]
         [Authorize(Roles = "Admin")]  
         public async Task<ActionResult<RoomTypeDTO>> AddRoomType([FromBody] RoomTypeDTO newRoomTypeDto)
@@ -35,6 +42,12 @@ namespace Sempi5.Controllers
             return Ok(result);
         }
 
+         /**
+         * Handles GET request to retrieve all room types.
+         * @return Task<ActionResult<IEnumerable<RoomTypeDTO>>> - The result of the get operation, either a BadRequest if the operation fails or an Ok with the list of room types.
+         * @author Ricardo Guimarães
+         * @date 10/12/2024
+         */
         [HttpGet]
         [Authorize(Roles = "Admin")]  
         public async Task<ActionResult<IEnumerable<RoomTypeDTO>>> GetAllRoomTypes()

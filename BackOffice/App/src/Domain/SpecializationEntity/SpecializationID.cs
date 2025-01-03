@@ -6,6 +6,9 @@ namespace Sempi5.Domain.SpecializationEntity
 {
     public class SpecializationID : EntityId
     {
+        /**
+         * SpecializationID.cs created by Ricardo Guimarães on 10/12/2024
+         */
         
         public SpecializationID(long value) : base(value)
         {

@@ -5,6 +5,9 @@ using Sempi5.Infrastructure.Shared;
 
 namespace Sempi5.Infrastructure.SpecializationRepository
 {
+    /**
+     * SpecializationRepository.cs created by Ricardo Guimarães on 10/12/2024
+     */
     public class SpecializationRepository : BaseRepository<Specialization, SpecializationID>, ISpecializationRepository
     {
         private readonly DataBaseContext _context;

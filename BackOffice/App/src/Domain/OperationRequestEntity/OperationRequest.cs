@@ -5,6 +5,10 @@ using Sempi5.Domain.StaffEntity;
 
 namespace Sempi5.Domain.OperationRequestEntity
 {
+
+    /**
+     * OperationRequest.cs created by Ricardo Guimarães on 10/12/2024
+     */
     public class OperationRequest : Entity<OperationRequestID>, IAggregateRoot
     {
         public virtual Patient Patient { get; set; }

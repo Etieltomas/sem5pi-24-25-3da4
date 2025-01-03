@@ -16,7 +16,15 @@ namespace Sempi5.Domain.SpecializationEntity
             this._repo = repo;
         }
 
-        // Adicionar uma nova especialização
+        /**
+         * Adicionar uma nova especialização
+         * @param name Nome da especialização
+         * @param code Código da especialização
+         * @param description Descrição da especialização
+         * @return Task<string> - O nome da especialização adicionada
+         * @author Ricardo Guimarães
+         * @date 10/12/2024
+         */
         public async Task<string> AddSpecialization(string name, string code, string? description)
         {
             var specialization = new Specialization
@@ -32,21 +40,42 @@ namespace Sempi5.Domain.SpecializationEntity
             return specialization.Name;
         }
 
-        // Listar todas as especializações
+        /**
+        * Listar todas as especializações
+        * @return Task<List<string>> - Lista de todas as especializações
+        * @author Ricardo Guimarães
+        * @date 10/12/2024
+        */
         public async Task<List<string>> GetAllSpecializations()
         {
             var result = await _repo.GetAllAsync();
             return result.ConvertAll(cat => cat.Name);
         }
 
-        // Buscar especialização por ID
+        /**
+        * Obter especialização por ID
+        * @param id long - ID da especialização
+        * @return Task<string> - O nome da especialização
+        * author Ricardo Guimarães
+        * date 10/12/2024
+        */
         public async Task<string?> GetSpecializationById(long id)
         {
             var specialization = await _repo.GetByIdAsync(new SpecializationID(id));
             return specialization?.Name;
         }
 
-        // Obtter especialização por Nome
+        /**
+        * Pesquisar especializações
+        * @param name Nome da especialização
+        * @param code Código da especialização
+        * @param description Descrição da especialização
+        * @param page Página
+        * @param pageSize Tamanho da página
+        * @return Task<List<SpecializationDTO>> - Lista de especializações
+        * author Ricardo Guimarães
+        * date 10/12/2024
+        */
         public async Task<List<SpecializationDTO>> SearchSpecializations(string? name, string? code,
                                                                 string? description, int page, int pageSize)
         {
@@ -54,7 +83,14 @@ namespace Sempi5.Domain.SpecializationEntity
             return result.ConvertAll(MapToDTO);
         }
 
-        // Atualizar uma especialização
+        /**
+        * Atualizar especialização
+        * @param id long - ID da especialização
+        * @param dto SpecializationUpdateDTO - DTO com os dados atualizados da especialização
+        * @return Task<bool> - True se a especialização foi atualizada com sucesso, False caso contrário
+        * author Ricardo Guimarães
+        * date 10/12/2024
+        */
         public async Task<bool> UpdateSpecialization(long id, SpecializationUpdateDTO dto)
         {
             var specialization = await _repo.GetByIdAsync(new SpecializationID(id));
@@ -73,6 +109,13 @@ namespace Sempi5.Domain.SpecializationEntity
             return true;
         }
 
+        /**
+        * Mapear especialização para DTO
+        * @param specialization Especialização
+        * @return SpecializationDTO - DTO da especialização
+        * author Ricardo Guimarães
+        * date 10/12/2024
+        */
         private SpecializationDTO MapToDTO(Specialization specialization)
         {
             return new SpecializationDTO

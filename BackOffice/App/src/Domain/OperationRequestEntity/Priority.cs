@@ -3,6 +3,9 @@ using Sempi5.Domain.Shared;
 
 namespace Sempi5.Domain.OperationRequestEntity
 {
+    /**
+     * Priority.cs created by Ricardo Guimarães on 10/12/2024
+     */
     public class Priority : ValueObject
     {
         public virtual string Value { get; }

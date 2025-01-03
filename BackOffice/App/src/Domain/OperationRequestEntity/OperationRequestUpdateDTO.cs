@@ -1,3 +1,8 @@
+/**
+ * OperationRequestUpdateDTO.cs
+ * created by Ricardo Guimarães on 10/12/2024
+ */
+ 
 public class OperationRequestUpdateDTO
 {
     public string? OperationRequestId { get; set; }

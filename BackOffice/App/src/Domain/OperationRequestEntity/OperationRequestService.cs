@@ -33,7 +33,13 @@ public class OperationRequestService
         _logger = logger;
     }
 
-    //create operation request
+    /**
+        * Create a new operation request
+        * @param dto OperationRequestCreateDTO
+        * @return OperationRequestCreateDTO
+        * author Ricardo Guimarães
+        * date 10/12/2024
+        */
     public async Task<OperationRequestCreateDTO> CreateOperationRequest(OperationRequestCreateDTO dto)
     {
         //operation type by id
@@ -74,7 +80,13 @@ public class OperationRequestService
     }
 
 
-    //update
+    /**
+        * Update an existing operation request
+        * @param dto OperationRequestUpdateDTO
+        * @return OperationRequestCreateDTO
+        * author Ricardo Guimarães
+        * date 10/12/2024
+        */
     public async Task<OperationRequestCreateDTO> UpdateOperationRequest(OperationRequestUpdateDTO dto)
     {
         //get request by id
@@ -104,7 +116,13 @@ public class OperationRequestService
         return ConvertToDTO(operationRequest);
     }
 
-    //delete request
+    /**
+        * Delete an existing operation request
+        * @param requestId string
+        * @param staffId string
+        * author Ricardo Guimarães
+        * date 10/12/2024
+        */
     public async void DeleteOperationRequest(string requestId, string staffId)
     {
         //get request by id
@@ -132,7 +150,18 @@ public class OperationRequestService
          await _unitOfWork.CommitAsync();
     }
 
-     //list request
+     /**
+        * Search operation requests
+        * @param patientName string
+        * @param operationType string
+        * @param priority string
+        * @param status string
+        * @param page int
+        * @param pageSize int
+        * @return List<OperationRequestCreateDTO>
+        * author Ricardo Guimarães
+        * date 10/12/2024
+        */
     public async Task<List<OperationRequestCreateDTO>> SearchOperationRequests(string? patientName, string? operationType, string? priority, string? status,int page, int pageSize)
     {
         var operationRequests = await _operationRequestRepository.SearchOperationRequests(patientName, operationType, priority, status, page, pageSize);
@@ -169,6 +198,18 @@ public class OperationRequestService
     }
 }
 
+/**
+    * Search for operation requests based on various criteria.
+    * @param patientName string?
+    * @param operationType string?
+    * @param priority string?
+    * @param status string?
+    * @param page int
+    * @param pageSize int
+    * @return List<OperationRequestDto>
+    * author Ricardo Guimarães
+    * date 10/12/2024
+    */
     private OperationRequestCreateDTO ConvertToDTO(OperationRequest newOperationRequest)
     {
         return new OperationRequestCreateDTO
@@ -180,7 +221,14 @@ public class OperationRequestService
             Deadline = newOperationRequest.Deadline.Value.ToString("dd-MM-yyyy")
         };
     }
-
+    
+    /**
+    * Convert an OperationRequest to an OperationRequestDto.
+    * @param operationRequest OperationRequest
+    * @return OperationRequestDto
+    * author Ricardo Guimarães
+    * date 10/12/2024
+    */
     private OperationRequestDto ConvertToOperationRequestDto(OperationRequest operationRequest)
     {
         return new OperationRequestDto
@@ -196,6 +244,13 @@ public class OperationRequestService
         };
     }
 
+/**
+    * Update the operation request log.
+    * @param operationRequestId string
+    * @param updatedInfo string
+    * author Ricardo Guimarães
+    * date 10/12/2024
+    */
     private void UpdateOperationRequestLog(string operationRequestId, string updatedInfo)
     {
     var logMessage = $"\n - OperationRequestID: {operationRequestId}, Updated Information: {updatedInfo}.";

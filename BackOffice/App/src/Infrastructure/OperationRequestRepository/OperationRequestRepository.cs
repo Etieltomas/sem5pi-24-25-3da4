@@ -15,6 +15,9 @@ namespace Sempi5.Infrastructure
         private readonly DataBaseContext _context;
         private readonly Serilog.ILogger _logger;
         
+        /**
+         * OperationRequestRepository.cs created by Ricardo Guimarães on 10/12/2024
+         */
         public OperationRequestRepository(DataBaseContext context, Serilog.ILogger logger) : base(context.OperationRequests)
         {
             _context = context;

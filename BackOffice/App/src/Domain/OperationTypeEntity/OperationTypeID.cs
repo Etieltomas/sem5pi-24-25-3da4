@@ -4,6 +4,9 @@ namespace Sempi5.Domain.OperationRequestEntity
 {
     public class OperationTypeID : EntityId
     {
+        /**
+         * OperationTypeID.cs created by Ricardo Guimarães on 10/12/2024
+         */
         public OperationTypeID(long value) : base(value) { }
 
         protected override object createFromString(string text)

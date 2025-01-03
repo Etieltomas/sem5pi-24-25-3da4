@@ -4,6 +4,7 @@ using Sempi5.Domain.StaffEntity;
 
 public interface IOperationRequestRepository : IRepository<OperationRequest, OperationRequestID>
 {
+    
     Task<OperationRequest> GetOperationRequestById(OperationRequestID id);
     Task<List<OperationRequest>> SearchOperationRequests(string? patientName, string? operationType, string? priority, string? status, int page, int pageSize);
     Task<List<OperationRequest>> GetAllOperationRequests();

@@ -6,6 +6,10 @@ using Sempi5.Infrastructure.Shared;
 using System.Collections.Generic;
 using System.Linq;
 
+/**
+    * OperationTypeRepository.cs created by Ricardo Guimarães on 10/12/2024
+    */
+
 namespace Sempi5.Infrastructure
 {
     public class OperationTypeRepository : BaseRepository<OperationType, OperationTypeID> , IOperationTypeRepository

@@ -4,6 +4,9 @@ using Sempi5.Domain.Shared;
 
 namespace Sempi5.Domain.OperationRequestEntity
 {
+    /**
+     * Status.cs created by Ricardo Guimarães on 10/12/2024
+     */
     public class Status : ValueObject
     {
         public string Value { get; }

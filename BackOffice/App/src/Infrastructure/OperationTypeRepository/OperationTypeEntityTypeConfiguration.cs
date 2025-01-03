@@ -2,6 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Sempi5.Domain.OperationRequestEntity;
 
+/**
+ * OperationTypeEntityTypeConfiguration.cs created by Ricardo Guimarães on 10/12/2024
+ */
 public class OperationTypeEntityTypeConfiguration : IEntityTypeConfiguration<OperationType>
 {
     public void Configure(EntityTypeBuilder<OperationType> builder)

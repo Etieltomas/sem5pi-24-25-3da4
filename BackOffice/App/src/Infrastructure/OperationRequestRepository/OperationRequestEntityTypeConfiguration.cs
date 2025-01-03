@@ -7,6 +7,9 @@ using Sempi5.Domain.StaffEntity;
 
 public class OperationRequestEntityTypeConfiguration : IEntityTypeConfiguration<OperationRequest>
 {
+    /**
+     * Configure created by Ricardo Guimarães on 10/12/2024
+     */
     public void Configure(EntityTypeBuilder<OperationRequest> builder)
     {
         builder.ToTable("OperationRequests");

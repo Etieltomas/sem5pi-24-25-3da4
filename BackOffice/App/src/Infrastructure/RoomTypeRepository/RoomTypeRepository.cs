@@ -4,6 +4,9 @@ using Sempi5.Domain.RoomTypeEntity;
 using Sempi5.Infrastructure.Databases;
 using Sempi5.Infrastructure.Shared;
 
+/**
+ * RoomTypeRepository.cs created by Ricardo Guimarães on 10/12/2024
+ */
 namespace Sempi5.Infrastructure.RoomTypeRepository
 {
     public class RoomTypeRepository : BaseRepository<RoomType, RoomTypeID>, IRoomTypeRepository

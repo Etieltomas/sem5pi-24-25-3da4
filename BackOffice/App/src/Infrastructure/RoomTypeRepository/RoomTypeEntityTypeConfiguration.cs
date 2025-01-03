@@ -2,6 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Sempi5.Domain.RoomEntity;
 
+/**
+ * RoomTypeEntityTypeConfiguration.cs created by Ricardo Guimarães on 10/12/2024
+ */
 namespace Sempi5.Infrastructure.RoomTypeRepository
 {
     public class RoomTypeEntityTypeConfiguration : IEntityTypeConfiguration<RoomType>

@@ -4,6 +4,9 @@ using Sempi5.Domain.SpecializationEntity;
 
 namespace Sempi5.Infrastructure.SpecializationRepository
 {
+    /**
+     * SpecializationEntityTypeConfiguration.cs created by Ricardo Guimarães on 10/12/2024
+     */
     public class SpecializationEntityTypeConfiguration : IEntityTypeConfiguration<Specialization>
     {
         public void Configure(EntityTypeBuilder<Specialization> builder)

@@ -11,7 +11,14 @@ namespace Sempi5.Domain.MedicalConditionEntity
         private readonly string base_url;
         private readonly HttpClient _httpClient;
 
-        // Constructor with HttpClient dependency injection
+        /**
+         * Constructor for the MedicalConditionService class.
+         * @param configuration IConfiguration - The configuration object.
+         * @param httpClient HttpClient - The HttpClient object.
+         * @return void
+         * @author Ricardo Guimarães
+         * @date 10/12/2024
+         */
         public MedicalConditionService(IConfiguration configuration, HttpClient httpClient)
         {
             _configuration = configuration;
@@ -19,7 +26,13 @@ namespace Sempi5.Domain.MedicalConditionEntity
             base_url = _configuration["IpAddresses:BackEnd2"] ?? "http://localhost:3001";
         }
 
-        // Method to add a new medical condition using DTO
+        /**
+         * Method to add a new medical condition.
+         * @param medicalConditionDTO MedicalConditionDTO - The data transfer object containing the details of the medical condition to be added.
+         * @return Task<string> - The result of the add operation, either null if the operation fails or a string with the added medical condition.
+         * @author Ricardo Guimarães
+         * @date 10/12/2024
+         */
         public async Task<string> AddMedicalCondition([FromBody] MedicalConditionDTO medicalConditionDTO)
         {
             var url = base_url + "/api/medical-conditions";
@@ -45,7 +58,12 @@ namespace Sempi5.Domain.MedicalConditionEntity
             return await response.Content.ReadAsStringAsync();
         }
 
-        // Method to get all medical conditions as a list of DTOs
+        /**
+         * Method to get all medical conditions.
+         * @return Task<List<MedicalConditionDTO>> - The result of the get operation, either an empty list if the operation fails or a list of medical conditions.
+         * @author Ricardo Guimarães
+         * @date 10/12/2024
+         */
         public async Task<List<MedicalConditionDTO>> GetAllMedicalConditions()
         {
             var url = base_url + "/api/medical-conditions";
