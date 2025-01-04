@@ -71,7 +71,7 @@ public class OperationRequestEntityTypeConfiguration : IEntityTypeConfiguration<
                 v => string.Join(",", v.Select(x => x.AsString())),
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(x => new StaffID(x)).ToList()
             )
-            .IsRequired();
+            .IsRequired(false);
 
     }
     
