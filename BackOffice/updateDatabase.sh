@@ -20,7 +20,7 @@ dotnet ef database update
 echo "Migration update completed successfully!"
 
 echo "Deleting the data from the MongoDB database..."
-mongosh "mongodb://mongoadmin:80845c6c283856e9ef7452e1@vsgate-s1.dei.isep.ipp.pt:10902/admin" --eval "db.allergies.drop(); db.medicalrecords.drop()"
+mongosh "mongodb://mongoadmin:80845c6c283856e9ef7452e1@vsgate-s1.dei.isep.ipp.pt:10902/admin" --eval "db.allergies.drop(); db.medicalrecords.drop(); db.medicalconditions.drop()"
 
 echo "Data deleted successfully!"
 
