@@ -288,6 +288,9 @@ namespace Sempi5
                 await SeedPlanning(services);
                 await SeedAllergiesAsync(services);
                 await SeedConditionsAsync(services);
+                await SeedPatientAsync(services);
+                await SeedStaffAsync(services);
+                await SeedOperationRequestsAsync(services);
             }
             catch (Exception ex)
             {
@@ -427,33 +430,8 @@ namespace Sempi5
                 EmergencyContact = new Phone("912345678"),
             };
 
-            Patient pat1 = new Patient {
-                Name = new Name("José Pedro"),
-                Email = new Email("josep@gmail.com"),
-                Phone = new Phone("91454345"),
-                Address = new Address("Rua de Cima", "Coimbra", "Portugal"),
-                DateOfBirth = new DateTime(1999, 01, 09),
-                Gender = Gender.Male,
-                EmergencyContact = new Phone("918967345"),
-            };
-
-            Patient pat2 = new Patient {
-                Name = new Name("Maria Silva"),
-                Email = new Email("mariacostasilva@gmail.com"),
-                Phone = new Phone("912434561"),
-                Address = new Address("Rua do Baixo", "Lisboa", "Portugal"),
-                DateOfBirth = new DateTime(1997, 05, 15),
-                Gender = Gender.Other,
-                EmergencyContact = new Phone("96342098"),
-            };
-
             await patientRep.AddAsync(pat);
             await unitOfWork.CommitAsync();
-            await patientRep.AddAsync(pat1);
-            await unitOfWork.CommitAsync();
-            await patientRep.AddAsync(pat2);
-            await unitOfWork.CommitAsync();
-
 
             var operationRequest1 = new OperationRequest {
                 Patient = await patientRep.GetPatientByEmail(pat.Email.ToString()),
@@ -646,39 +624,39 @@ namespace Sempi5
             }
         }
 
-private static async Task SeedConditionsAsync(IServiceProvider services)
-{
-    var logger = services.GetRequiredService<ILogger<Program>>();
-    var conditionSer = services.GetRequiredService<MedicalConditionService>();
-
-    try
-    {
-        var condition = new MedicalConditionDTO { Code = "X437", Name = "Asthma", Description = "Asthma condition" };
-        var condition1 = new MedicalConditionDTO { Code = "X438", Name = "Diabetes", Description = "Diabetes condition" };
-        var condition2 = new MedicalConditionDTO { Code = "X439", Name = "Hypertension", Description = "Hypertension condition" };
-
-        var result = await conditionSer.AddMedicalCondition(condition);
-        var result1 = await conditionSer.AddMedicalCondition(condition1);
-        var result2 = await conditionSer.AddMedicalCondition(condition2);
-
-        if (result == null || result1 == null || result2 == null)
+        private static async Task SeedConditionsAsync(IServiceProvider services)
         {
-            logger.LogError("Failed to create some conditions. Results: {Result}, {Result1}, {Result2}", result, result1, result2);
+            var logger = services.GetRequiredService<ILogger<Program>>();
+            var conditionSer = services.GetRequiredService<MedicalConditionService>();
+
+            try
+            {
+                var condition = new MedicalConditionDTO { Code = "X437", Name = "Asthma", Description = "Asthma condition" };
+                var condition1 = new MedicalConditionDTO { Code = "X438", Name = "Diabetes", Description = "Diabetes condition" };
+                var condition2 = new MedicalConditionDTO { Code = "X439", Name = "Hypertension", Description = "Hypertension condition" };
+
+                var result = await conditionSer.AddMedicalCondition(condition);
+                var result1 = await conditionSer.AddMedicalCondition(condition1);
+                var result2 = await conditionSer.AddMedicalCondition(condition2);
+
+                if (result == null || result1 == null || result2 == null)
+                {
+                    logger.LogError("Failed to create some conditions. Results: {Result}, {Result1}, {Result2}", result, result1, result2);
+                }
+                else
+                {
+                    logger.LogInformation("Successfully created conditions");
+                }
+            }
+            catch (HttpRequestException httpEx)
+            {
+                logger.LogError(httpEx, "HTTP request error while creating conditions");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "An error occurred while creating conditions");
+            }
         }
-        else
-        {
-            logger.LogInformation("Successfully created conditions");
-        }
-    }
-    catch (HttpRequestException httpEx)
-    {
-        logger.LogError(httpEx, "HTTP request error while creating conditions");
-    }
-    catch (Exception ex)
-    {
-        logger.LogError(ex, "An error occurred while creating conditions");
-    }
-}
 
         private static async Task SeedUsersAsync(IServiceProvider services)
         {
@@ -718,13 +696,49 @@ private static async Task SeedConditionsAsync(IServiceProvider services)
             var user5 = new SystemUser{
                 Username = "simaoPatient",
                 Email = new Email("sblsimaolopes@gmail.com"),
-                Role = "Doctor",
+                Role = "Patient",
                 Active = true
             };
             var user6 = new SystemUser{
                 Username = "tomasPatient",
                 Email = new Email("sem5pi.isep@gmail.com"),
                 Role = "Patient",
+                Active = true
+            };
+            var user7 = new SystemUser{
+                Username = "joana",
+                Email = new Email("joanarebelo@gmail.com"),
+                Role = "Doctor",
+                Active = true
+            };
+            var user8 = new SystemUser{
+                Username = "francisco",
+                Email = new Email("franciscodoc@gmail.com"),
+                Role = "Doctor",
+                Active = true
+            };
+            var user9 = new SystemUser{
+                Username = "jasmin",
+                Email = new Email("jasminfidalgo@gmail.com"),
+                Role = "Assistant",
+                Active = true
+            };
+            var user10 = new SystemUser{
+                Username = "luis",
+                Email = new Email("luisgameplay@gmail.com"),
+                Role = "Patient",
+                Active = true
+            };
+            var user11 = new SystemUser{
+                Username = "beatriz",
+                Email = new Email("biamarques@gmail.com"),
+                Role = "Patient",
+                Active = true
+            };
+            var user12 = new SystemUser{
+                Username = "miguel",
+                Email = new Email("safetyplace4all@gmail.com"),
+                Role = "Staff",
                 Active = true
             };
 
@@ -734,8 +748,158 @@ private static async Task SeedConditionsAsync(IServiceProvider services)
             await userRep.AddAsync(user4);
             await userRep.AddAsync(user5);
             await userRep.AddAsync(user6);
+            await userRep.AddAsync(user7);
+            await userRep.AddAsync(user8);
+            await userRep.AddAsync(user9);
+            await userRep.AddAsync(user10);
+            await userRep.AddAsync(user11);
+            await userRep.AddAsync(user12);
 
             await unitOfWork.CommitAsync();
+        }
+
+        private static async Task SeedPatientAsync(IServiceProvider services)
+        {
+            var patientRep = services.GetRequiredService<IPatientRepository>();
+            var userRep = services.GetRequiredService<IUserRepository>();
+            var unitOfWork = services.GetRequiredService<IUnitOfWork>();
+
+            Patient pat1 = new Patient {
+                Name = new Name("Luís Pedro"),
+                Email = new Email("luisgameplay@gmail.com"),
+                Phone = new Phone("91454345"),
+                Address = new Address("Rua de Cima", "Coimbra", "Portugal"),
+                DateOfBirth = new DateTime(1999, 01, 09),
+                Gender = Gender.Male,
+                EmergencyContact = new Phone("918967345"),
+                SystemUser = await userRep.GetUserByEmail("luisgameplay@gmail.com")
+            };
+
+            Patient pat2 = new Patient {
+                Name = new Name("Beatriz Marques"),
+                Email = new Email("biamarques@gmail.com"),
+                Phone = new Phone("912434561"),
+                Address = new Address("Rua do Baixo", "Lisboa", "Portugal"),
+                DateOfBirth = new DateTime(1997, 05, 15),
+                Gender = Gender.Other,
+                EmergencyContact = new Phone("96342098"),
+                SystemUser = await userRep.GetUserByEmail("biamarques@gmail.com")
+            };
+
+            await patientRep.AddAsync(pat1);
+            await unitOfWork.CommitAsync();
+            await patientRep.AddAsync(pat2);
+            await unitOfWork.CommitAsync();
+           
+            await unitOfWork.CommitAsync();
+        }
+
+        private static async Task SeedStaffAsync(IServiceProvider services)
+        {
+            var staffRep = services.GetRequiredService<IStaffRepository>();
+            var unitOfWork = services.GetRequiredService<IUnitOfWork>();
+            var specRepo = services.GetRequiredService<ISpecializationRepository>();
+            var userRep = services.GetRequiredService<IUserRepository>();
+
+            //Staff Creation
+            var staff1 = new Staff {
+                Name = new Name("Joana Coutinho"),
+                Email = new Email("joanarebelo@gmail.com"),
+                Specialization = await specRepo.GetByName("Orthopaedist"),
+                LicenseNumber = new LicenseNumber("983012"),
+                Phone = new Phone("917864938"),
+                Address = new Address("Rua Vermelha", "Alentejo", "Portugal"),
+                AvailabilitySlots = new List<AvailabilitySlot> { 
+                    new AvailabilitySlot("01-05-2025T08:00:00 - 01-05-2025T20:00:00")
+                },
+                SystemUser = await userRep.GetUserByEmail("joanarebelo@gmail.com")
+            };
+            var staff2 = new Staff {
+                Name = new Name("Francisco Trindade"),
+                Email = new Email("franciscodoc@gmail.com"),
+                Specialization = await specRepo.GetByName("Anaesthetist"),
+                LicenseNumber = new LicenseNumber("546392"),
+                Phone = new Phone("981232786"),
+                Address = new Address("Rua da Paz", "Porto", "Portugal"),
+                AvailabilitySlots = new List<AvailabilitySlot> { 
+                    new AvailabilitySlot("08-03-2025T08:00:00 - 08-03-2025T20:00:00")
+                },
+                SystemUser = await userRep.GetUserByEmail("franciscodoc@gmail.com")
+            };
+            var staff3 = new Staff {
+                Name = new Name("Jasmin Fidalgo"),
+                Email = new Email("jasminfidalgo@gmail.com"),
+                Specialization = await specRepo.GetByName("Neurology"),
+                LicenseNumber = new LicenseNumber("938435"),
+                Phone = new Phone("932456187"),
+                Address = new Address("Rua Montanhosa", "Guarda", "Portugal"),
+                AvailabilitySlots = new List<AvailabilitySlot> { 
+                    new AvailabilitySlot("22-06-2025T08:00:00 - 22-06-2025T20:00:00")
+                },
+                SystemUser = await userRep.GetUserByEmail("jasminfidalgo@gmail.com")
+            };
+            var staff4 = new Staff {
+                Name = new Name("Miguel Silva"),
+                Email = new Email("safetyplace4all@gmail.com"),
+                Specialization = await specRepo.GetByName("Anaesthetist"),
+                LicenseNumber = new LicenseNumber("987395"),
+                Phone = new Phone("91918276"),
+                Address = new Address("Rua do Porto", "Aveiro", "Portugal"),
+                AvailabilitySlots = new List<AvailabilitySlot> { 
+                    new AvailabilitySlot("10-10-2025T08:00:00 - 10-10-2025T20:00:00")
+                },
+                SystemUser = await userRep.GetUserByEmail("safetyplace4all@gmail.com")
+            };
+
+            await staffRep.AddAsync(staff1);
+            await unitOfWork.CommitAsync();
+            await staffRep.AddAsync(staff2);
+            await unitOfWork.CommitAsync();
+            await staffRep.AddAsync(staff3);
+            await unitOfWork.CommitAsync();
+            await staffRep.AddAsync(staff4);
+            await unitOfWork.CommitAsync();
+        }
+
+        private static async Task SeedOperationRequestsAsync(IServiceProvider services)
+        {
+            var request = services.GetRequiredService<IOperationRequestRepository>();
+            var specRepo = services.GetRequiredService<ISpecializationRepository>();
+            var patientRep = services.GetRequiredService<IPatientRepository>();
+            var operationTypeRep = services.GetRequiredService<IOperationTypeRepository>();
+            var staffRep = services.GetRequiredService<IStaffRepository>();
+            var unitOfWork = services.GetRequiredService<IUnitOfWork>();
+
+            var operationRequest1 = new OperationRequest {
+                Patient = await patientRep.GetPatientByEmail("luisgameplay@gmail.com"),
+                Staff = await staffRep.GetStaffMemberByEmail("safetyplace4all@gmail.com"),
+                OperationType = await operationTypeRep.GetByIdAsync(new OperationTypeID(1)),
+                Priority = Priority.Medium,
+                Deadline = new Deadline(new DateTime(2025, 10, 10, 10, 0, 0)),
+                Status = Status.Pending,
+                Staffs = new List<StaffID> { 
+                    (await staffRep.GetStaffMemberByEmail("joanarebelo@gmail.com")).Id,
+                    (await staffRep.GetStaffMemberByEmail("franciscodoc@gmail.com")).Id,
+                    (await staffRep.GetStaffMemberByEmail("jasminfidalgo@gmail.com")).Id 
+                }
+            };
+            var operationRequest2 = new OperationRequest {
+                Patient = await patientRep.GetPatientByEmail("biamarques@gmail.com"),
+                Staff = await staffRep.GetStaffMemberByEmail("safetyplace4all@gmail.com"),
+                OperationType = await operationTypeRep.GetByIdAsync(new OperationTypeID(1)),
+                Priority = Priority.High,
+                Deadline = new Deadline(new DateTime(2025, 10, 10, 10, 0, 0)),
+                Status = Status.Pending,
+                Staffs = new List<StaffID> { 
+                    (await staffRep.GetStaffMemberByEmail("joanarebelo@gmail.com")).Id,
+                    (await staffRep.GetStaffMemberByEmail("franciscodoc@gmail.com")).Id,
+                    (await staffRep.GetStaffMemberByEmail("jasminfidalgo@gmail.com")).Id 
+                }
+            };
+            await request.AddAsync(operationRequest1);
+            await request.AddAsync(operationRequest2);
+            await unitOfWork.CommitAsync();
+
         }
 
         private static async Task SeedOperationTypeAsync(IServiceProvider services)
