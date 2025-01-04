@@ -316,12 +316,50 @@ namespace Sempi5.Controllers
             return Ok(new { message = "Confirmation sent successfully." });
         }
 
+        [HttpDelete("request-delete/personal-data")]
+        [Authorize (Roles = "Patient")]
+        public async Task<IActionResult> RequestDeletionPersonalData(){
+
+            var cookie = User.Identity as ClaimsIdentity;
+            var emailCookie = cookie?.FindFirst(ClaimTypes.Email)?.Value;
+
+            var patient = await _service.GetPatientByEmail(emailCookie);
+
+            if (patient == null)
+            {
+                return NotFound();
+            }
+
+            var confirmationLink = base_url+"/api/Patient/request-delete/personal-data/confirm-deletion?email=" +
+                        Uri.EscapeDataString(_cryptography.EncryptString(JsonSerializer.Serialize(emailCookie)));
+
+            var message = CreateDeletionPersonalDataEmail(patient.Name, confirmationLink);
+
+            _emailService.sendEmail(patient.Name, emailCookie, "Personal Data Deletion Request", message);
+
+            return Ok(new { message = "Confirmation sent successfully." });
+        }
+
         public string CreateDeleteAccountEmail(string name, string confirmationLink)
         {
             var message = "<html>";
             message += "<body>";
             message += "<b>Hello,</b><br>";
             message += $"<p>It was requested to delete the account of {name}.</p>"; 
+            message += $"<p>Please <a href='{confirmationLink}'>Click here</a> to confirm the deletion.</p>";
+            message += "</body>";
+            message += "</body>";
+            message += "</html>";
+
+            return message;
+        }
+
+        public string CreateDeletionPersonalDataEmail(string name, string confirmationLink)
+        {
+            var message = "<html>";
+            message += "<body>";
+            message += "<b>Hello,</b><br>";
+            message += $"<p>It was requested to delete the personal data of {name}.</p>"; 
             message += $"<p>Please <a href='{confirmationLink}'>Click here</a> to confirm the deletion.</p>";
             message += "</body>";
             message += "</body>";
@@ -359,6 +397,48 @@ namespace Sempi5.Controllers
                 return BadRequest("An error occurred while processing your request."+ex.Message);
             }
         } 
+
+        [HttpGet("request-delete/personal-data/confirm-deletion")]
+        public async Task<ActionResult> DeletePersonalData(
+            [FromQuery] string email
+        )
+        {
+            try
+            {
+                var decryptedEmail = _cryptography.DecryptString(email);
+
+                var formerEmail = JsonSerializer.Deserialize<string>(decryptedEmail);
+
+                var patient = await _service.GetPatientByEmail(formerEmail);
+
+                var message = SentRequestToDPO(patient.Name, patient.Email);
+
+                _emailService.sendEmail("Safety Place 4 All", "safetyplace4all@gmail.com", "Personal Data Deletion Request - SARM", message);
+                
+                return Ok(new { message = "Request to deletion of personal data sent to the DPO. Check Privacy Policy for more details." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("An error occurred while processing your request."+ex.Message);
+            }
+        }
+
+        public string SentRequestToDPO(string name, string email)
+        {
+            var message = "<html>";
+            message += "<body>";
+            message += "<b>Hello Safety Place 4 All,</b><br>"; 
+            message += $"<p>It was requested to delete the personal data of {name} with email: {email}.</p>";
+            message += $"<p></p>";	 
+            message += $"<p>With best regards,</p>";
+            message += $"<p>SARM Team.</p>";
+            message += "</body>";
+            message += "</body>";
+            message += "</html>";
+
+            return message;
+        }
+ 
 
         [HttpPut("{patientId}")]
         [Authorize(Roles = "Admin")]  
