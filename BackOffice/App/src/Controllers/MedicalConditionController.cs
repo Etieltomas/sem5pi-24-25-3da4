@@ -21,7 +21,7 @@ namespace Sempi5.Controllers
          * @author Ricardo Guimarães
          * @date 10/12/2024
          */
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<ActionResult<MedicalConditionDTO>> AddMedicalCondition([FromBody] MedicalConditionDTO medicalCondition)
         {
             var result = await _service.AddMedicalCondition(medicalCondition);
