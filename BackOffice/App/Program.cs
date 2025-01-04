@@ -738,7 +738,7 @@ namespace Sempi5
             var user12 = new SystemUser{
                 Username = "miguel",
                 Email = new Email("safetyplace4all@gmail.com"),
-                Role = "Staff",
+                Role = "Doctor",
                 Active = true
             };
 
