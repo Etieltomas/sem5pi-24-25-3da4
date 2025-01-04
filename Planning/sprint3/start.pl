@@ -136,7 +136,7 @@ check_room_capacity([Room|LRoom], SortedLOpCode, Day, FinalRoom) :-
     free_agenda0(Agenda, LFAgRoom),
     get_room_free_time(LFAgRoom, TotalRoomTime),
 
-    ( TotalTime =< TotalRoomTime ->
+    ( TotalTime / TotalRoomTime < 0.8 ->
         FinalRoom = Room
     ; 
         check_room_capacity(LRoom, SortedLOpCode, Day, FinalRoom)
