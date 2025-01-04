@@ -286,6 +286,8 @@ namespace Sempi5
                 await SeedOperationTypeAsync(services);
                 await SeedRooms(services);
                 await SeedPlanning(services);
+                await SeedAllergiesAsync(services);
+                await SeedConditionsAsync(services);
             }
             catch (Exception ex)
             {
@@ -421,10 +423,35 @@ namespace Sempi5
                 Phone = new Phone("912345678"),
                 Address = new Address("Rua do ISEP", "Porto", "Portugal"),
                 DateOfBirth = new DateTime(1998, 10, 10),
-                Gender = Gender.Male,
+                Gender = Gender.Female,
                 EmergencyContact = new Phone("912345678"),
             };
+
+            Patient pat1 = new Patient {
+                Name = new Name("José Pedro"),
+                Email = new Email("josep@gmail.com"),
+                Phone = new Phone("91454345"),
+                Address = new Address("Rua de Cima", "Coimbra", "Portugal"),
+                DateOfBirth = new DateTime(1999, 01, 09),
+                Gender = Gender.Male,
+                EmergencyContact = new Phone("918967345"),
+            };
+
+            Patient pat2 = new Patient {
+                Name = new Name("Maria Silva"),
+                Email = new Email("mariacostasilva@gmail.com"),
+                Phone = new Phone("912434561"),
+                Address = new Address("Rua do Baixo", "Lisboa", "Portugal"),
+                DateOfBirth = new DateTime(1997, 05, 15),
+                Gender = Gender.Other,
+                EmergencyContact = new Phone("96342098"),
+            };
+
             await patientRep.AddAsync(pat);
+            await unitOfWork.CommitAsync();
+            await patientRep.AddAsync(pat1);
+            await unitOfWork.CommitAsync();
+            await patientRep.AddAsync(pat2);
             await unitOfWork.CommitAsync();
 
 
@@ -592,6 +619,67 @@ namespace Sempi5
             await unitOfWork.CommitAsync();
         }
 
+        private static async Task SeedAllergiesAsync(IServiceProvider services)
+        {
+            var allergySer = services.GetRequiredService<AllergyService>();
+
+            // Adicionar alergia com nome e ID
+            var allergy = new AllergyDTO { Code = 1234, Name = "Pollen", Description = "Allergy to pollen" };
+            var allergy1 = new AllergyDTO { Code = 1235, Name = "Peanuts", Description = "Allergy to peanuts" };
+            var allergy2 = new AllergyDTO { Code = 1236, Name = "Dust", Description = "Allergy to dust" };
+
+            var result = await allergySer.AddAllergy(allergy);
+            var result1 = await allergySer.AddAllergy(allergy1);
+            var result2 = await allergySer.AddAllergy(allergy2);
+
+            if (result == null || result1 == null || result2 == null)
+            {
+                // Log an error or handle the failure case
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                logger.LogError("Failed to create some allergy");
+            }
+            else
+            {
+                // Log success or handle the success case
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                logger.LogInformation("Successfully created allergies");
+            }
+        }
+
+private static async Task SeedConditionsAsync(IServiceProvider services)
+{
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    var conditionSer = services.GetRequiredService<MedicalConditionService>();
+
+    try
+    {
+        var condition = new MedicalConditionDTO { Code = "X437", Name = "Asthma", Description = "Asthma condition" };
+        var condition1 = new MedicalConditionDTO { Code = "X438", Name = "Diabetes", Description = "Diabetes condition" };
+        var condition2 = new MedicalConditionDTO { Code = "X439", Name = "Hypertension", Description = "Hypertension condition" };
+
+        var result = await conditionSer.AddMedicalCondition(condition);
+        var result1 = await conditionSer.AddMedicalCondition(condition1);
+        var result2 = await conditionSer.AddMedicalCondition(condition2);
+
+        if (result == null || result1 == null || result2 == null)
+        {
+            logger.LogError("Failed to create some conditions. Results: {Result}, {Result1}, {Result2}", result, result1, result2);
+        }
+        else
+        {
+            logger.LogInformation("Successfully created conditions");
+        }
+    }
+    catch (HttpRequestException httpEx)
+    {
+        logger.LogError(httpEx, "HTTP request error while creating conditions");
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "An error occurred while creating conditions");
+    }
+}
+
         private static async Task SeedUsersAsync(IServiceProvider services)
         {
             var userRep = services.GetRequiredService<IUserRepository>();
@@ -630,7 +718,7 @@ namespace Sempi5
             var user5 = new SystemUser{
                 Username = "simaoPatient",
                 Email = new Email("sblsimaolopes@gmail.com"),
-                Role = "Patient",
+                Role = "Doctor",
                 Active = true
             };
             var user6 = new SystemUser{
