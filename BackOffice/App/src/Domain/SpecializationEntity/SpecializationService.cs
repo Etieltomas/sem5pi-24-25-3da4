@@ -25,7 +25,7 @@ namespace Sempi5.Domain.SpecializationEntity
          * @author Ricardo Guimarães
          * @date 10/12/2024
          */
-        public async Task<string> AddSpecialization(string name, string code, string? description)
+        public async Task<SpecializationDTO> AddSpecialization(string name, string code, string? description)
         {
             var specialization = new Specialization
             {
@@ -37,7 +37,7 @@ namespace Sempi5.Domain.SpecializationEntity
             await _repo.AddAsync(specialization);
             await _unitOfWork.CommitAsync();
 
-            return specialization.Name;
+            return MapToDTO(specialization);
         }
 
         /**

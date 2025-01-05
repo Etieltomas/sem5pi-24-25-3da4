@@ -36,7 +36,7 @@ namespace Sempi5.Controllers
          * @author Ricardo Guimarães
          * @date 10/12/2024
          */
-        [HttpPost]
+        [HttpPost("create")]
         [Authorize(Roles = "Admin")]  
         public async Task<ActionResult<string>> AddSpecialization([FromBody] SpecializationCreateDTO dto)
         {
@@ -46,7 +46,7 @@ namespace Sempi5.Controllers
             }
 
             var specializationId = await _service.AddSpecialization(dto.Name, dto.Code, dto.Description);
-            return CreatedAtAction(nameof(GetSpecializationById), new { id = specializationId }, specializationId);
+            return CreatedAtAction(nameof(GetSpecializationById), new { id = specializationId.Id }, specializationId);
         }
 
         /**
