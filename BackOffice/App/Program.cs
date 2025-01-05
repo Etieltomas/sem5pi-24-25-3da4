@@ -877,11 +877,6 @@ namespace Sempi5
                 Priority = Priority.Medium,
                 Deadline = new Deadline(new DateTime(2025, 10, 10, 10, 0, 0)),
                 Status = Status.Pending,
-                Staffs = new List<StaffID> { 
-                    (await staffRep.GetStaffMemberByEmail("joanarebelo@gmail.com")).Id,
-                    (await staffRep.GetStaffMemberByEmail("franciscodoc@gmail.com")).Id,
-                    (await staffRep.GetStaffMemberByEmail("jasminfidalgo@gmail.com")).Id 
-                }
             };
             var operationRequest2 = new OperationRequest {
                 Patient = await patientRep.GetPatientByEmail("biamarques@gmail.com"),
@@ -890,11 +885,6 @@ namespace Sempi5
                 Priority = Priority.High,
                 Deadline = new Deadline(new DateTime(2025, 10, 10, 10, 0, 0)),
                 Status = Status.Pending,
-                Staffs = new List<StaffID> { 
-                    (await staffRep.GetStaffMemberByEmail("joanarebelo@gmail.com")).Id,
-                    (await staffRep.GetStaffMemberByEmail("franciscodoc@gmail.com")).Id,
-                    (await staffRep.GetStaffMemberByEmail("jasminfidalgo@gmail.com")).Id 
-                }
             };
             await request.AddAsync(operationRequest1);
             await request.AddAsync(operationRequest2);
