@@ -5,6 +5,12 @@ using Microsoft.Extensions.Logging;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 
+// @author Tomás Leite
+// @date 1/12/2024
+// @description This service provides functionality for managing allergies by interacting 
+// with a backend API. It supports adding new allergies and retrieving a list of all 
+// allergies as DTOs. The service uses dependency injection for configuration, logging, 
+// and HTTP client capabilities.
 namespace Sempi5.Domain.AllergyEntity
 {
     public class AllergyService

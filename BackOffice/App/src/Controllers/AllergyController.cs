@@ -2,6 +2,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sempi5.Domain.AllergyEntity;
 
+// @author Tomás Leite
+// @date 1/12/2024
+// @description This controller handles API endpoints for managing allergies. 
+// It provides functionality to add a new allergy and retrieve all existing allergies. 
+// Authorization is required for certain operations, such as adding an allergy.
 
 namespace Sempi5.Controllers
 {

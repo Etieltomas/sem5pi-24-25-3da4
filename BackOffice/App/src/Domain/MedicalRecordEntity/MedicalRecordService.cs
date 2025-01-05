@@ -8,6 +8,12 @@ using System.Text.Json.Serialization;
 
 namespace Sempi5.Domain.MedicalRecordEntity
 {
+    /// <summary>
+    /// @author Simão Lopes
+    /// @date 5/12/2024
+    /// Service responsible for interacting with the backend API for managing medical records.
+    /// It includes methods for adding, updating, searching, and anonymizing medical records.
+    /// </summary>
     public class MedicalRecordService
     {
         private readonly IConfiguration _configuration;

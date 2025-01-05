@@ -6,6 +6,12 @@ using Sempi5.Domain.UserEntity;
 
 namespace Sempi5.Infrastructure.PatientRepository
 {
+    /// <summary>
+    /// Configuration class for the Patient entity. This class configures the mapping 
+    /// of the Patient class to the database table and sets the rules for its properties.
+    /// </summary>
+    /// @author Simão Lopes
+    /// @date 5/12/2024
     public class PatientEntityTypeConfiguration : IEntityTypeConfiguration<Patient>
     {
         public void Configure(EntityTypeBuilder<Patient> builder)

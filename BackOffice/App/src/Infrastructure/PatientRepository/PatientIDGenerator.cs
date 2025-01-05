@@ -5,6 +5,12 @@ using Sempi5.Infrastructure.Databases;
 
 public class PatientIDGenerator : ValueGenerator<PatientID>
 {
+    /// <summary>
+    /// Configuration class for the Patient entity. This class configures the mapping 
+    /// of the Patient class to the database table and sets the rules for its properties.
+    /// </summary>
+    /// @author Simão Lopes
+    /// @date 5/12/2024
     public override PatientID Next(EntityEntry entry)
     {
         var context = (DataBaseContext) entry.Context;

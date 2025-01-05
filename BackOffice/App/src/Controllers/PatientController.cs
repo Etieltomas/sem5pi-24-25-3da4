@@ -9,6 +9,14 @@ using Sempi5.Domain.TokenEntity;
 
 namespace Sempi5.Controllers
 {
+    /// <summary>
+    ///  @author Simão Lopes
+    ///  @date 1/12/2024
+    ///  This controller manages patient-related actions, such as registering, updating, 
+    ///  and deleting patient information. It provides endpoints for patient account management,
+    ///  profile updates, and scheduling deletions. It also supports searching patients by 
+    ///  various criteria and requires authorization for certain actions.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class PatientController : ControllerBase

@@ -7,6 +7,11 @@ using Sempi5.Infrastructure.Shared;
 
 namespace Sempi5.Infrastructure.AppointmentRepository
 {
+    /// <summary>
+    ///  @author Simão Lopes
+    ///  @date 1/12/2024
+    /// Repository for managing appointment data operations.
+    /// </summary>
     public class AppointmentRepository : BaseRepository<Appointment, AppointmentID>, IAppointmentRepository
     {
         private readonly DataBaseContext _context;

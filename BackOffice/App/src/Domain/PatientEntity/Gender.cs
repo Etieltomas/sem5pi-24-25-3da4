@@ -8,7 +8,15 @@ namespace Sempi5.Domain.PatientEntity
         Female,
         Other 
     }
-
+    
+    /// <summary>
+    /// @author Simão Lopes
+    /// @date 1/12/2024
+    /// Provides extension methods for the Gender enum.
+    /// Specifically, the FromString method, which converts a string representation of gender
+    /// (case-insensitive and whitespace-agnostic) into a corresponding Gender enum value.
+    /// If the string does not match any known gender, it defaults to "Other".
+    /// </summary>
     public static class GenderExtensions
     {
         public static Gender FromString(string genderString)

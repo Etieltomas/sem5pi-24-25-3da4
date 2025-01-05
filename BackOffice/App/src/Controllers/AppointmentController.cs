@@ -5,6 +5,14 @@ using Sempi5.Domain.AppointmentEntity;
 
 namespace Sempi5.Controllers 
 {
+    /// <summary>
+    /// @author Simão Lopes
+    /// @date 3/12/2024
+    /// This controller provides API endpoints for managing appointments. 
+    /// It includes methods to retrieve appointments by doctor, edit existing appointments, 
+    /// and create new appointments. Authorization is required for all operations, restricted 
+    /// to staff and doctors.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController] 
     public class AppointmentController : ControllerBase

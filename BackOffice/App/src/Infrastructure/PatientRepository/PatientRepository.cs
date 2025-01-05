@@ -5,6 +5,12 @@ using Sempi5.Infrastructure.Shared;
 
 namespace Sempi5.Infrastructure.PatientRepository
 {
+    /// <summary>
+    /// Repository class for interacting with the Patients table in the database.
+    /// Provides methods for querying and managing Patient records.
+    /// </summary>
+    /// @author Simão Lopes
+    /// @date 5/12/2024
     public class PatientRepository : BaseRepository<Patient, PatientID>, IPatientRepository
     {
         private readonly DataBaseContext _context;

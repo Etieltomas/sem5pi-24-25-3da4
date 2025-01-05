@@ -1,9 +1,18 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Sempi5.Domain.PatientEntity;
 
+/// <summary>
+/// @author Simão Lopes
+/// @date 1/12/2024
+/// This background service is responsible for periodically processing scheduled patient account deletions.
+/// It runs in the background and invokes the PatientService to handle the deletion logic every 30 minutes.
+/// The service will continue running as long as the application is active, executing the deletion process
+/// at the specified interval. Errors during processing are caught and thrown with a descriptive message.
+/// </summary>
 public class AccountDeletionBackgroundService : BackgroundService
 {
     private readonly IServiceProvider _serviceProvider;
+
 
     public AccountDeletionBackgroundService(IServiceProvider serviceProvider)
     {

@@ -6,6 +6,12 @@ using Sempi5.Domain.MedicalRecordEntity;
 
 namespace Sempi5.Controllers
 {
+    /// <summary>
+    /// Controller for managing medical records. It includes endpoints for retrieving, adding, updating, 
+    /// and searching medical records. The controller uses authorization based on roles.
+    /// </summary>
+    /// @author Simão Lopes
+    /// @date 5/12/2024
     [Route("api/[controller]")]
     [ApiController]
     public class MedicalRecordController : ControllerBase

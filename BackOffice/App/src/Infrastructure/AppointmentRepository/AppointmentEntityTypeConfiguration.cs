@@ -5,9 +5,13 @@ using Sempi5.Domain.AppointmentEntity;
 using Sempi5.Domain.OperationRequestEntity;
 using Sempi5.Domain.RoomEntity;
 
-
 namespace Sempi5.Infrastructure.AppointmentRepository
 {
+    /// <summary>
+    ///  @author Simão Lopes
+    ///  @date 1/12/2024
+    ///  Class that represents the configuration of the Appointment entity in the database
+    /// </summary>
     public class AppointmentEntityTypeConfiguration : IEntityTypeConfiguration<Appointment>
     {
         public void Configure(EntityTypeBuilder<Appointment> builder)

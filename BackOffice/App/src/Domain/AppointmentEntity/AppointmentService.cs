@@ -8,6 +8,12 @@ using Sempi5.Infrastructure.Shared;
 using Sempi5.Domain.OperationRequestEntity;
 using Mono.TextTemplating;
 
+// @author Simão Lopes
+// @date 1/5/2025
+// @description The AppointmentService class manages appointment operations, including 
+// creating, editing, and retrieving appointments. It interacts with repositories for appointments, 
+// rooms, staff, and operation requests to ensure data consistency and enforce business rules. 
+// The service also checks for scheduling conflicts and updates availability slots for resources.
 
 namespace Sempi5.Domain.AppointmentEntity
 {
