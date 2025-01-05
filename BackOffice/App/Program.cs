@@ -602,15 +602,49 @@ namespace Sempi5
             var allergySer = services.GetRequiredService<AllergyService>();
 
             // Adicionar alergia com nome e ID
-            var allergy = new AllergyDTO { Code = 1234, Name = "Pollen", Description = "Allergy to pollen" };
+            var allergy = new AllergyDTO { Code = 1234, Name = "Pollen", Description = "Allergy to pollen (e.g., grass, ragweed)" };
             var allergy1 = new AllergyDTO { Code = 1235, Name = "Peanuts", Description = "Allergy to peanuts" };
             var allergy2 = new AllergyDTO { Code = 1236, Name = "Dust", Description = "Allergy to dust" };
+            var allergy3 = new AllergyDTO { Code = 1237, Name = "Shellfish", Description = "Allergy to shellfish (e.g., shrimp, lobster)" };
+            var allergy4 = new AllergyDTO { Code = 1238, Name = "Milk", Description = "Allergy to milk (Dairy products)" };
+            var allergy5 = new AllergyDTO { Code = 1239, Name = "Eggs", Description = "Allergy to eggs" };
+            var allergy6 = new AllergyDTO { Code = 1240, Name = "Tree Nut", Description = "Allergy to tree nut (e.g., almonds, walnuts)" };
+            var allergy7 = new AllergyDTO { Code = 1241, Name = "Wheat", Description = "Allergy to wheat" };
+            var allergy8 = new AllergyDTO { Code = 1242, Name = "Penicillin", Description = "Allergy to penicillin" };
+            var allergy9 = new AllergyDTO { Code = 1243, Name = "Sulfa Drugs", Description = "Allergy to sulfa drugs (e.g., sulfamethoxazole)" };
+            var allergy10 = new AllergyDTO { Code = 1244, Name = "Aspirin", Description = "Allergy to aspirin" };
+            var allergy11 = new AllergyDTO { Code = 1245, Name = "Local Anesthetics", Description = "Allergy to local anesthetics (e.g., Lidocaine)" };
+            var allergy12 = new AllergyDTO { Code = 1246, Name = "Mold", Description = "Allergy to mold" };
+            var allergy13 = new AllergyDTO { Code = 1247, Name = "Cat Dander", Description = "Allergy to cat dander" };
+            var allergy14 = new AllergyDTO { Code = 1248, Name = "Dog Dander", Description = "Allergy to dog dander" };
+            var allergy15 = new AllergyDTO { Code = 1249, Name = "Latex", Description = "Allergy to latex" };
+            var allergy16 = new AllergyDTO { Code = 1250, Name = "Nickel Allergy", Description = "Allergy to nickel allergy (common in jewelry or metal objects)" };
+            var allergy17 = new AllergyDTO { Code = 1251, Name = "Bee Sting", Description = "Allergy to bee sting" };
+            var allergy18 = new AllergyDTO { Code = 1252, Name = "Fire Ant Sting", Description = "Allergy to fire ant sting" };
+            var allergy19 = new AllergyDTO { Code = 1253, Name = "Perfume", Description = "Allergy to perfume (fragrance sensitivity)" };
 
             var result = await allergySer.AddAllergy(allergy);
             var result1 = await allergySer.AddAllergy(allergy1);
             var result2 = await allergySer.AddAllergy(allergy2);
+            var result3 = await allergySer.AddAllergy(allergy3);
+            var result4 = await allergySer.AddAllergy(allergy4);
+            var result5 = await allergySer.AddAllergy(allergy5);
+            var result6 = await allergySer.AddAllergy(allergy6);
+            var result7 = await allergySer.AddAllergy(allergy7);
+            var result8 = await allergySer.AddAllergy(allergy8);
+            var result9 = await allergySer.AddAllergy(allergy9);
+            var result10 = await allergySer.AddAllergy(allergy10);
+            var result11 = await allergySer.AddAllergy(allergy11);
+            var result12 = await allergySer.AddAllergy(allergy12);
+            var result13 = await allergySer.AddAllergy(allergy13);
+            var result14 = await allergySer.AddAllergy(allergy14);
+            var result15 = await allergySer.AddAllergy(allergy15);
+            var result16 = await allergySer.AddAllergy(allergy16);
+            var result17 = await allergySer.AddAllergy(allergy17);
+            var result18 = await allergySer.AddAllergy(allergy18);
+            var result19 = await allergySer.AddAllergy(allergy19);
 
-            if (result == null || result1 == null || result2 == null)
+            if (result == null || result1 == null || result2 == null || result3 == null || result4 == null || result5 == null || result6 == null || result7 == null || result8 == null || result9 == null || result10 == null || result11 == null || result12 == null || result13 == null || result14 == null || result15 == null || result16 == null || result17 == null || result18 == null || result19 == null)
             {
                 // Log an error or handle the failure case
                 var logger = services.GetRequiredService<ILogger<Program>>();
