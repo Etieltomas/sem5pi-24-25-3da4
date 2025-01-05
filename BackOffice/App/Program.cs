@@ -820,6 +820,17 @@ namespace Sempi5
                 SystemUser = await userRep.GetUserByEmail("biamarques@gmail.com")
             };
 
+            Patient pat3 = new Patient {
+                Name = new Name("Simao Patient"),
+                Email = new Email("sblsimaolopes@gmail.com"),
+                Phone = new Phone("987364512"),
+                Address = new Address("Rua do Alto", "Porto", "Portugal"),
+                DateOfBirth = new DateTime(2000, 10, 10),
+                Gender = Gender.Male,
+                EmergencyContact = new Phone("921232657"),
+                SystemUser = await userRep.GetUserByEmail("sblsimaolopes@gmail.com")
+            };
+
             await patientRep.AddAsync(pat1);
             await unitOfWork.CommitAsync();
             await patientRep.AddAsync(pat2);
