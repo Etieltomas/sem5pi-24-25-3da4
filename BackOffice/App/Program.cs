@@ -835,6 +835,8 @@ namespace Sempi5
             await unitOfWork.CommitAsync();
             await patientRep.AddAsync(pat2);
             await unitOfWork.CommitAsync();
+            await patientRep.AddAsync(pat3);
+            await unitOfWork.CommitAsync();
            
             await unitOfWork.CommitAsync();
         }
