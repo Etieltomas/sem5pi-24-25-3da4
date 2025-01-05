@@ -1,15 +1,18 @@
 using Sempi5.Domain.RoomEntity;
 using Sempi5.Domain.RoomTypeEntity;
+using Sempi5.Domain.Shared;
 
 namespace Sempi5.Domain.RoomTypeEntity
 {
     public class RoomTypeService
     {
         private readonly IRoomTypeRepository _repo;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public RoomTypeService(IRoomTypeRepository repo)
+        public RoomTypeService(IRoomTypeRepository repo ,IUnitOfWork unitOfWork)
         {
             _repo = repo;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<RoomTypeDTO> AddRoomType(RoomTypeDTO newRoomTypeDto)
@@ -23,6 +26,7 @@ namespace Sempi5.Domain.RoomTypeEntity
 
             var roomType = new RoomType(newRoomTypeDto.Name);
             await _repo.AddAsync(roomType);
+            await _unitOfWork.CommitAsync();
 
             return new RoomTypeDTO { Name = roomType.Name };
         }
