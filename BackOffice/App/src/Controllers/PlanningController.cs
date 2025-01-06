@@ -28,8 +28,16 @@ public class PlanningController : ControllerBase
             string day = "20251010";
             long roomId = 9;
             
-            var operationRequests = await _operationRequestRepository.GetAllOperationRequestsNotScheduled();
-
+            var operationRequests1 = await _operationRequestRepository.GetAllOperationRequestsNotScheduled();
+            var operationRequests = new List<OperationRequest>();
+            foreach (var operationRequest in operationRequests1)
+            {
+                if (operationRequest.Staff.Email.Equals(new Email("left4deadgame2@gmail.com")))
+                {
+                    operationRequests.Add(operationRequest);
+                }
+            }
+            
             if (operationRequests.Count == 0)
             {
                 return StatusCode(500, "No operations to schedule");
