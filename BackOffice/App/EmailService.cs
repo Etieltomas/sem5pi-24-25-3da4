@@ -27,7 +27,7 @@ namespace Sempi5 {
             {
                 smtp.Connect("smtp.gmail.com", 587, false);
 
-                smtp.Authenticate("sem5pi.isep@gmail.com", "rqnu moxv huwn mjji "); 
+                smtp.Authenticate("sem5pi.isep@gmail.com", "_"); 
                 
                 smtp.Send(_email);
                 smtp.Disconnect(true);
